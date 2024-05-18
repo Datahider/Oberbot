@@ -35,11 +35,10 @@ class CommandMd extends AbstractHandlerCommand {
         $text = $template->process();
         
         $tmp_file = tempnam('/tmp', 'md_');
-        $correct_file = preg_replace("/([^\\\\\/]+?)$/", 'Текущие заявки и задачи.md', $tmp_file);
-        rename($tmp_file, $correct_file);
-        file_put_contents($correct_file, $text);
+        $hr_name = 'Текущие заявки и задачи.md';
+        file_put_contents($tmp_file, $text);
 
-        Bot::$api->sendDocument(Bot::$chat->id, new \CURLFile($correct_file));
+        Bot::$api->sendDocument(Bot::$chat->id, new \CURLFile($tmp_file, 'text/markdown', $hr_name));
         return true;
     }
 

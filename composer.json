@@ -1,0 +1,22 @@
+{
+    "name": "losthost/oberbot",
+    "description": "A helpdesk/task-manager bot",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Petros Ioannidis",
+            "email": "pio@pio.su"
+        }
+    ],
+    "require": {
+        "losthost/oberbot-model": "dev-master",
+        "losthost/telle": "^v4",
+        "losthost/bot-view": "^2"
+    },
+    "autoload": {
+        "psr-4": {
+            "losthost\\Oberbot\\": "bot/"
+        }
+    }
+    
+}

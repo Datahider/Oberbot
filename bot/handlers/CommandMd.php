@@ -5,7 +5,7 @@ namespace losthost\Oberbot\handlers;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\telle\abst\AbstractHandlerCommand;
-use losthost\OberbotModel\builders\MdReport;
+use losthost\Oberbot\builders\MdReport;
 use losthost\Oberbot\data\session;
 use losthost\templateHelper\Template;
 

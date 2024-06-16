@@ -1,5 +1,7 @@
 <?php
 
+use function \losthost\Oberbot\barIndicator;
+
 $total = 0;
 $text_report = '';
 $the_other = 0;

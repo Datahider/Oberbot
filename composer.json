@@ -9,9 +9,9 @@
         }
     ],
     "require": {
-        "losthost/oberbot-model": "dev-master",
         "losthost/telle": "^v4",
-        "losthost/bot-view": "^2"
+        "losthost/bot-view": "^2.4",
+        "losthost/proxy-message": "dev-master"
     },
     "autoload": {
         "psr-4": {

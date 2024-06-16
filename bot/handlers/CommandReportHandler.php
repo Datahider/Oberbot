@@ -3,7 +3,7 @@
 namespace losthost\Oberbot\handlers;
 
 use losthost\telle\abst\AbstractHandlerMessage;
-use losthost\OberbotModel\builders\TimeReport;
+use losthost\Oberbot\builders\TimeReport;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 

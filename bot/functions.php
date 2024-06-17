@@ -90,6 +90,10 @@ function getUserChatRole($user_id, $chat_id) : string {
     return $role->role;
 }
 
+function getQueueLen() {
+    return "-";
+}
+
 /**
  * Очищает текст от приветствий и прочей ереси в начале для формирования
  * осмысленного названия тикета

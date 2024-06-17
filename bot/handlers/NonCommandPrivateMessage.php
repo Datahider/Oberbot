@@ -16,6 +16,7 @@ use function \losthost\Oberbot\message;
 use function \losthost\Oberbot\__;
 use function losthost\Oberbot\cleanup_message_for_ticket_title;
 use function \losthost\Oberbot\newTopicTitle;
+use function \losthost\Oberbot\showNewTopicGreating;
 
 /**
  * Обрабатывает сообщения (не команды) в личном чате с ботом
@@ -95,6 +96,7 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
         $ticket_user->isNew() && $ticket_user->write();
         Bot::$api->editForumTopic($chat_id, $ticket->topic_id, $ticket->topic_title);
         
+        showNewTopicGreating($ticket);
         return $ticket->id;
     }
 

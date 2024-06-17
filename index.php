@@ -19,6 +19,7 @@ use losthost\Oberbot\handlers\CommandReportHandler;
 use losthost\Oberbot\handlers\CommandMd;
 use losthost\Oberbot\handlers\CommandAgent;
 use losthost\Oberbot\handlers\CommandCustomer;
+use losthost\Oberbot\handlers\CommandStart;
 
 use losthost\Oberbot\handlers\ForumTopicCreatedHandler;
 use losthost\Oberbot\handlers\FirstTopicMessageHandler;
@@ -52,6 +53,7 @@ Bot::addHandler(CommandReportHandler::class);
 Bot::addHandler(CommandMd::class);
 Bot::addHandler(CommandAgent::class);
 Bot::addHandler(CommandCustomer::class);
+Bot::addHandler(CommandStart::class);
 
 Bot::addHandler(NonCommandChatCheckerHandler::class);
 Bot::addHandler(ForumTopicCreatedHandler::class);

@@ -28,6 +28,11 @@ function mentionById(int $tg_id) {
     
 }
 
+function showNewTopicGreating(topic $ticket) {
+    $view = new BotView(Bot::$api, $ticket->chat_id, Bot::$language_code);
+    $view->show('tpl_new_topic_greating', 'kbd_new_topic_greating_full', ['topic' => $ticket, 'queue_len' => getQueueLen()], null, $ticket->topic_id);
+}
+
 function showTimerStarted(topic $topic, user $user) {
     
     $model = new Model();

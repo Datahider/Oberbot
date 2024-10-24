@@ -36,5 +36,5 @@ if ($the_other) {
     echo "Другие\n<code>$time $bar</code>\n";
 }
 
-$summ = number_format($total/3600*2000, 2, '.', ' ');
+$summ = number_format($total/3600*2500, 2, '.', ' ');
 echo "\nИтого: <b>$summ</b> руб.";

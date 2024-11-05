@@ -21,9 +21,17 @@ use losthost\Oberbot\handlers\CommandAgent;
 use losthost\Oberbot\handlers\CommandCustomer;
 use losthost\Oberbot\handlers\CommandStart;
 
-use losthost\Oberbot\handlers\ForumTopicCreatedHandler;
+//--------------------------------------------------------------------------------------
+// Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true ---
+use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;                        //---
+//--------------------------------------------------------------------------------------
+
+////////////////////////////////////////////////////////////////////////////////////////
+/// Новые обработчики из папки controller                                         /////
+use losthost\Oberbot\controller\ForumTopicCreatedHandler;                        /////
+/////////////////////////////////////////////////////////////////////////////////////
+
 use losthost\Oberbot\handlers\FirstTopicMessageHandler;
-use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
 use losthost\Oberbot\handlers\NonCommandPrivateMessage;
 use losthost\Oberbot\handlers\NonCommandAgentMessage;
 

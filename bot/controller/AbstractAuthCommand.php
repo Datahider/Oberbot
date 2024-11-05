@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller;
 
 use losthost\telle\abst\AbstractHandlerCommand;
+use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use function \losthost\Oberbot\isAgent;
 
@@ -29,6 +30,12 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
             return parent::handleUpdate($data);
         } 
         
-        // TODO -- сделать сообщение об отсутствии прав.
+        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+        if (isAgent($from_id, $chat_id)) {
+            $view->show('auth_users_only', null, ['handler' => $this]);
+        }
+        $view->show('auth_agents_only', null, ['handler' => $this]);
+        
+        return true;
     }
 }

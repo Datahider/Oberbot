@@ -10,15 +10,17 @@ class ticketTest extends TestCase {
     const TEST_GROUP = -12;
     const TEST_THREAD = 234;
     const TEST_TITLE = "It's a test title for a ticket";
-    const TEST_USER_ID = 18;
+    const TEST_USER_ID = 18; // TODO - заменить на TEST_AGENT_ID
+    const TEST_CUSTOMER_ID = 111;
     
     public function testTicketCreation() {
         
-        $ticket = ticket::create(static::TEST_GROUP, static::TEST_THREAD, static::TEST_TITLE);
+        $ticket = ticket::create(static::TEST_GROUP, static::TEST_THREAD, static::TEST_TITLE, static::TEST_CUSTOMER_ID);
         
         $this->assertNotEmpty($ticket->id);
         $this->assertEquals(static::TEST_TITLE, $ticket->title);
         $this->assertEquals(ticket::STATUS_CREATING, $ticket->status);
+        $this->assertEquals(static::TEST_CUSTOMER_ID, $ticket->ticket_creator);
         
     }
     

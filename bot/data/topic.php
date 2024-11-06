@@ -22,6 +22,7 @@ class topic extends DBObject {
         'chat_id' => 'BIGINT(20) NOT NULL',
         'topic_id' => 'BIGINT(20) NOT NULL',
         'topic_title' => 'VARCHAR(128) NOT NULL',
+        'ticket_creator' => 'BIGINT(20) NULL',
         'last_activity' => 'INT(11) NOT NULL DEFAULT 0',
         'last_admin_activity' => 'BIGINT(20) NOT NULL DEFAULT 0',
         'status' => 'TINYINT(4) NOT NULL DEFAULT 0',

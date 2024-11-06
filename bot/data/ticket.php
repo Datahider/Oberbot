@@ -21,17 +21,18 @@ class ticket extends topic {
     protected ?bool $was_archived = null;
 
 
-    static public function create(int $group_id, int $thread_id, string $title) {
+    static public function create(int $group_id, int $thread_id, string $title, int $creator_id) {
         
         $ticket = new ticket(['topic_title' => $title, 'chat_id' => $group_id, 'topic_id' => $thread_id], true);
         if (!$ticket->isNew()) {
             throw new \Exception("Ticket already exists.");
         }
         $ticket->status = static::STATUS_CREATING;
-        $ticket->last_activity = time();
+        $ticket->last_activity = \time();
         $ticket->last_admin_activity = 0;
         $ticket->is_urgent = false;
         $ticket->is_task = false;
+        $ticket->ticket_creator = $creator_id;
         
         $ticket->write('', ['function' => 'create']);
         return $ticket;

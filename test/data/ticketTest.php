@@ -13,7 +13,7 @@ class ticketTest extends TestCase {
     const TEST_USER_ID = 18; // TODO - заменить на TEST_AGENT_ID
     const TEST_CUSTOMER_ID = 111;
     
-    public function testTicketCreation() {
+    public function testTicketCreationAndGetting() {
         
         $ticket = ticket::create(static::TEST_GROUP, static::TEST_THREAD, static::TEST_TITLE, static::TEST_CUSTOMER_ID);
         
@@ -22,11 +22,25 @@ class ticketTest extends TestCase {
         $this->assertEquals(ticket::STATUS_CREATING, $ticket->status);
         $this->assertEquals(static::TEST_CUSTOMER_ID, $ticket->ticket_creator);
         
+        $ticket2 = $ticket::getById($ticket->id);
+        $this->assertEquals($ticket->id, $ticket2->id);
+        $this->assertEquals($ticket->status, $ticket2->status);
+        $this->assertEquals($ticket->ticket_creator, $ticket2->ticket_creator);
+        $this->assertEquals($ticket->chat_id, $ticket2->chat_id);
+        $this->assertEquals($ticket->topic_id, $ticket2->topic_id);
+        
+        $ticket3 = $ticket::getByGroupThread($ticket->chat_id, $ticket->topic_id);
+        $this->assertEquals($ticket->id, $ticket3->id);
+        $this->assertEquals($ticket->status, $ticket3->status);
+        $this->assertEquals($ticket->ticket_creator, $ticket3->ticket_creator);
+        $this->assertEquals($ticket->chat_id, $ticket3->chat_id);
+        $this->assertEquals($ticket->topic_id, $ticket3->topic_id);
+        
     }
     
     public function testTicketAccepting() {
         
-        $ticket = ticket::accept(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->accept();
         
         $this->assertEquals(ticket::STATUS_NEW, $ticket->status);
         
@@ -36,33 +50,33 @@ class ticketTest extends TestCase {
         
         sleep(1);
         $now = time();
-        $ticket = ticket::touch(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->touchUser();
         
         $this->assertEquals($now, $ticket->last_activity);
         
         sleep(1);
         $now = time();
-        $ticket = ticket::touch(static::TEST_GROUP, static::TEST_THREAD, true);
+        $ticket->touchAdmin();
         
         $this->assertEquals($now, $ticket->last_admin_activity);
     }
 
     public function testTicketType() {
         
-        $ticket = ticket::type(static::TEST_GROUP, static::TEST_THREAD, ticket::TYPE_TASK);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->toTask();
         $this->assertEquals(true, $ticket->is_task);
 
-        $ticket = ticket::type(static::TEST_GROUP, static::TEST_THREAD, ticket::TYPE_TICKET);
+        $ticket->toTicket();
         $this->assertEquals(false, $ticket->is_task);
         
     }
     
     public function testTicketUrgent() {
         
-        $ticket = ticket::urgent(static::TEST_GROUP, static::TEST_THREAD, true);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->setUrgent();
         $this->assertTrue($ticket->is_urgent);
         
-        $ticket = ticket::urgent(static::TEST_GROUP, static::TEST_THREAD, false);
+        $ticket->resetUrgent();
         $this->assertFalse($ticket->is_urgent);
     }
     

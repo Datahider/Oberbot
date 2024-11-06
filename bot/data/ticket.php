@@ -39,51 +39,65 @@ class ticket extends topic {
         
     }
     
-    static public function accept(int $group_id, int $thread_id) {
+    static public function getById(int $id) : ticket {
+        $ticket = new ticket(['id' => $id]);
+        return $ticket;
+    }
     
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        if ($ticket->status != static::STATUS_CREATING) {
+    static public function getByGroupThread(int $group_id, int $thread_id) : ticket {
+        $ticket = new ticket(['chat_id' => $group_id, 'topic_id' => $thread_id]);
+        return $ticket;
+    }
+
+    public function accept() : ticket {
+    
+        if ($this->status != static::STATUS_CREATING) {
             throw new \Exception("Current ticket status is not CREATING");
         }
         
-        $ticket->status = static::STATUS_NEW;
-        $ticket->write('', ['function' => 'accept']);
+        $this->status = static::STATUS_NEW;
+        $this->write('', ['function' => 'accept']);
         
-        return $ticket;
+        return $this;
         
     }
     
-    static public function touch(int $group_id, int $thread_id, bool $admin_touch=false) {
-        
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
+    public function touchUser() : ticket {
+        $this->last_activity = \time();
+        $this->write('', ['function' => 'touchUser']);
+        return $this;
+    }
 
-        if ($admin_touch) {
-            $ticket->last_admin_activity = time();
+    public function touchAdmin() : ticket {
+        $this->last_admin_activity = \time();
+        $this->write('', ['function' => 'touchAdmin']);
+        return $this;
+    }
+
+    public function toTask() : ticket {
+        $this->is_task = true;
+        $this->write('', ['function' => 'toTask']);
+        return $this;
+    }
+    
+    public function toTicket() : ticket {
+        $this->is_task = false;
+        $this->write('', ['function' => 'toTask']);
+        return $this;
+    }
+
+    public function setUrgent(bool $urgent = true) {
+        $this->is_urgent = $urgent;
+        if ($urgent) {
+            $this->write('', ['function' => 'setUrgent']);
         } else {
-            $ticket->last_activity = time();
+            $this->write('', ['function' => 'resetUrgent']);
         }
-        
-        $ticket->write('', ['function' => 'touch']);
-        
-        return $ticket;
+        return $this;
     }
-
-    static public function type(int $group_id, int $thread_id, bool $ticket_type) {
     
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        $ticket->is_task = $ticket_type;
-        $ticket->write('', ['function' => 'type']);
-        
-        return $ticket;
-    }
-
-    static public function urgent(int $group_id, int $thread_id, bool $urgent) {
-    
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        $ticket->is_urgent = $urgent;
-        $ticket->write('', ['function' => 'urgent']);
-        
-        return $ticket;
+    public function resetUrgent() {
+        return $this->setUrgent(false);
     }
     
     static public function close(int $group_id, int $thread_id) {

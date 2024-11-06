@@ -1,6 +1,7 @@
 <?php
 
 use losthost\telle\Bot;
+use losthost\telle\model\DBBotParam;
 
 // data
 use losthost\Oberbot\data\chat_group;
@@ -25,10 +26,11 @@ use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// Новые обработчики из папки controller                                         /////
+use losthost\Oberbot\controller\AdminRightsCheckerMessage;
 use losthost\Oberbot\controller\ForumTopicCreatedHandler;                        /////
-/////////////////////////////////////////////////////////////////////////////////////
+use losthost\Oberbot\controller\FirstTopicMessageHandler;                       /////
+////////////////////////////////////////////////////////////////////////////////////
 
-use losthost\Oberbot\handlers\FirstTopicMessageHandler;
 use losthost\Oberbot\handlers\NonCommandPrivateMessage;
 use losthost\Oberbot\handlers\NonCommandAgentMessage;
 
@@ -51,6 +53,8 @@ user_chat_role::initDataStructure();
 
 losthost\ProxyMessage\message_map::initDataStructure();
 
+Bot::addHandler(AdminRightsCheckerMessage::class);
+
 Bot::addHandler(CallbackLink::class);
 
 Bot::addHandler(CommandReviewHandler::class);
@@ -69,5 +73,12 @@ Bot::addHandler(ForumTopicCreatedHandler::class);
 Bot::addHandler(FirstTopicMessageHandler::class);
 Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);
+
+$bot_username = new DBBotParam('bot_username');
+$bot_userid = new DBBotParam('bot_userid');
+
+$data = Bot::$api->getMe();
+$bot_username->value = $data->getUsername();
+$bot_userid->value = $data->getId();
 
 Bot::run();

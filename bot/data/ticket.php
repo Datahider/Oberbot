@@ -86,7 +86,7 @@ class ticket extends topic {
         return $this;
     }
 
-    public function setUrgent(bool $urgent = true) {
+    public function setUrgent(bool $urgent = true) : ticket {
         $this->is_urgent = $urgent;
         if ($urgent) {
             $this->write('', ['function' => 'setUrgent']);
@@ -96,68 +96,62 @@ class ticket extends topic {
         return $this;
     }
     
-    public function resetUrgent() {
+    public function resetUrgent() : ticket {
         return $this->setUrgent(false);
     }
     
-    static public function close(int $group_id, int $thread_id) {
+    public function close() : ticket {
         
-        $timers = Timer::getStartedByObjectProject($thread_id, $group_id);
+        $timers = Timer::getStartedByObjectProject($this->topic_id, $this->chat_id);
         foreach ($timers as $timer) {
             $timer->stop();
         }
         
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        $ticket->status = static::STATUS_CLOSED;
-        $ticket->write('', ['function' => 'close']);
+        $this->status = static::STATUS_CLOSED;
+        $this->write('', ['function' => 'close']);
         
-        return $ticket;
+        return $this;
     }
 
-    static public function reopen(int $group_id, int $thread_id) {
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        $ticket->status = static::STATUS_REOPEN;
-        $ticket->write('', ['function' => 'reopen']);
+    public function reopen() : ticket {
+        $this->status = static::STATUS_REOPEN;
+        $this->write('', ['function' => 'reopen']);
         
-        return $ticket;
+        return $this;
     }
 
-    static public function archive(int $group_id, int $thread_id) {
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        if ($ticket->status != static::STATUS_CLOSED) {
+    public function archive() : ticket {
+        if ($this->status != static::STATUS_CLOSED) {
             throw new \Exception("Can not archive non-closed ticket.");
         }
-        $ticket->status = static::STATUS_ARCHIVED;
-        $ticket->write('', ['function' => 'archive']);
+        $this->status = static::STATUS_ARCHIVED;
+        $this->write('', ['function' => 'archive']);
         
-        return $ticket;
+        return $this;
     }
     
-    static public function timerStart(int $group_id, int $thread_id, int $user_id) {
+    public function timerStart(int $user_id) : ticket {
         $statuses_allowed = [
             static::STATUS_NEW,
             static::STATUS_IN_PROGRESS
         ];
         
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        if (array_search($ticket->status, $statuses_allowed) === false) {
+        if (array_search($this->status, $statuses_allowed) === false) {
             throw new \Exception("Current ticket status does not allow to start timer.");
         }
         
-        $ticket->status = static::STATUS_IN_PROGRESS;
-        $ticket->isModified() && $ticket->write('', ['function' => __FUNCTION__]);
+        $this->status = static::STATUS_IN_PROGRESS;
+        $this->isModified() && $this->write('', ['function' => __FUNCTION__]);
         
         $timer = new Timer($user_id);
-        $timer->start($thread_id, $group_id);
+        $timer->start($this->topic_id, $this->chat_id);
         
-        return $ticket;
+        return $this;
     }
     
-    static public function timerStop(int $group_id, int $thread_id, int|string $user_id='all') {
-        $ticket = new ticket(['topic_id' => $thread_id, 'chat_id' => $group_id]);
-        
+    public function timerStop(int|string $user_id='all') : ticket {
         if ($user_id == 'all') {
-            $timers = Timer::getStartedByObjectProject();
+            $timers = Timer::getStartedByObjectProject($this->topic_id, $this->chat_id);
         } else {
             $timers[] = new Timer($user_id);
         }
@@ -165,6 +159,8 @@ class ticket extends topic {
         foreach ($timers as $timer) {
             $timer->stop();
         }
+        
+        return $this;
     }
 
     protected function beforeModify($name, $value) {

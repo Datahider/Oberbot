@@ -81,39 +81,39 @@ class ticketTest extends TestCase {
     }
     
     public function testTimerStartStop() {
-        $ticket = ticket::timerStart(static::TEST_GROUP, static::TEST_THREAD, static::TEST_USER_ID);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->timerStart(static::TEST_USER_ID);
         $this->assertEquals(ticket::STATUS_IN_PROGRESS, $ticket->status);
         $timer = new Timer(static::TEST_USER_ID);
         $this->assertTrue($timer->isStarted());
         sleep(2);
         
-        $ticket = ticket::timerStop(static::TEST_GROUP, static::TEST_THREAD, static::TEST_USER_ID);
+        $ticket->timerStop(static::TEST_USER_ID);
         $timer = new Timer(static::TEST_USER_ID);
         $this->assertFalse($timer->isStarted());
     }
 
     public function testTicketStatusChanging() {
         
-        ticket::timerStart(static::TEST_GROUP, static::TEST_THREAD, static::TEST_USER_ID);
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->timerStart(static::TEST_USER_ID);
         
-        $ticket = ticket::close(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket->close();
         $this->assertEquals(ticket::STATUS_CLOSED, $ticket->status);
         $timer = new Timer(static::TEST_USER_ID);
         $this->assertFalse($timer->isStarted());
         
-        $ticket = ticket::reopen(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket->reopen();
         $this->assertEquals(ticket::STATUS_REOPEN, $ticket->status);
         
         $this->expectExceptionMessageMatches("/Can not archive/");
-        $ticket = ticket::archive(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket->archive();
         $this->assertEquals(ticket::STATUS_REOPEN, $ticket->status);
         
-        $ticket = ticket::close(static::TEST_GROUP, static::TEST_THREAD);
-        $ticket = ticket::archive(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket->close();
+        $ticket->archive();
         $this->assertEquals(ticket::STATUS_ARCHIVED, $ticket->status);
         
         $this->expectExceptionMessageMatches("/Can not change .* status/");
-        $ticket = ticket::reopen(static::TEST_GROUP, static::TEST_THREAD);
+        $ticket->reopen();
         
     }
     

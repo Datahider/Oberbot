@@ -4,8 +4,11 @@ namespace losthost\Oberbot\controller;
 
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\ticket;
+use losthost\telle\Bot;
+use losthost\BotView\BotView;
 
 use function \losthost\Oberbot\isAgent;
+use function \losthost\Oberbot\mentionById;
 
 class FirstTopicMessageHandler extends AbstractHandlerMessage {
     
@@ -26,12 +29,21 @@ class FirstTopicMessageHandler extends AbstractHandlerMessage {
         $group_id = $message->getChat()->getId();
         $user_id = $message->getFrom()->getId();
         
-        $ticket = ticket::touch($group_id, $topic_id, isAgent($user_id, $group_id));
+        $ticket = ticket::getByGroupThread($group_id, $topic_id);
+        if (isAgent($user_id, $group_id)) {
+            $ticket->touchAdmin();
+        } else {
+            $ticket->touchUser();
+        }
         
         if ($ticket->ticket_creator == $user_id) {
-            ticket::accept($group_id, $topic_id);
+            $ticket->accept();
         } else {
-            // TODO -- 
+            Bot::$api->deleteMessage($group_id, $message->getMessageId());
+            $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+            $view->show('controller_error_message', null, ['msg_text' => 'Заявка в процессе создания.', 'value' => mentionById($user_id)], null, $message->getMessageThreadId());
         }
+        
+        return true;
     }
 }

@@ -65,11 +65,11 @@ class topic extends DBObject {
         return $new;
     }
     
-    public function getCustomers() : array {
-        
-        $users = new DBList(user::class, 'id IN (SELECT user_id FROM [topic_users] WHERE topic_number = ?)', [$this->id]);
-        return $users->asArray();
-    }
+//    public function getCustomers() : array {
+//        
+//        $users = new DBList(user::class, 'id IN (SELECT user_id FROM [topic_users] WHERE topic_number = ?)', [$this->id]);
+//        return $users->asArray();
+//    }
 
     public function getPerformers() : array {
         

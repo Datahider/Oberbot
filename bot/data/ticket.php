@@ -6,6 +6,7 @@ use losthost\timetracker\Timer;
 use losthost\Oberbot\data\topic;
 use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\topic_user;
+use losthost\DB\DBView;
 
 class ticket extends topic {
     
@@ -202,6 +203,16 @@ class ticket extends topic {
     public function hasAgent(int $user_id) {
         $agent_link = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
         return !$agent_link->isNew();
+    }
+    
+    public function getCustomers() {
+        $customer_ids = new DBView('SELECT user_id FROM [topic_users] WHERE topic_number = ?', [$this->id]);
+        $result = [];
+        
+        while ($customer_ids->next()) {
+            $result[] = $customer_ids->user_id;
+        }
+        return $result;
     }
     
     protected function beforeModify($name, $value) {

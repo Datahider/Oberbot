@@ -14,7 +14,7 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     const PERMIT_USER = 1;
     const PERMIT_BOTH = 2;
     
-    const PERMIT = PERMIT_NONE;
+    const PERMIT = self::PERMIT_NONE;
 
     public function handleUpdate(\TelegramBot\Api\BaseType &$data): bool {
         

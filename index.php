@@ -32,6 +32,8 @@ use losthost\Oberbot\controller\ForumTopicCreatedHandler;
 use losthost\Oberbot\controller\TouchAndLinkByMessage;
 use losthost\Oberbot\controller\FirstTopicMessageHandler;
 
+use losthost\Oberbot\controller\CommandNotify;
+
 use losthost\Oberbot\handlers\NonCommandPrivateMessage;
 use losthost\Oberbot\handlers\NonCommandAgentMessage;
 
@@ -75,6 +77,8 @@ Bot::addHandler(CallbackLink::class);
 Bot::addHandler(ForumTopicCreatedHandler::class);
 Bot::addHandler(TouchAndLinkByMessage::class);
 Bot::addHandler(FirstTopicMessageHandler::class);
+
+Bot::addHandler(CommandNotify::class);
 
 Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);

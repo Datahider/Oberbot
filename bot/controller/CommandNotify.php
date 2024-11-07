@@ -7,7 +7,7 @@ use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 
-use function __;
+use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\mentionById;
 use function \losthost\Oberbot\message;
 
@@ -31,7 +31,7 @@ class CommandNotify extends AbstractAuthCommand {
                 $text .= ', '. mentionById($customer);
             }
             
-            message('info', substr($text, 2), null, $topic_id);
+            message('notification', substr($text, 2), __('Ответьте'), $topic_id);
         }
         
         return true;

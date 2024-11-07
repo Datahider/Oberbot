@@ -17,7 +17,7 @@ class FirstTopicMessageHandler extends AbstractHandlerMessage {
         $topic_id = $message->getMessageThreadId();
         $group_id = $message->getChat()->getId();
        
-        $ticket = new ticket(['topic_id' => $topic_id, 'chat_id' => $group_id]);
+        $ticket = ticket::getByGroupThread($group_id, $topic_id);
         if ($ticket->status == ticket::STATUS_CREATING) {
             return true;
         }
@@ -30,12 +30,6 @@ class FirstTopicMessageHandler extends AbstractHandlerMessage {
         $user_id = $message->getFrom()->getId();
         
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
-        if (isAgent($user_id, $group_id)) {
-            $ticket->touchAdmin();
-        } else {
-            $ticket->touchUser();
-        }
-        
         if ($ticket->ticket_creator == $user_id) {
             $ticket->accept();
         } else {

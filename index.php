@@ -24,12 +24,13 @@ use losthost\Oberbot\handlers\CommandStart;
 
 use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
 
-////////////////////////////////////////////////////////////////////////////////////////
-/// Новые обработчики из папки controller                                         /////
 use losthost\Oberbot\controller\AdminRightsCheckerMessage;
-use losthost\Oberbot\controller\ForumTopicCreatedHandler;                        /////
-use losthost\Oberbot\controller\FirstTopicMessageHandler;                       /////
-////////////////////////////////////////////////////////////////////////////////////
+use losthost\Oberbot\controller\AdminRightsCheckerCallback;
+
+use losthost\Oberbot\controller\ForumTopicCreatedHandler;
+
+use losthost\Oberbot\controller\TouchAndLinkByMessage;
+use losthost\Oberbot\controller\FirstTopicMessageHandler;
 
 use losthost\Oberbot\handlers\NonCommandPrivateMessage;
 use losthost\Oberbot\handlers\NonCommandAgentMessage;
@@ -53,10 +54,7 @@ user_chat_role::initDataStructure();
 
 losthost\ProxyMessage\message_map::initDataStructure();
 
-Bot::addHandler(AdminRightsCheckerMessage::class);
-
-Bot::addHandler(CallbackLink::class);
-
+// Эти команды обрабатываются в любых чатах, куда добавлен бот
 Bot::addHandler(CommandReviewHandler::class);
 Bot::addHandler(CommandReportHandler::class);
 Bot::addHandler(CommandMd::class);
@@ -64,13 +62,20 @@ Bot::addHandler(CommandAgent::class);
 Bot::addHandler(CommandCustomer::class);
 Bot::addHandler(CommandStart::class);
 
-////////////////////////////////////////////////////////////////////////////////////////////
-// Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true  /////
-Bot::addHandler(NonCommandChatCheckerHandler::class);                                /////
-/////////////////////////////////////////////////////////////////////////////////////////
+// Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true
+Bot::addHandler(NonCommandChatCheckerHandler::class);                                
+
+// REVIEW - похоже это обработка кнопки присоединения к тикету. Проверить
+Bot::addHandler(CallbackLink::class);
+
+/// Проверюят есть ли у бота админские права в группе
+//Bot::addHandler(AdminRightsCheckerMessage::class);
+//Bot::addHandler(AdminRightsCheckerCallback::class);
 
 Bot::addHandler(ForumTopicCreatedHandler::class);
+Bot::addHandler(TouchAndLinkByMessage::class);
 Bot::addHandler(FirstTopicMessageHandler::class);
+
 Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);
 

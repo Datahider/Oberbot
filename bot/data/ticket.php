@@ -3,8 +3,9 @@
 namespace losthost\Oberbot\data;
 
 use losthost\timetracker\Timer;
-use losthost\DB\DBView;
 use losthost\Oberbot\data\topic;
+use losthost\Oberbot\data\topic_admin;
+use losthost\Oberbot\data\topic_user;
 
 class ticket extends topic {
     
@@ -163,6 +164,46 @@ class ticket extends topic {
         return $this;
     }
 
+    public function linkCustomer(int $user_id) {
+        $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        $customer_link->isNew() && $customer_link->write();
+        return $this;
+    }
+    
+    public function linkAgent(int $user_id) {
+        $agent_link = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        $agent_link->isNew() && $agent_link->write();
+        return $this;
+    }
+    
+    public function unlinkCustomer(int $user_id) {
+        $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        $customer_link->isNew() || $customer_link->delete();
+        return $this;
+    }
+    
+    public function unlinkAgent(int $user_id) {
+        $agent_link = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        $agent_link->isNew() || $agent_link->delete();
+        return $this;
+    }
+    
+    public function unlink(int $user_id) {
+        $this->unlinkCustomer($user_id);
+        $this->unlinkAgent($user_id);
+        return $this;
+    }
+    
+    public function hasCustomer(int $user_id) {
+        $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        return !$customer_link->isNew();
+    }
+    
+    public function hasAgent(int $user_id) {
+        $agent_link = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
+        return !$agent_link->isNew();
+    }
+    
     protected function beforeModify($name, $value) {
         if ($name === 'status' && $this->was_archived === null) {
             $this->was_archived = $this->status == static::STATUS_ARCHIVED;

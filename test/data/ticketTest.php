@@ -117,4 +117,31 @@ class ticketTest extends TestCase {
         
     }
     
+    public function testLinkingAndUnlinking() {
+        
+        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD);
+        
+        $this->assertFalse($ticket->hasCustomer(static::TEST_CUSTOMER_ID));
+        $this->assertFalse($ticket->hasCustomer(static::TEST_USER_ID));
+        $this->assertFalse($ticket->hasAgent(static::TEST_CUSTOMER_ID));
+        $this->assertFalse($ticket->hasAgent(static::TEST_USER_ID));
+        
+        $ticket->linkAgent(static::TEST_USER_ID);
+        $ticket->linkCustomer(static::TEST_CUSTOMER_ID);
+        
+        $this->assertTrue($ticket->hasCustomer(static::TEST_CUSTOMER_ID));
+        $this->assertFalse($ticket->hasCustomer(static::TEST_USER_ID));
+        $this->assertFalse($ticket->hasAgent(static::TEST_CUSTOMER_ID));
+        $this->assertTrue($ticket->hasAgent(static::TEST_USER_ID));
+        
+        $ticket->unlink(static::TEST_USER_ID);
+        $ticket->unlink(static::TEST_CUSTOMER_ID);
+        
+        $this->assertFalse($ticket->hasCustomer(static::TEST_CUSTOMER_ID));
+        $this->assertFalse($ticket->hasCustomer(static::TEST_USER_ID));
+        $this->assertFalse($ticket->hasAgent(static::TEST_CUSTOMER_ID));
+        $this->assertFalse($ticket->hasAgent(static::TEST_USER_ID));
+        
+    }
+    
 }

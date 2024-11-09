@@ -15,6 +15,9 @@ class FirstTopicMessageHandler extends AbstractHandlerMessage {
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
         
         $topic_id = $message->getMessageThreadId();
+        if (empty($topic_id)) {
+            return false;
+        }
         $group_id = $message->getChat()->getId();
        
         $ticket = ticket::getByGroupThread($group_id, $topic_id);

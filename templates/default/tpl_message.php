@@ -18,7 +18,7 @@ if (!isset($icons[$type])) {
 }
 
 if (!$header) {
-    echo "$icon $h\n\n$text";
+    echo "$icon <b>$h</b>\n\n$text";
 } else {
     echo "$icon $header\n\n$text";
 }

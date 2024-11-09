@@ -16,9 +16,16 @@ use function \losthost\Oberbot\getMentionedIds;
 class TouchAndLinkByMessage extends AbstractHandlerMessage {
     
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
+        
         $topic_id = $message->getMessageThreadId();
         $group_id = $message->getChat()->getId();
         $user_id = $message->getFrom()->getId();
+
+        if ($user_id == $group_id) {
+            return false; // Личное сообщение боту
+        } elseif (empty($topic_id)) {
+            return false; // Ничего не делаем если не в форуме
+        }
         
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
 

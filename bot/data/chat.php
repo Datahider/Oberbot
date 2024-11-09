@@ -8,6 +8,8 @@ class chat extends DBObject {
     
     const METADATA = [
         'id' => 'BIGINT(20) NOT NULL',
-        'process_tickets' => 'TINYINT(1) NOT NULL'
+        'process_tickets' => 'TINYINT(1) NOT NULL',
+        'language_code' => 'VARCHAR(3)',
+        'PRIMARY KEY' => 'id'
     ];
 }

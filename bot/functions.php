@@ -90,8 +90,14 @@ function getUserChatRole($user_id, $chat_id) : string {
     return $role->role;
 }
 
-function getQueueLen() {
-    return "-";
+function getQueueLen(int $ticket_id) : int {
+    error_log(__FUNCTION__. " is not yet implemented.");
+    return 0;
+}
+
+function getTimeEst(int $ticket_id) : ?\DateInterval {
+    error_log(__FUNCTION__. " is not yet implemented.");
+    return date_interval_create_from_date_string('0 sec');
 }
 
 /**
@@ -107,5 +113,12 @@ function cleanup_message_for_ticket_title(string $text) : string {
    return $text;
 }
 
-
+function seconds2dateinterval(?int $seconds) : \DateInterval {
+    if (is_null($seconds)) {
+        $seconds = 0;
+    }
+    $zero = new \DateTime('@0');
+    $offset = new \DateTime("@$seconds");
+    return $zero->diff($offset);
+}
 

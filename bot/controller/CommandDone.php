@@ -11,24 +11,19 @@ use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\mentionByIdArray;
 use function \losthost\Oberbot\message;
 
-class CommandNotify extends AbstractAuthCommand {
+class CommandDone extends AbstractAuthCommand {
     
-    const COMMAND = 'notify';
+    const COMMAND = 'done';
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         $group_id = $message->getChat()->getId();
         $topic_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
         
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
-        $customers = $ticket->getCustomers();
-        
-        if (!empty($customers)) {
-            message('notification', mentionByIdArray($customers), __('<b>Ответьте</b>'), $topic_id);
-        }
-        
+        $ticket->close();
+
         return true;
     }
 }

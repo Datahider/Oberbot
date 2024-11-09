@@ -3,6 +3,19 @@
 use losthost\telle\Bot;
 use losthost\telle\model\DBBotParam;
 
+/// Трекинг (view)
+use losthost\DB\DB;
+use losthost\DB\DBEvent;
+use losthost\Oberbot\data\ticket;
+use losthost\timetracker\TimerEvent;
+
+use losthost\Oberbot\view\TicketCreating;
+use losthost\Oberbot\view\TicketAccepting;
+use losthost\Oberbot\view\TicketClosing;
+
+use losthost\Oberbot\view\TimerEventCreated;
+use losthost\Oberbot\view\TimerEventUpdated;
+
 // data
 use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\data\note;
@@ -21,6 +34,8 @@ use losthost\Oberbot\handlers\CommandMd;
 use losthost\Oberbot\handlers\CommandAgent;
 use losthost\Oberbot\handlers\CommandCustomer;
 use losthost\Oberbot\handlers\CommandStart;
+use losthost\Oberbot\controller\CommandTake;
+use losthost\Oberbot\controller\CommandContinue;
 
 use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
 
@@ -33,6 +48,8 @@ use losthost\Oberbot\controller\TouchAndLinkByMessage;
 use losthost\Oberbot\controller\FirstTopicMessageHandler;
 
 use losthost\Oberbot\controller\CommandNotify;
+use losthost\Oberbot\controller\CommandPause;
+use losthost\Oberbot\controller\CommandDone;
 
 use losthost\Oberbot\handlers\NonCommandPrivateMessage;
 use losthost\Oberbot\handlers\NonCommandAgentMessage;
@@ -63,6 +80,8 @@ Bot::addHandler(CommandMd::class);
 Bot::addHandler(CommandAgent::class);
 Bot::addHandler(CommandCustomer::class);
 Bot::addHandler(CommandStart::class);
+Bot::addHandler(CommandTake::class);
+Bot::addHandler(CommandContinue::class);
 
 // Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true
 Bot::addHandler(NonCommandChatCheckerHandler::class);                                
@@ -79,9 +98,18 @@ Bot::addHandler(TouchAndLinkByMessage::class);
 Bot::addHandler(FirstTopicMessageHandler::class);
 
 Bot::addHandler(CommandNotify::class);
+Bot::addHandler(CommandPause::class);
+Bot::addHandler(CommandDone::class);
 
 Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);
+
+DB::addTracker(DBEvent::AFTER_INSERT, ticket::class, TicketCreating::class);
+DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketAccepting::class);
+DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketClosing::class);
+
+DB::addTracker(DBEvent::AFTER_INSERT, TimerEvent::class, TimerEventCreated::class);
+DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::class);
 
 $bot_username = new DBBotParam('bot_username');
 $bot_userid = new DBBotParam('bot_userid');

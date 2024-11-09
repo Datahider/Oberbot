@@ -6,6 +6,8 @@ use losthost\telle\abst\AbstractHandlerCommand;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use function \losthost\Oberbot\isAgent;
+use function \losthost\Oberbot\message;
+use function \losthost\Oberbot\__;
 
 abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     
@@ -30,11 +32,10 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
             return parent::handleUpdate($data);
         } 
         
-        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
         if (isAgent($from_id, $chat_id)) {
-            $view->show('auth_users_only', null, ['handler' => $this]);
+            message('warning', sprintf(__('Команда /%s предназначена для использования только пользователями.', static::COMMAND)), null, $data->getMessageThreadId());
         }
-        $view->show('auth_agents_only', null, ['handler' => $this]);
+        message('warning', sprintf(__('Команда /%s предназначена для использования только агентами поддержки.'), static::COMMAND), null, $data->getMessageThreadId());
         
         return true;
     }

@@ -7,6 +7,9 @@ use losthost\Oberbot\data\topic;
 use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\topic_user;
 use losthost\DB\DBView;
+use losthost\DB\DBValue;
+use losthost\Oberbot\data\accepting_message;
+use losthost\Oberbot\service\Service;
 
 class ticket extends topic {
     
@@ -104,11 +107,7 @@ class ticket extends topic {
     
     public function close() : ticket {
         
-        $timers = Timer::getStartedByObjectProject($this->topic_id, $this->chat_id);
-        foreach ($timers as $timer) {
-            $timer->stop();
-        }
-        
+        $this->timerStop();
         $this->status = static::STATUS_CLOSED;
         $this->write('', ['function' => 'close']);
         
@@ -146,25 +145,44 @@ class ticket extends topic {
         $this->isModified() && $this->write('', ['function' => __FUNCTION__]);
         
         $timer = new Timer($user_id);
-        $timer->start($this->topic_id, $this->chat_id);
+        if ($timer->isStarted()) {
+            $timer->stop();
+        }
+        $timer->start($this->id, $this->chat_id);
         
         return $this;
     }
     
     public function timerStop(int|string $user_id='all') : ticket {
         if ($user_id == 'all') {
-            $timers = Timer::getStartedByObjectProject($this->topic_id, $this->chat_id);
+            $timers = Timer::getStartedByObjectProject($this->id, $this->chat_id);
         } else {
             $timers[] = new Timer($user_id);
         }
         
         foreach ($timers as $timer) {
-            $timer->stop();
+            $timer->stop($user_id);
         }
         
         return $this;
     }
 
+    public function getTimeElapsed() {
+        $seconds_elapsed = new DBValue(<<<FIN
+            SELECT 
+                SUM(TIMESTAMPDIFF(SECOND, e.start_time, e.end_time)) AS value
+            FROM 
+                [timer_events] AS e
+            WHERE
+                e.object = ?
+                AND e.project = ?
+                AND e.started = 0
+            FIN, [$this->id, $this->chat_id]
+        );
+        
+        return Service::seconds2dateinterval($seconds_elapsed->value);
+    }
+    
     public function linkCustomer(int $user_id) {
         $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
         $customer_link->isNew() && $customer_link->write();
@@ -213,6 +231,27 @@ class ticket extends topic {
             $result[] = $customer_ids->user_id;
         }
         return $result;
+    }
+
+    public function getAgents() {
+        $agent_ids = new DBView('SELECT user_id FROM [topic_admins] WHERE topic_number = ?', [$this->id]);
+        $result = [];
+        
+        while ($agent_ids->next()) {
+            $result[] = $agent_ids->user_id;
+        }
+        return $result;
+    }
+    
+    public function getAcceptedMessageId() {
+        $accepted_message = new accepting_message(['ticket_id' => $this->id], true);
+        return $accepted_message->message_id;
+    }
+    
+    public function setAcceptedMessageId(int $message_id) {
+        $accepted_message = new accepting_message(['ticket_id' => $this->id], true);
+        $accepted_message->message_id = $message_id;
+        $accepted_message->isModified() && $accepted_message->write();
     }
     
     protected function beforeModify($name, $value) {

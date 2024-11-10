@@ -8,6 +8,9 @@ $translations = [
     
         При отсутствии описания эта заявка будет закрыта по истечении 10 минут.
         FIN,
+    "Can't link ticket's agent as a customer" => 'Не могу присоединить вас как пользователя, т.к. вы являетесь исполнителем по этой заявке. Используйте /unlink',
+    'Customer is already linked.' => 'Вы уже присоединились.',
+    
 ];
 
 if (empty($translations[$text])) {

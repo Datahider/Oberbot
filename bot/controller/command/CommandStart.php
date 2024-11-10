@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\controller;
+namespace losthost\Oberbot\controller\command;
 
 use losthost\telle\Bot;
 use losthost\BotView\BotView;

@@ -1,9 +1,8 @@
 <?php
 
-namespace losthost\Oberbot\controller;
+namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\data\ticket;
-use losthost\Oberbot\controller\AbstractAuthCommand;
 
 class CommandPause extends AbstractAuthCommand {
 

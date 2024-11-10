@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\controller;
+namespace losthost\Oberbot\controller\command;
 
 use losthost\DB\DBView;
 use losthost\Oberbot\data\ticket;
@@ -11,19 +11,24 @@ use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\mentionByIdArray;
 use function \losthost\Oberbot\message;
 
-class CommandDone extends AbstractAuthCommand {
+class CommandNotify extends AbstractAuthCommand {
     
-    const COMMAND = 'done';
+    const COMMAND = 'notify';
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         $group_id = $message->getChat()->getId();
         $topic_id = $message->getMessageThreadId();
+        $user_id = $message->getFrom()->getId();
         
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
-        $ticket->close();
-
+        $customers = $ticket->getCustomers();
+        
+        if (!empty($customers)) {
+            message('notification', mentionByIdArray($customers), __('<b>Ответьте</b>'), $topic_id);
+        }
+        
         return true;
     }
 }

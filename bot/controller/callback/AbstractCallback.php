@@ -66,7 +66,11 @@ abstract class AbstractCallback extends AbstractHandlerCallback {
         
         $result = $this->checkRights($callback_query);
         if ($result === true) {
-            $result = $this->processCallback($callback_query);
+            try {
+                $result = $this->processCallback($callback_query);
+            } catch (\Exception $ex) {
+                $result = Service::__($ex->getMessage());
+            }
         }
         
         if (is_bool($result)) {

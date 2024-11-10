@@ -184,8 +184,14 @@ class ticket extends topic {
     }
     
     public function linkCustomer(int $user_id) {
+        if ($this->hasAgent($user_id)) {
+            throw new \Exception("Can't link ticket's agent as a customer");
+        }
         $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
-        $customer_link->isNew() && $customer_link->write();
+        if (!$customer_link->isNew()) {
+            throw new \Exception('Customer is already linked.');
+        }
+        $customer_link->write();
         return $this;
     }
     

@@ -1,8 +1,7 @@
 <?php
 
-namespace losthost\Oberbot\controller;
+namespace losthost\Oberbot\controller\command;
 
-use losthost\Oberbot\controller\AbstractAuthCommand;
 use losthost\Oberbot\data\ticket;
 
 use function \losthost\Oberbot\message;

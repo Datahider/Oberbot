@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\controller;
+namespace losthost\Oberbot\controller\command;
 
 use losthost\telle\abst\AbstractHandlerCommand;
 use losthost\telle\Bot;

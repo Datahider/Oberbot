@@ -12,5 +12,9 @@ class Emoji {
     const ACTION_PRIORITY_DOWN = '🔻';
     const ACTION_PLAY = '▶️';
     const ACTION_PAUSE = '⏸';
+    
+    const ID_FINISH = 5408906741125490282;
+    const ID_URGENT = 5377498341074542641;
+    const ID_NONE = null;
 
 }

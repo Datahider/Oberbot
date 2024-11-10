@@ -43,5 +43,9 @@ class Service {
         return $zero->diff($offset);
     }
 
-    
+    static public function message(string $type, string $text, ?string $header=null, ?int $message_tread_id=null) {
+        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+        $view->show('tpl_message', null, ['type' => $type, 'header' => __($header), 'text' => __($text)], null, $message_tread_id);
+    }
+
 }

@@ -11,10 +11,11 @@ use function \losthost\Oberbot\__;
 
 abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     
-    const PERMIT_NONE = -1;
-    const PERMIT_AGENT = 0;
-    const PERMIT_USER = 1;
-    const PERMIT_BOTH = 2;
+    const PERMIT_NONE = 0;
+    const PERMIT_PRIVATE = 1;
+    const PERMIT_ADMIN = 2;
+    const PERMIT_AGENT = 4;
+    const PERMIT_USER = 8;
     
     const PERMIT = self::PERMIT_NONE;
 
@@ -23,19 +24,22 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         $from_id = $data->getFrom()->getId();
         $chat_id = $data->getChat()->getId();
         
-        if (false
-                || isAgent($from_id, $chat_id) && static::PERMIT == static::PERMIT_BOTH  
-                || isAgent($from_id, $chat_id) && static::PERMIT == static::PERMIT_AGENT  
-                || !isAgent($from_id, $chat_id) && static::PERMIT == static::PERMIT_BOTH  
-                || !isAgent($from_id, $chat_id) && static::PERMIT == static::PERMIT_USER)  
-                {
-            return parent::handleUpdate($data);
+        if ($from_id == $chat_id) {
+            if (static::PERMIT & static::PERMIT_PRIVATE) {
+                return parent::handleUpdate($data);
+            }
+            message('warning', sprintf(__('Команда /%s не предназначена для использования в приватном чате.'), static::COMMAND));
+        } elseif ( isAgent($from_id, $chat_id) ) {
+            if (static::PERMIT & static::PERMIT_AGENT) {
+                return parent::handleUpdate($data);
+            }
+            message('warning', sprintf(__('Команда /%s не предназначена для использования агентами техподдержки.'), static::COMMAND), null, $data->getMessageThreadId());
+        } else {
+            if (static::PERMIT & static::PERMIT_USER) {
+                return parent::handleUpdate($data);
+            }
+            message('warning', sprintf(__('Команда /%s не предназначена для использования пользователями.'), static::COMMAND), null, $data->getMessageThreadId());
         } 
-        
-        if (isAgent($from_id, $chat_id)) {
-            message('warning', sprintf(__('Команда /%s предназначена для использования только пользователями.', static::COMMAND)), null, $data->getMessageThreadId());
-        }
-        message('warning', sprintf(__('Команда /%s предназначена для использования только агентами поддержки.'), static::COMMAND), null, $data->getMessageThreadId());
         
         return true;
     }

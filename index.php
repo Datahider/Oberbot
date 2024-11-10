@@ -26,18 +26,22 @@ use losthost\Oberbot\data\topic_user;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\user_chat_role;
 
-use losthost\Oberbot\handlers\CallbackLink;
+//use losthost\Oberbot\handlers\CallbackLink;
+//
+//use losthost\Oberbot\handlers\CommandReviewHandler;
+//use losthost\Oberbot\handlers\CommandReportHandler;
+//use losthost\Oberbot\handlers\CommandMd;
+//use losthost\Oberbot\handlers\CommandAgent;
+//use losthost\Oberbot\handlers\CommandCustomer;
+//use losthost\Oberbot\handlers\CommandStart;
 
-use losthost\Oberbot\handlers\CommandReviewHandler;
-use losthost\Oberbot\handlers\CommandReportHandler;
-use losthost\Oberbot\handlers\CommandMd;
-use losthost\Oberbot\handlers\CommandAgent;
-use losthost\Oberbot\handlers\CommandCustomer;
-use losthost\Oberbot\handlers\CommandStart;
+// Private chat commands
+use losthost\Oberbot\controller\CommandStart;
+
 use losthost\Oberbot\controller\CommandTake;
 use losthost\Oberbot\controller\CommandContinue;
 
-use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
+//use losthost\Oberbot\handlers\NonCommandChatCheckerHandler;
 
 use losthost\Oberbot\controller\AdminRightsCheckerMessage;
 use losthost\Oberbot\controller\AdminRightsCheckerCallback;
@@ -51,8 +55,8 @@ use losthost\Oberbot\controller\CommandNotify;
 use losthost\Oberbot\controller\CommandPause;
 use losthost\Oberbot\controller\CommandDone;
 
-use losthost\Oberbot\handlers\NonCommandPrivateMessage;
-use losthost\Oberbot\handlers\NonCommandAgentMessage;
+//use losthost\Oberbot\handlers\NonCommandPrivateMessage;
+//use losthost\Oberbot\handlers\NonCommandAgentMessage;
 
 use losthost\Oberbot\data\message_map;
 
@@ -73,13 +77,19 @@ user_chat_role::initDataStructure();
 
 losthost\ProxyMessage\message_map::initDataStructure();
 
+// Обработка кнопок
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
+
+// Команды в приватном чате
+Bot::addHandler(CommandStart::class);
+
 // Эти команды обрабатываются в любых чатах, куда добавлен бот
 Bot::addHandler(CommandReviewHandler::class);
 Bot::addHandler(CommandReportHandler::class);
 Bot::addHandler(CommandMd::class);
 Bot::addHandler(CommandAgent::class);
 Bot::addHandler(CommandCustomer::class);
-Bot::addHandler(CommandStart::class);
 Bot::addHandler(CommandTake::class);
 Bot::addHandler(CommandContinue::class);
 

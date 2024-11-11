@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller\callback;
 
 use losthost\Oberbot\data\ticket;
+use losthost\Oberbot\view\TicketRating;
 
 class CallbackRate extends AbstractCallback {
     
@@ -16,6 +17,8 @@ class CallbackRate extends AbstractCallback {
                 $callback_query->getMessage()->getMessageThreadId());
         
         $ticket->rate($this->matches[1]);
+        $rating = new TicketRating($ticket);
+        $rating->show($callback_query->getMessage()->getMessageId());
         return true;
         
     }

@@ -7,6 +7,8 @@ use losthost\Oberbot\data\user_chat_role;
 use losthost\templateHelper\Template;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\Oberbot\data\session;
+use losthost\Oberbot\data\ticket;
 
 class Service {
     
@@ -24,10 +26,10 @@ class Service {
             if ($user->username) {
                 return "@$user->username";
             } else {
-                return "<a href=tg://user?id=$tg_id>$user->first_name</a>";
+                return "<a href=\"tg://user?id=$tg_id\">$user->first_name</a>";
             }
         } else {
-            return "<a href=tg://user?id=$tg_id>&lt;Неизвестный&gt;</a>";
+            return "<a href=\"tg://user?id=$tg_id\">&lt;Неизвестный&gt;</a>";
         }
 
     }
@@ -71,4 +73,95 @@ class Service {
         return $role->role;
     }
 
+    static protected function getAgentChatIds(int $user_id) : array {
+        
+        $chats = new DBView(<<<FIN
+            SELECT 
+                chat_id 
+            FROM 
+                [user_chat_role] AS roles 
+                LEFT JOIN [chat] AS chats 
+                    ON chats.id = roles.chat_id     
+            WHERE 
+                roles.role = 'agent' 
+                AND chats.process_tickets = 1
+                AND roles.user_id = ?
+            FIN, [$user_id]);
+        
+        $result_array = [];
+        while ($chats->next()) {
+            $result_array[] = $chats->chat_id;
+        }
+        
+        return $result_array;
+    }
+    
+    static public function getOldestTicket(int $user_id, ?string $group=null) : ?ticket {
+        
+        $chat_ids = implode(',', static::getAgentChatIds($user_id));
+        $status_new = ticket::STATUS_NEW;
+        $status_in_progress = ticket::STATUS_IN_PROGRESS;
+        $status_reopen = ticket::STATUS_REOPEN;
+        $statuses = "$status_new,$status_reopen,$status_in_progress";
+        
+        $sql = <<<FIN
+                SELECT
+                    topics.id,
+                    CASE
+                        WHEN topics.status = $status_new THEN 1
+                        WHEN topics.status = $status_reopen THEN 2
+                        ELSE 3
+                    END AS status_order
+                FROM
+                    [topics] AS topics
+                    LEFT JOIN [topic_admins] AS admins
+                    ON topics.id = admins.topic_number
+                    LEFT JOIN [chat_groups] AS groups
+                    ON topics.chat_id = groups.chat_id
+                    LEFT JOIN [topics] AS waitings
+                    ON waitings.id = topics.wait_for
+                WHERE
+                    topics.status IN ($statuses)
+                    AND (
+                        topics.last_admin_activity < :now-3600*(1-topics.is_task)
+                        AND topics.last_admin_activity < :now-:day_seconds*topics.is_task
+                        OR topics.last_admin_activity < topics.last_activity
+                    )
+                    AND topics.chat_id IN ($chat_ids)
+                    AND (topics.status = 0 OR admins.user_id = :user_id)
+                    AND (groups.chat_group = :group OR :group IS NULL)
+                    AND (topics.wait_till < :datenow OR topics.wait_till IS NULL)
+                    AND (waitings.status NOT IN ($statuses) OR waitings.status IS NULL) 
+                ORDER BY
+                    topics.is_task,
+                    status_order - topics.is_urgent ASC,
+                    topics.last_admin_activity ASC
+                LIMIT 1
+                FIN;
+                            
+        $now = time();
+        $datenow = date_create_immutable()->format('Y-m-d H:i:s');
+        $day_seconds = $now % 86400;
+        
+        $params = compact('now', 'day_seconds', 'user_id', 'group', 'datenow');
+
+        $view = new DBView($sql, $params);
+        
+        if ($view->next()) {
+            return ticket::getById($view->id);
+        }
+        return null;
+    }
+    
+    static public function showNextTicket(int $user_id) {
+
+        $session = new session(['user_id' => $user_id, 'chat_id' => $user_id], true);
+        $user = new DBView('SELECT language_code FROM [telle_users] WHERE id=?', [$session->user_id]);
+        if ($user->next()) {
+            $ticket = static::getOldestTicket($user_id, $session->working_group);
+
+            $view = new BotView(Bot::$api, $user_id, $user->language_code);
+            $view->show('controllerCommandNext', null, ['ticket' => $ticket, 'working_group' => $session->working_group]);
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\data\ticket;
+use losthost\Oberbot\service\Service;
 
 class CommandPause extends AbstractAuthCommand {
 
@@ -16,9 +17,10 @@ class CommandPause extends AbstractAuthCommand {
         $user_id = $message->getFrom()->getId();
         
         $ticket = ticket::getByGroupThread($group_id, $thread_id);
-
+        $ticket->touchAdmin();
         $ticket->timerStop($user_id);
         
+        Service::showNextTicket($message->getFrom()->getId());
         return true;
     }
 }

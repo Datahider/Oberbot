@@ -17,6 +17,10 @@ class Emoji {
     const ICON_SOS = '🆘';
     const ICON_LIFEBUOY = '🛟';
     
+    const RATING_GOOD = '😊';
+    const RATING_ACCEPTABLE = '😐';
+    const RATING_BAD = '🙁';
+    
     const ID_FINISH = 5408906741125490282;
     const ID_URGENT = 5312241539987020022;
     const ID_TOP = 5418085807791545980;

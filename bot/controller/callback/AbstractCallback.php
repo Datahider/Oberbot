@@ -48,9 +48,9 @@ abstract class AbstractCallback extends AbstractHandlerCallback {
         
         if (isAgent($from_id, $chat_id)) {
             if (static::PERMIT & static::PERMIT_AGENT) { return true; }
-        } 
-            
-        if (static::PERMIT & static::PERMIT_USER) { return true; } 
+        } else {
+            if (static::PERMIT & static::PERMIT_USER) { return true; } 
+        }
         
         return __('Не разрешено.');
     }

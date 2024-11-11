@@ -23,7 +23,7 @@ do {
     
     $priority_text[false][false] = 'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
     $priority_text[false][true] = '<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
-    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является приоритетной, нажмите ". Emoji::ACTION_PRIORITY_UP;
+    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является приоритетной, нажмите ". Emoji::TASK_PRIORITY;
     $priority_text[true][true] = 'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
     
     $task_text[false][false] = "";

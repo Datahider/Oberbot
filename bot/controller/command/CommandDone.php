@@ -2,14 +2,8 @@
 
 namespace losthost\Oberbot\controller\command;
 
-use losthost\DB\DBView;
 use losthost\Oberbot\data\ticket;
-use losthost\telle\Bot;
-use losthost\BotView\BotView;
-
-use function \losthost\Oberbot\__;
-use function \losthost\Oberbot\mentionByIdArray;
-use function \losthost\Oberbot\message;
+use losthost\Oberbot\service\Service;
 
 class CommandDone extends AbstractAuthCommand {
     
@@ -24,6 +18,7 @@ class CommandDone extends AbstractAuthCommand {
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
         $ticket->close();
 
+        Service::showNextTicket($message->getFrom()->getId());
         return true;
     }
 }

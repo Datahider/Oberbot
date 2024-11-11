@@ -64,7 +64,11 @@ class TicketUpdating extends DBTracker {
                 $this->notifyClosing();
                 break;
             case ticket::STATUS_REOPEN:
+                $this->notifyReopen();
+                break;
             case ticket::STATUS_ARCHIVED:
+                $this->notifyArchived();
+                break;
         }
     }
     
@@ -87,8 +91,9 @@ class TicketUpdating extends DBTracker {
     }
     
     protected function notifyReopen() {
-        // TODO -- сообщение о переоткрытии
         
+        Service::message('info', 'Заявка переоткрыта. Пожалуйста укажите причину переоткрытия заявки.', null, $this->ticket->topic_id);
+
         try {
             Bot::$api->reopenForumTopic($this->ticket->chat_id, $this->ticket->topic_id);
         } catch (Exception $ex) {

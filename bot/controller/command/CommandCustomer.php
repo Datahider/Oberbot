@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\handlers;
+namespace losthost\Oberbot\controller\command;
 
 use losthost\DB\DB;
 use losthost\Oberbot\data\user_chat_role;
@@ -10,11 +10,12 @@ use function \losthost\Oberbot\getMentionedIds;
 use function \losthost\Oberbot\message;
 use function \losthost\Oberbot\mentionById;
 
-class CommandCustomer extends AbstractChatAdminCommand {
+class CommandCustomer extends AbstractAuthCommand {
     
     const COMMAND = 'customer';
+    const PERMIT = self::PERMIT_ADMIN;
     
-    protected function processMessage(\TelegramBot\Api\Types\Message &$message): bool {
+    protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         $ids = getMentionedIds($message);
         $modified_mentions = [];

@@ -6,12 +6,11 @@ use losthost\telle\model\DBBotParam;
 /// Трекинг (view)
 use losthost\DB\DB;
 use losthost\DB\DBEvent;
-use losthost\Oberbot\data\ticket;
 use losthost\timetracker\TimerEvent;
 
 use losthost\Oberbot\view\TicketCreating;
 use losthost\Oberbot\view\TicketUpdating;
-use losthost\Oberbot\background\DestroyIncompleteTimer;
+use losthost\Oberbot\view\ChatCreateUpdate;
 
 use losthost\Oberbot\view\TimerEventCreated;
 use losthost\Oberbot\view\TimerEventUpdated;
@@ -23,6 +22,7 @@ use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\data\note;
 use losthost\Oberbot\data\session;
 use losthost\Oberbot\data\topic;
+use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\topic_user;
 use losthost\Oberbot\data\chat;
@@ -52,6 +52,7 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
@@ -60,25 +61,28 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
 
 // Команды
+Bot::addHandler(losthost\Oberbot\controller\command\CommandAgent::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandContinue::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandCustomer::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandRun::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandStop::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandTask::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandUrgent::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandNext::class);
 
 
 // Эти команды обрабатываются в любых чатах, куда добавлен бот
 Bot::addHandler(losthost\Oberbot\handlers\CommandReviewHandler::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandReportHandler::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandMd::class);
-Bot::addHandler(losthost\Oberbot\handlers\CommandAgent::class);
-Bot::addHandler(losthost\Oberbot\handlers\CommandCustomer::class);
 
 // Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true
-Bot::addHandler(NonCommandChatCheckerHandler::class);                                
+Bot::addHandler(\losthost\Oberbot\handlers\NonCommandChatCheckerHandler::class);                                
 
 // REVIEW - похоже это обработка кнопки присоединения к тикету. Проверить
 Bot::addHandler(CallbackLink::class);
@@ -89,6 +93,8 @@ Bot::addHandler(CallbackLink::class);
 
 Bot::addHandler(losthost\Oberbot\controller\message\FirstTopicMessageHandler::class);
 Bot::addHandler(\losthost\Oberbot\controller\ForumTopicCreatedHandler::class);
+Bot::addHandler(\losthost\Oberbot\controller\message\TicketCloseReopenMessage::class);
+Bot::addHandler(\losthost\Oberbot\controller\message\AgentMessage::class);
 
 Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);
@@ -101,6 +107,7 @@ DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::clas
 
 DB::addTracker(DBEvent::AFTER_INSERT, topic_user::class, TicketCustomerLink::class);
 
+DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, ChatCreateUpdate::class);
 
 $bot_username = new DBBotParam('bot_username');
 $bot_userid = new DBBotParam('bot_userid');

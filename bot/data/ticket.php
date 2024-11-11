@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\data;
 
 use losthost\timetracker\Timer;
+use losthost\timetracker\TimerEvent;
 use losthost\Oberbot\data\topic;
 use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\topic_user;
@@ -152,9 +153,15 @@ class ticket extends topic {
     }
     
     public function timerStart(int $user_id) : ticket {
+        
+        if ($this->isTimerStarted($user_id)) { // Ничего не делаем если уже запущен для этого тикета
+            return $this;
+        }
+        
         $statuses_allowed = [
             static::STATUS_NEW,
-            static::STATUS_IN_PROGRESS
+            static::STATUS_IN_PROGRESS,
+            static::STATUS_REOPEN,
         ];
         
         if (array_search($this->status, $statuses_allowed) === false) {
@@ -185,6 +192,19 @@ class ticket extends topic {
         }
         
         return $this;
+    }
+    
+    public function isTimerStarted(int $user_id) : bool {
+        $timer = new Timer($user_id);
+        if ($timer->isStarted()) {
+            $timer_event = new TimerEvent($timer, $timer->current_event);
+            if ($timer_event->object == $this->id) {
+                return true;
+            }
+            return false;
+        }
+        
+        return false;
     }
 
     public function getTimeElapsed() {
@@ -271,6 +291,9 @@ class ticket extends topic {
     
     public function getAcceptedMessageId() {
         $accepted_message = new accepting_message(['ticket_id' => $this->id], true);
+        if ($accepted_message->isNew()) {
+            return null;
+        }
         return $accepted_message->message_id;
     }
     

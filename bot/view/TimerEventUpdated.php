@@ -26,7 +26,7 @@ class TimerEventUpdated extends DBTracker {
         $ticket = ticket::getById($timer_event->object);
         $group_id = $ticket->chat_id;
         $thread_id = $ticket->topic_id;
-        $chat = new chat(['id' => $group_id]);
+        $chat = new chat(['id' => $group_id], true);
         
         if (!$timer_event->started && $timer_event->comment != 'all') {
             $mention = mentionById($user_id);

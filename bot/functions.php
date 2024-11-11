@@ -41,6 +41,10 @@ function getMentionedIds(Message &$message) : array {
 
     $result = [];
     
+    if (!$message->getEntities()) {
+        return $result;
+    }
+    
     foreach ($message->getEntities() as $entity) {
         switch ($entity->getType()) {
             case 'mention':

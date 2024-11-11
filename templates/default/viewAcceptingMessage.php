@@ -1,32 +1,35 @@
 <?php
 
-use function losthost\Oberbot\getQueueLen;
-use function losthost\Oberbot\mentionByIdArray;
-use function losthost\Oberbot\getTimeEst;
+use losthost\Oberbot\service\Service;
 use losthost\Oberbot\view\Emoji;
 
 do {
-    $queue_len = getQueueLen($ticket->id);
-    $time_est = getTimeEst($ticket->id);
+    $queue_len = 0;
+    $time_est = 0;
     
     // Иконки заявок
     //     +----- тип (0)-заявка, (1)-задача
     //     |  +-- срочность (0)-обычная, (1)-срочная 
     //     v  v
-    $emoji[false][false] = Emoji::TICKET_REGULAR;
-    $emoji[false][true] = Emoji::TICKET_URGENT;
+    $emoji[false][false] = Emoji::ICON_LIFEBUOY;
+    $emoji[false][true] = Emoji::ICON_SOS;
     $emoji[true][false] = Emoji::TASK_REGULAR;
     $emoji[true][true] = Emoji::TASK_PRIORITY;
     
-    $title[false][false] = 'Заявка';
-    $title[false][true] = 'Срочная заявка';
+    $title[false][false] = 'Неисправность';
+    $title[false][true] = 'Срочно!';
     $title[true][false] = 'Задача';
     $title[true][true] = 'Приоритетная задача';
     
-    $priority_text[false][false] = 'Если заявка срочная — нажмите '. Emoji::TICKET_URGENT;
-    $priority_text[false][true] = 'Для снижания приоритета заявки — нажмите '. Emoji::ACTION_PRIORITY_DOWN;
-    $priority_text[true][false] = 'Если задача приоритетная — нажмите '. Emoji::TASK_PRIORITY;
-    $priority_text[true][true] = 'Для снижения приоритета задачи — нажмите '. Emoji::ACTION_PRIORITY_DOWN;
+    $priority_text[false][false] = 'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
+    $priority_text[false][true] = '<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
+    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является приоритетной, нажмите ". Emoji::ACTION_PRIORITY_UP;
+    $priority_text[true][true] = 'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
+    
+    $task_text[false][false] = "";
+    $task_text[false][true] = "";
+    $task_text[true][false] = "";
+    $task_text[true][true] = "";
     
     $header = $emoji[$ticket->is_task][$ticket->is_urgent]. ' '. $title[$ticket->is_task][$ticket->is_urgent];
     $priority_footer = $priority_text[$ticket->is_task][$ticket->is_urgent];
@@ -58,11 +61,11 @@ do {
 Идентификатор: <b>#<?= $ticket->id; ?></b>
 Перед вами: <b><?= $queue_len; ?> <?=$tickets_rus;?></b>
 
-Назначенные агенты: <b><?= mentionByIdArray($ticket->getAgents(), '-'); ?></b>
+Назначенные агенты: <b><?= Service::mentionByIdArray($ticket->getAgents(), '-'); ?></b>
 Затраченное время: <b><?= $ticket->getTimeElapsed()->format('%H:%I:%S'); ?></b>
-Пользователи: <b><?= mentionByIdArray($ticket->getCustomers(), '-'); ?></b>
+Пользователи: <b><?= Service::mentionByIdArray($ticket->getCustomers(), '-'); ?></b>
 
-Другие пользователи вашей компании могут присоединиться к заявке отправив сообщение или нажав ➕
+Другие пользователи могут присоединиться к заявке нажав ➕
 
 <?= $priority_footer; ?>️
 

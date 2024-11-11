@@ -10,8 +10,7 @@ use losthost\Oberbot\data\ticket;
 use losthost\timetracker\TimerEvent;
 
 use losthost\Oberbot\view\TicketCreating;
-use losthost\Oberbot\view\TicketAccepting;
-use losthost\Oberbot\view\TicketClosing;
+use losthost\Oberbot\view\TicketUpdating;
 use losthost\Oberbot\background\DestroyIncompleteTimer;
 
 use losthost\Oberbot\view\TimerEventCreated;
@@ -53,7 +52,9 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
 
 // Не найден обработчик кнопки
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
@@ -65,6 +66,8 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandTask::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandUrgent::class);
 
 
 // Эти команды обрабатываются в любых чатах, куда добавлен бот
@@ -91,9 +94,7 @@ Bot::addHandler(NonCommandPrivateMessage::class);
 Bot::addHandler(NonCommandAgentMessage::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, ticket::class, TicketCreating::class);
-DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketAccepting::class);
-DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketClosing::class);
-DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, DestroyIncompleteTimer::class);
+DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketUpdating::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, TimerEvent::class, TimerEventCreated::class);
 DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::class);

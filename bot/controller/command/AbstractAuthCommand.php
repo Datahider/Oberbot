@@ -5,9 +5,12 @@ namespace losthost\Oberbot\controller\command;
 use losthost\telle\abst\AbstractHandlerCommand;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\Oberbot\service\Service;
+
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\message;
 use function \losthost\Oberbot\__;
+use function \losthost\Oberbot\isChatAdministrator;
 
 abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     
@@ -23,23 +26,35 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         
         $from_id = $data->getFrom()->getId();
         $chat_id = $data->getChat()->getId();
-        
-        if ($from_id == $chat_id) {
-            if (static::PERMIT & static::PERMIT_PRIVATE) {
-                return parent::handleUpdate($data);
+
+        try {
+            if ($from_id == $chat_id) {
+                if (static::PERMIT & static::PERMIT_PRIVATE) {
+                    return parent::handleUpdate($data);
+                }
             }
-            message('warning', sprintf(__('Команда /%s не предназначена для использования в приватном чате.'), static::COMMAND));
-        } elseif ( isAgent($from_id, $chat_id) ) {
-            if (static::PERMIT & static::PERMIT_AGENT) {
-                return parent::handleUpdate($data);
+
+            if ( isAgent($from_id, $chat_id) ) {
+                if (static::PERMIT & static::PERMIT_AGENT) {
+                    return parent::handleUpdate($data);
+                }
             }
-            message('warning', sprintf(__('Команда /%s не предназначена для использования агентами техподдержки.'), static::COMMAND), null, $data->getMessageThreadId());
-        } else {
+
+            if (isChatAdministrator($from_id, $chat_id)) {
+                if (static::PERMIT & static::PERMIT_ADMIN) {
+                    return parent::handleUpdate($data);
+                }
+            }
+
             if (static::PERMIT & static::PERMIT_USER) {
                 return parent::handleUpdate($data);
             }
-            message('warning', sprintf(__('Команда /%s не предназначена для использования пользователями.'), static::COMMAND), null, $data->getMessageThreadId());
-        } 
+            
+            throw new \Exception('%s, you are not allowed to run this command.');
+            
+        } catch (\Exception $ex) {
+            Service::message('warning', sprintf(Service::__($ex->getMessage()), Service::mentionById(Bot::$user->id)), null, $data->getMessageThreadId());
+        }
         
         return true;
     }

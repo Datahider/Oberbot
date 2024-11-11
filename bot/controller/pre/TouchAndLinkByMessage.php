@@ -55,9 +55,11 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
         }
         
         if (isAgent($user_id, $group_id)) {
-            $ticket->touchAdmin()->linkAgent($user_id);
+            $ticket->touchAdmin();
+            $ticket->hasAgent($user_id) || $ticket->linkAgent($user_id);
         } else {
-            $ticket->touchUser()->linkCustomer($user_id);
+            $ticket->touchUser();
+            $ticket->hasCustomer($user_id) || $ticket->linkCustomer($user_id);
         }
 
         foreach (getMentionedIds($message) as $mentioned_id) {

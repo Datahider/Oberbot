@@ -36,7 +36,7 @@ class ticket extends topic {
         $ticket->last_activity = \time();
         $ticket->last_admin_activity = 0;
         $ticket->is_urgent = false;
-        $ticket->is_task = false;
+        $ticket->is_task = true;
         $ticket->ticket_creator = $creator_id;
         
         $ticket->write('', ['function' => 'create']);
@@ -121,6 +121,26 @@ class ticket extends topic {
         return $this;
     }
 
+    public function rate(int|string $score) {
+        switch ($score) {
+            case -1:
+            case 'bad':
+                $this->score = -1;
+                break;
+            case 0:
+            case 'acceptable':
+                $this->score = 0;
+                break;
+            case 1:
+            case 'good':
+                $this->score = 1;
+                break;
+        }
+        
+        $this->isModified() && $this->write('', ['function' => 'rate']);
+        return $this;
+    }
+    
     public function archive() : ticket {
         if ($this->status != static::STATUS_CLOSED) {
             throw new \Exception("Can not archive non-closed ticket.");

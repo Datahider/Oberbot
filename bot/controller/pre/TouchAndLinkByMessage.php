@@ -5,6 +5,7 @@ namespace losthost\Oberbot\controller\pre;
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
+use losthost\Oberbot\service\GroupWizard;
 
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\getMentionedIds;
@@ -30,7 +31,7 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
 
         if ($user_id == $group_id) {
             return false; // Личное сообщение боту
-        } elseif (empty($topic_id)) {
+        } elseif (!$message->getChat()->getIsForum()) {
             $this->reason = self::BLOCK_REGULAR_GROUP;
             return true; 
         }
@@ -78,7 +79,9 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
         
         switch ($this->reason) {
             case self::BLOCK_REGULAR_GROUP:
-                Bot::logComment('Сообщение в обычной группе. Игнорим.');
+                Bot::logComment('Сообщение в обычной группе. Выводим визиря.');
+                $wizard = new GroupWizard($message->getChat()->getId());
+                $wizard->show();
                 return true; // Как будто уже обработано;
             case self::BLOCK_NO_TICKET:
                 $topic_id = $message->getMessageThreadId();

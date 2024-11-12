@@ -50,7 +50,7 @@ class ticket extends topic {
         return $ticket;
     }
     
-    static public function getByGroupThread(int $group_id, int $thread_id) : ticket {
+    static public function getByGroupThread(int $group_id, ?int $thread_id) : ticket {
         $ticket = new ticket(['chat_id' => $group_id, 'topic_id' => $thread_id]);
         return $ticket;
     }

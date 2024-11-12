@@ -5,6 +5,7 @@ namespace losthost\Oberbot\handlers;
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\chat;
 use losthost\telle\Bot;
+use losthost\Oberbot\service\GroupWizard;
 
 /**
  * Этот обработчик должен быть первым обработчиком сообщений

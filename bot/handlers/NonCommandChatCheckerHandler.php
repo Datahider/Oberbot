@@ -24,7 +24,7 @@ class NonCommandChatCheckerHandler extends AbstractHandlerMessage {
         }
         
         $chat = new chat(['id' => Bot::$chat->id], true);
-        return $chat->process_tickets;
+        return (bool)$chat->process_tickets;
     }
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

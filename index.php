@@ -70,7 +70,9 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
 // Команды
 Bot::addHandler(losthost\Oberbot\controller\command\CommandAgent::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandContinue::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandCreate::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandCustomer::class);
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandGroup::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
@@ -79,6 +81,7 @@ Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStop::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandTask::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandUngroup::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandUrgent::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNext::class);
 

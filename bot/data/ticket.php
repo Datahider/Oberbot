@@ -303,6 +303,59 @@ class ticket extends topic {
         $accepted_message->isModified() && $accepted_message->write();
     }
     
+    protected function entityTaskName($case) {
+        switch ($case) {
+            case 1:
+                return "задача";
+            case 2:
+                return "задачи";
+            case 3:
+                return "задаче";
+            case 4:
+                return "задачу";
+            case 5:
+                return "задачей";
+            case 6:
+                return "задаче";
+            default:
+                throw new Exception('Указан не верный падеж.');
+        }
+    }
+    
+    protected function entityTicketName($case) {
+        switch ($case) {
+            case 1:
+                return "заявка";
+            case 2:
+                return "заявки";
+            case 3:
+                return "заявке";
+            case 4:
+                return "заявку";
+            case 5:
+                return "заявкой";
+            case 6:
+                return "заявке";
+            default:
+                throw new Exception('Указан не верный падеж.');
+        }
+    }
+    
+    public function entityName($case=1, $capitalize=false) {
+
+        if ($this->is_task) {
+            $result = $this->entityTaskName($case);
+        } else {
+            $result = $this->entityTicketName($case);
+        }
+        
+        if ($capitalize) {
+            $result = mb_strtoupper(mb_substr($result, 0, 1)). mb_substr($result, 1);
+        }
+        
+        return $result;
+    }
+    
     protected function beforeModify($name, $value) {
         if ($name === 'status' && $this->was_archived === null) {
             $this->was_archived = $this->status == static::STATUS_ARCHIVED;

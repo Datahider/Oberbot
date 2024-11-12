@@ -160,4 +160,19 @@ class Service {
             $view->show('controllerCommandNext', null, ['ticket' => $ticket, 'working_group' => $session->working_group]);
         }
     }
+    
+    static public function ticketMention(ticket $ticket) {
+        $url = str_replace('-100', 'c/', "https://t.me/$ticket->chat_id/$ticket->topic_id");
+        $link = "<a href=\"$url\">$ticket->title - #$ticket->id</a>";
+        return $link;
+    }
+    
+    static function isUsersChatAccessible(int $user_id) {
+        try {
+            Bot::$api->sendChatAction($user_id, 'typing');
+            return true;
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
 }

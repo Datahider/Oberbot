@@ -59,7 +59,6 @@ do {
 <b><?= $header; ?></b>
 
 Идентификатор: <b>#<?= $ticket->id; ?></b>
-Перед вами: <b><?= $queue_len; ?> <?=$tickets_rus;?></b>
 
 Назначенные агенты: <b><?= Service::mentionByIdArray($ticket->getAgents(), '-'); ?></b>
 Затраченное время: <b><?= $ticket->getTimeElapsed()->format('%H:%I:%S'); ?></b>

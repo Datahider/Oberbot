@@ -25,8 +25,9 @@ class AgentMessage extends AbstractMemberMessage {
                     $ticket->timerStart($from_id);
                 }
             }
+            return true;
         }
         
-        return true;
+        return false;
     }
 }

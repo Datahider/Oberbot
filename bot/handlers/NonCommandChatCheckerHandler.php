@@ -23,8 +23,8 @@ class NonCommandChatCheckerHandler extends AbstractHandlerMessage {
             return false;
         }
         
-        $chat = new chat(['id' => Bot::$chat->id, 'process_tickets' => 1], true);
-        return $chat->isNew();
+        $chat = new chat(['id' => Bot::$chat->id], true);
+        return $chat->process_tickets;
     }
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

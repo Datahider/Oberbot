@@ -11,6 +11,7 @@ use losthost\DB\DBValue;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\Oberbot\data\chat;
+use losthost\Oberbot\view\AgentsMessage;
 
 use function \losthost\Oberbot\mentionById;
 use function \losthost\Oberbot\seconds2dateinterval;
@@ -29,9 +30,10 @@ class TimerEventUpdated extends DBTracker {
         $chat = new chat(['id' => $group_id], true);
         
         if (!$timer_event->started && $timer_event->comment != 'all') {
-            $mention = mentionById($user_id);
-            $view = new BotView(Bot::$api, $chat->id, $chat->language_code);
-            $view->show('viewTimerEventUpdated', null, ['mention' => $mention, 'duration' => seconds2dateinterval($timer_event->duration), 'ticket_time_elapsed' => $ticket->getTimeElapsed()], null, $thread_id);
+            $agents_message = new AgentsMessage($ticket);
+            $agents_message->show($user_id, AgentsMessage::ACTION_PAUSE, [
+                'duration' => seconds2dateinterval($timer_event->duration), 
+                'ticket_time_elapsed' => $ticket->getTimeElapsed()]);
             
             $accepting_message = new AcceptingMessage($ticket);
             $accepting_message->show();

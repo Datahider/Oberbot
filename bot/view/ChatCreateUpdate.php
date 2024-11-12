@@ -12,6 +12,10 @@ class ChatCreateUpdate extends DBTracker {
     
     public function track(\losthost\DB\DBEvent $event) {
         
+        if (!empty($event->data['mute'])) {
+            return;
+        }
+        
         $this->chat = $event->object;
         $processing = $this->chat->process_tickets ? Service::__('Включена') : Service::__('Отключена');
         $lang = $this->chat->language_code ? 'default' : $this->chat->language_code;

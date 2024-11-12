@@ -28,6 +28,7 @@ class TicketUpdating extends DBTracker {
         $this->notifyTypeChange();
         $this->notifyPriorityChange();
         $this->notifyStatusChanging();
+        $this->notifyUrgentTicket();
 
         // Creating/updating ticket info message
         $accepting_message = new AcceptingMessage($this->ticket);
@@ -51,6 +52,24 @@ class TicketUpdating extends DBTracker {
             Bot::logComment("Pending job id:$job_id->value is deleted.");
         }
         
+    }
+    
+    protected function notifyUrgentTicket() {
+        if (array_search('is_urgent', $this->event->fields) === false && array_search('is_task', $this->event->fields) === false ) {
+            return;
+        }
+        
+        if (!$this->ticket->is_urgent || $this->ticket->is_task) {
+            return;
+        }
+        
+        // TODO -- доставать так же language_code
+        $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
+        
+        while ($agent->next()) {
+            $view = new BotView(Bot::$api, $agent->id);
+            $view->show('privateUrgentNotification', null, ['ticket' => $this->ticket]);
+        }
     }
     
     protected function notifyStatusChanging() {
@@ -92,7 +111,10 @@ class TicketUpdating extends DBTracker {
     
     protected function notifyReopen() {
         
-        Service::message('info', 'Заявка переоткрыта. Пожалуйста укажите причину переоткрытия заявки.', null, $this->ticket->topic_id);
+        $chat = new chat(['id' => $this->ticket->chat_id]);
+        
+        $view = new BotView(Bot::$api, $this->ticket->chat_id, $chat->language_code);
+        $view->show('viewTicketReopen', 'kbdTicketReopen', [], null, $this->ticket->topic_id);
 
         try {
             Bot::$api->reopenForumTopic($this->ticket->chat_id, $this->ticket->topic_id);

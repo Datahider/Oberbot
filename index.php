@@ -48,11 +48,18 @@ user_chat_role::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 
 // Предварительная обработка
+Bot::addHandler(losthost\Oberbot\controller\pre\WizardStartWhenAdded::class);
+Bot::addHandler(losthost\Oberbot\controller\pre\WizardStartWhenChatMember::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 
 // Обработка кнопок
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackReopen::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
@@ -85,19 +92,20 @@ Bot::addHandler(losthost\Oberbot\handlers\CommandMd::class);
 Bot::addHandler(\losthost\Oberbot\handlers\NonCommandChatCheckerHandler::class);                                
 
 // REVIEW - похоже это обработка кнопки присоединения к тикету. Проверить
-Bot::addHandler(CallbackLink::class);
+//Bot::addHandler(CallbackLink::class);
 
 /// Проверюят есть ли у бота админские права в группе
 //Bot::addHandler(AdminRightsCheckerMessage::class);
 //Bot::addHandler(AdminRightsCheckerCallback::class);
 
-Bot::addHandler(losthost\Oberbot\controller\message\FirstTopicMessageHandler::class);
 Bot::addHandler(\losthost\Oberbot\controller\ForumTopicCreatedHandler::class);
+Bot::addHandler(losthost\Oberbot\controller\message\FirstTopicMessageHandler::class);
 Bot::addHandler(\losthost\Oberbot\controller\message\TicketCloseReopenMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\message\AgentMessage::class);
+Bot::addHandler(losthost\Oberbot\controller\message\CustomerMessage::class);
 
-Bot::addHandler(NonCommandPrivateMessage::class);
-Bot::addHandler(NonCommandAgentMessage::class);
+//Bot::addHandler(NonCommandPrivateMessage::class);
+//Bot::addHandler(NonCommandAgentMessage::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, ticket::class, TicketCreating::class);
 DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketUpdating::class);

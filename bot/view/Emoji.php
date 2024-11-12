@@ -13,9 +13,14 @@ class Emoji {
     const ACTION_PRIORITY_DOWN = '🔻';
     const ACTION_PLAY = '▶️';
     const ACTION_PAUSE = '⏸';
-    
+    const ACTION_NOTIFY = '🛎';
+    const ACTION_DONE = '✅';
+
+
     const ICON_SOS = '🆘';
     const ICON_LIFEBUOY = '🛟';
+    const ICON_DONE = '✅';
+    const ICON_TODO = '🔲';
     
     const RATING_GOOD = '😊';
     const RATING_ACCEPTABLE = '😐';

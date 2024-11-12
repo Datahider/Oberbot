@@ -15,8 +15,6 @@ use losthost\BotView\BotView;
 class CommandNext extends AbstractHandlerCommand {
     
     const COMMAND = 'next';
-    
-    protected session $session;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         $user_id = $message->getFrom()->getId();
@@ -25,6 +23,13 @@ class CommandNext extends AbstractHandlerCommand {
         if ($user_id != $chat_id) {
             Service::message('warning', 'Команда /next предназначена для личного чата с ботом.', null, $message->getMessageThreadId());
             return true;
+        }
+
+        
+        if ($this->args) {
+            $session = new session(['user_id' => $user_id, 'chat_id' => $chat_id], true);
+            $session->working_group = $this->args == 'all' ? null : $this->args;
+            $session->isModified() && $session->write();
         }
         
         Service::showNextTicket($user_id);

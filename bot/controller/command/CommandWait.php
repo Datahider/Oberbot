@@ -6,6 +6,7 @@ use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\service\Service;
 use losthost\telle\Bot;
 use losthost\Oberbot\background\RemindTicket;
+use losthost\timetracker\Timer;
 
 class CommandWait extends AbstractAuthCommand {
     
@@ -60,6 +61,11 @@ class CommandWait extends AbstractAuthCommand {
                 $this->ticket->touchAdmin();
                 Service::message('info', $this->ticket->entityName(1, true). Service::__(' перемещена в конец очереди.'), null, $this->thread_id);
             }
+            
+            if ($this->ticket->isTimerStarted($this->user_id)) {
+                $this->ticket->timerStop($this->user_id);
+            }
+            Service::showNextTicket($this->user_id);
         } else {
             Service::message('warning', 'Эта команда предназначена для использования только внутри заявки.');
         }

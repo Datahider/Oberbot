@@ -57,7 +57,7 @@ do {
 ?>
 
 <b><?= $header; ?></b>
-<u><?= $ticket->topic_title; ?></u>
+<u><?= Service::ticketMentionNoId($ticket); ?></u>
 
 Идентификатор: <b>#<?= $ticket->id; ?></b>
 

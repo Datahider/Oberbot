@@ -167,6 +167,12 @@ class Service {
         return $link;
     }
     
+    static public function ticketMentionNoId(ticket $ticket) {
+        $url = str_replace('-100', 'c/', "https://t.me/$ticket->chat_id/$ticket->topic_id");
+        $link = "<a href=\"$url\">$ticket->title</a>";
+        return $link;
+    }
+    
     static function isUsersChatAccessible(int $user_id) {
         try {
             Bot::$api->sendChatAction($user_id, 'typing');

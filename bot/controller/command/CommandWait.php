@@ -110,7 +110,7 @@ class CommandWait extends AbstractAuthCommand {
             $this->ticket->wait_for = $matches[1];
             $this->ticket->write();
             
-            return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до решения "). "$entity $this->args";
+            return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до решения "). "$entity ". Service::ticketMention($this->ticket);
         } elseif (preg_match("/^\d*$/", $this->args)) {
             // Заданы только цифры - считаем, что это минуты
             $interval = new \DateInterval("PT{$this->args}M");

@@ -20,6 +20,8 @@ class CommandNotify extends AbstractAuthCommand {
         
         if (!empty($customers)) {
             Service::message('notification', Service::mentionByIdArray($customers), Service::__('<b>Ответьте</b>'), $topic_id);
+        } else {
+            Service::message('info', 'К тикету не привязан ни один пользователь.', null, $topic_id);
         }
         
         return true;

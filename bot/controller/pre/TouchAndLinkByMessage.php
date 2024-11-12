@@ -20,6 +20,7 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
     const BLOCK_REGULAR_GROUP = 1;
     const BLOCK_NO_TICKET = 2;
     const BLOCK_SERVICE = 3;
+    const BLOCK_GENERAL_TOPIC = 4;
     
     protected int $reason;
     
@@ -28,12 +29,16 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
         $topic_id = $message->getMessageThreadId();
         $group_id = $message->getChat()->getId();
         $user_id = $message->getFrom()->getId();
-
+        $is_forum = $message->getChat()->getIsForum();
+        
         if ($user_id == $group_id) {
             return false; // Личное сообщение боту
-        } elseif (!$message->getChat()->getIsForum()) {
+        } elseif (!$is_forum) {
             $this->reason = self::BLOCK_REGULAR_GROUP;
             return true; 
+        } elseif ($is_forum && !$topic_id) {
+            $this->reason = self::BLOCK_GENERAL_TOPIC;
+            return true;
         }
         
         if (!$message->getText() && !$message->getCaption()) {
@@ -88,6 +93,10 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
                 $group_id = str_replace("-100", "", $message->getChat()->getId());
                 Bot::logComment("Не найден тикет для топика https://t.me/c/$group_id/$topic_id");
                 return true;
+            case self::BLOCK_GENERAL_TOPIC:
+                //Bot::logComment('Сообщение в общем чате. Игнорим молча.');
+                return true;
+                
         }
         return false;
     }

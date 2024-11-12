@@ -22,6 +22,8 @@ class CallbackNotify extends AbstractCallback {
         
         if (!empty($customers)) {
             Service::message('notification', Service::mentionByIdArray($customers), Service::__('<b>Ответьте</b>'), $thread_id);
+        } else {
+            Service::message('info', 'К тикету не привязан ни один пользователь.', null, $thread_id);
         }
         
         return true;

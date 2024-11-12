@@ -75,6 +75,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandCustomer::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandGroup::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);

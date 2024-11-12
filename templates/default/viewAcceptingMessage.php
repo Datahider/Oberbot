@@ -57,6 +57,7 @@ do {
 ?>
 
 <b><?= $header; ?></b>
+<u><?= $ticket->topic_title; ?></u>
 
 Идентификатор: <b>#<?= $ticket->id; ?></b>
 

@@ -14,7 +14,7 @@ class CommandOff extends AbstractAuthCommand {
     const PERMIT = self::PERMIT_AGENT;
     
     protected int $group_id;
-    protected int $thread_id;
+    protected ?int $thread_id;
     protected int $user_id;
     protected int $message_id;
 

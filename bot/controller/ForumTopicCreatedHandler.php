@@ -22,6 +22,10 @@ class ForumTopicCreatedHandler extends AbstractHandlerMessage {
         $title = $message->getForumTopicCreated()->getName();
         $creator_id = $message->getFrom()->getId();
         
+        if ($creator_id == Bot::param('bot_userid', null)) {
+            return true; // бот создал и всё сделал сам
+        }
+        
         $ticket = ticket::create($group_id, $thread_id, $title, $creator_id);
         
         Bot::runAt(

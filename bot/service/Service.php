@@ -9,6 +9,7 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\Oberbot\data\session;
 use losthost\Oberbot\data\ticket;
+use losthost\DB\DBValue;
 
 class Service {
     
@@ -181,4 +182,14 @@ class Service {
             return false;
         }
     }
+    
+    static function getRandomTopicIconColor() : int {
+        $options = [7322096, 16766590, 13338331, 9367192, 16749490, 16478047];
+        return $options[random_int(0, 5)];
+    }
+    
+    static function getUserDataById(int $user_id) {
+        return new DBValue('SELECT * FROM [telle_users] WHERE id = ?', [$user_id]);
+    }
+    
 }

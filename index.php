@@ -16,6 +16,7 @@ use losthost\Oberbot\view\TimerEventCreated;
 use losthost\Oberbot\view\TimerEventUpdated;
 
 use losthost\Oberbot\view\TicketCustomerLink;
+use losthost\Oberbot\view\TicketUnlink;
 
 // data
 use losthost\Oberbot\data\chat_group;
@@ -27,6 +28,7 @@ use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\topic_user;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\user_chat_role;
+use losthost\Oberbot\data\accepting_message;
 
 use losthost\Oberbot\data\message_map;
 
@@ -44,6 +46,7 @@ topic_admin::initDataStructure();
 topic_user::initDataStructure();
 chat::initDataStructure();
 user_chat_role::initDataStructure();
+accepting_message::initDataStructure();
 
 losthost\ProxyMessage\message_map::initDataStructure();
 
@@ -60,6 +63,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackReopen::class);
+Bot::addHandler(\losthost\Oberbot\controller\callback\CallbackTip::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
@@ -124,6 +128,8 @@ DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::clas
 DB::addTracker(DBEvent::AFTER_INSERT, topic_user::class, TicketCustomerLink::class);
 
 DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, ChatCreateUpdate::class);
+
+DB::addTracker(DBEvent::INTRAN_DELETE, [topic_admin::class, topic_user::class], TicketUnlink::class);
 
 $bot_username = new DBBotParam('bot_username');
 $bot_userid = new DBBotParam('bot_userid');

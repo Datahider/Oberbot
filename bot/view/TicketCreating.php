@@ -3,10 +3,10 @@
 namespace losthost\Oberbot\view;
 
 use losthost\DB\DBTracker;
-
-use function \losthost\Oberbot\__;
-use function \losthost\Oberbot\message;
-use function \losthost\Oberbot\mentionById;
+use losthost\telle\Bot;
+use losthost\BotView\BotView;
+use losthost\Oberbot\service\Service;
+use losthost\Oberbot\data\user_meta;
 
 class TicketCreating extends DBTracker {
     
@@ -17,6 +17,9 @@ class TicketCreating extends DBTracker {
         $thread_id = $ticket->topic_id;
         $user_id = $ticket->ticket_creator;
         
-        message('tip', mentionById($user_id). ', '. __('пожалуйста, подробно опишите суть вашего вопроса.'), null, $thread_id);
+        if (user_meta::get($user_id, 'TicketCreatingTip', 'on') == 'on') {
+            $view = new BotView(Bot::$api, $group_id, Bot::$language_code);
+            $view->show('viewTicketCreatingTip', 'kbdTicketCreatingTip', ['user_id' => $user_id], null, $thread_id);
+        }
     }
 }

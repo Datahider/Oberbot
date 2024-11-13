@@ -10,6 +10,7 @@ use losthost\BotView\BotView;
 use losthost\Oberbot\data\session;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DBValue;
+use TelegramBot\Api\Types\Message;
 
 class Service {
     
@@ -192,4 +193,37 @@ class Service {
         return new DBValue('SELECT * FROM [telle_users] WHERE id = ?', [$user_id]);
     }
     
+    static function getMentionedIds(Message &$message) : array {
+
+        $result = [];
+
+        if (!$message->getEntities()) {
+            return $result;
+        }
+
+        foreach ($message->getEntities() as $entity) {
+            switch ($entity->getType()) {
+                case 'mention':
+                    $username = mb_substr($message->getText(), $entity->getOffset()+1, $entity->getLength()-1);
+                    $user = new DBView('SELECT id FROM [telle_users] WHERE username = ?', [$username]);
+                    if ($user->next()) {
+                        $user_id = $user->id;
+                    } else {
+                        $user_id = false;
+                    }
+                    break;
+                case 'text_mention':
+                    $user_id = $entity->getUser()->getId();
+                    break;
+                default:
+                    continue 2;
+            }
+
+            if ($user_id) {
+                $result[] = $user_id;
+            }
+        }
+        return $result;
+    }
+
 }

@@ -12,7 +12,8 @@
         "losthost/telle": "^4",
         "losthost/bot-view": "^2.4",
         "losthost/proxy-message": "dev-master",
-        "losthost/time-tracker": "^v1"
+        "losthost/time-tracker": "^v1",
+        "ramsey/uuid": "^4.7"
     },
     "autoload": {
         "psr-4": {

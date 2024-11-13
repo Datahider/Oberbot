@@ -18,9 +18,12 @@ use losthost\Oberbot\view\TimerEventUpdated;
 use losthost\Oberbot\view\TicketCustomerLink;
 use losthost\Oberbot\view\TicketUnlink;
 
+use losthost\Oberbot\view\NoteCreation;
+
 // data
 use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\data\note;
+use losthost\Oberbot\data\note_mention;
 use losthost\Oberbot\data\session;
 use losthost\Oberbot\data\topic;
 use losthost\Oberbot\data\ticket;
@@ -40,6 +43,7 @@ Bot::setup();
 
 chat_group::initDataStructure();
 note::initDataStructure();
+note_mention::initDataStructure();
 session::initDataStructure();
 topic::initDataStructure();
 topic_admin::initDataStructure();
@@ -58,6 +62,7 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHid::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
@@ -77,6 +82,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandCreate::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandCustomer::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandGroup::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandHid::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
@@ -130,6 +136,7 @@ DB::addTracker(DBEvent::AFTER_INSERT, topic_user::class, TicketCustomerLink::cla
 DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, ChatCreateUpdate::class);
 
 DB::addTracker(DBEvent::INTRAN_DELETE, [topic_admin::class, topic_user::class], TicketUnlink::class);
+DB::addTracker(DBEvent::AFTER_INSERT, note::class, NoteCreation::class);
 
 $bot_username = new DBBotParam('bot_username');
 $bot_userid = new DBBotParam('bot_userid');

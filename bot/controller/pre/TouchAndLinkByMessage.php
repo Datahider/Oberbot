@@ -6,6 +6,7 @@ use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\Oberbot\service\GroupWizard;
+use losthost\Oberbot\controller\command\CommandHid;
 
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\getMentionedIds;
@@ -37,8 +38,12 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
             $this->reason = self::BLOCK_REGULAR_GROUP;
             return true; 
         } elseif ($is_forum && !$topic_id) {
-            $this->reason = self::BLOCK_GENERAL_TOPIC;
-            return true;
+            $hid_handler = new CommandHid();
+            $hid_handler->initHandler();
+            if (!$hid_handler->checkUpdate($message)) {
+                $this->reason = self::BLOCK_GENERAL_TOPIC; // для всего кроме команды /hid
+                return true;
+            }
         }
         
         if (!$message->getText() && !$message->getCaption()) {
@@ -71,9 +76,17 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
 
         foreach (getMentionedIds($message) as $mentioned_id) {
             if (isAgent($mentioned_id, $group_id)) {
-                $ticket->linkAgent($mentioned_id);
+                try {
+                    $ticket->linkAgent($mentioned_id);
+                } catch (\Exception $ex) {
+                    Bot::logException($ex);
+                }
             } else {
-                $ticket->linkCustomer($mentioned_id);
+                try {
+                    $ticket->linkCustomer($mentioned_id);
+                } catch (\Exception $ex) {
+                    Bot::logException($ex);
+                }
             }
         }
         

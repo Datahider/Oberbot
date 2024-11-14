@@ -12,9 +12,9 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\view\AgentsMessage;
-
-use function \losthost\Oberbot\mentionById;
-use function \losthost\Oberbot\seconds2dateinterval;
+use losthost\Oberbot\background\RemindRunningTimer;
+use losthost\Oberbot\background\StopRunningTimer;
+use losthost\Oberbot\service\Service;
 
 class TimerEventUpdated extends DBTracker {
     
@@ -32,11 +32,16 @@ class TimerEventUpdated extends DBTracker {
         if (!$timer_event->started && $timer_event->comment != 'all') {
             $agents_message = new AgentsMessage($ticket);
             $agents_message->show($user_id, AgentsMessage::ACTION_PAUSE, [
-                'duration' => seconds2dateinterval($timer_event->duration), 
+                'duration' => Service::seconds2dateinterval($timer_event->duration), 
                 'ticket_time_elapsed' => $ticket->getTimeElapsed()]);
             
             $accepting_message = new AcceptingMessage($ticket);
             $accepting_message->show();
+        }
+        
+        if (!$timer_event->started) {
+            RemindRunningTimer::disarm("$ticket->id $user_id");
+            StopRunningTimer::disarm("$ticket->id $user_id");
         }
     }
     

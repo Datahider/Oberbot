@@ -12,6 +12,8 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\view\AgentsMessage;
+use losthost\Oberbot\background\RemindRunningTimer;
+use losthost\Oberbot\background\StopRunningTimer;
 
 use function \losthost\Oberbot\mentionById;
 
@@ -24,9 +26,6 @@ class TimerEventCreated extends DBTracker {
         $user_id = $timer->subject;
 
         $ticket = ticket::getById($timer_event->object);
-        $group_id = $ticket->chat_id;
-        $thread_id = $ticket->topic_id;
-        $chat = new chat(['id' => $group_id]);
         
         if ($timer_event->started) {
             $agents_message = new AgentsMessage($ticket);
@@ -34,6 +33,9 @@ class TimerEventCreated extends DBTracker {
             
             $accepting_message = new AcceptingMessage($ticket);
             $accepting_message->show();
+            
+            Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, "$ticket->id $user_id");
+            Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, "$ticket->id $user_id");
         }
     }
     

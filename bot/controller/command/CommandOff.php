@@ -53,7 +53,7 @@ class CommandOff extends AbstractAuthCommand {
     protected function banUser() {
 
         $ban_time = 600;
-        if ($this->args) {
+        if (strlen($this->args) > 0) {
             $ban_time = 60 * $this->args;
         }
         

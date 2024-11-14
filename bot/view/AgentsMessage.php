@@ -34,7 +34,7 @@ class AgentsMessage {
         
         $params['ticket'] = $this->ticket;
         $params['user_id'] = $agent_id;
-        
+
         $view->show('viewAgentsMessage'. $action, 'kbdAgentsMessage'. $action, $params, null, $this->ticket->topic_id);
     }
 }

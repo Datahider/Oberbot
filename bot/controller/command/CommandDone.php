@@ -18,7 +18,6 @@ class CommandDone extends AbstractAuthCommand {
         $ticket = ticket::getByGroupThread($group_id, $topic_id);
         $ticket->close();
 
-        Service::showNextTicket($message->getFrom()->getId());
         return true;
     }
 }

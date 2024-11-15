@@ -28,9 +28,6 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
                 || $ticket_admin->last_activity == null  // или он не обновлял время никогда
                 || $ticket_admin->last_activity->getTimestamp() < date_create()->getTimestamp()-300) { // или больше чем 5 минут назад
 
-            // надо подключить трекер, чтоб сработало уведомление об остановке таймера
-            DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::class);
-
             $ticket->timerStop($user->id);
             
         } else {

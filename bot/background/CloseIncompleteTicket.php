@@ -12,8 +12,6 @@ class CloseIncompleteTicket extends AbstractBackgroundProcess {
     
     public function run() {
     
-        DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketUpdating::class);
-        
         $ticket = ticket::getById($this->param);
         $ticket->close();
         

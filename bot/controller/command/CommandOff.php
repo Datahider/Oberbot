@@ -44,6 +44,7 @@ class CommandOff extends AbstractAuthCommand {
         $new_ticket->linkCustomer($user_id);
         $new_ticket->accept();
         
+        return true;
     }
     
     

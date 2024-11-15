@@ -20,7 +20,12 @@ class CommandOff extends AbstractAuthCommand {
 
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
-    
+
+        if (!$message->getReplyToMessage()) {
+            Service::message('warning', 'Вы не указали цитируемое сообщение.', null, $message->getMessageThreadId());
+            return true;
+        }
+        
         $this->group_id = $message->getReplyToMessage()->getChat()->getId();
         $this->thread_id = $message->getReplyToMessage()->getMessageThreadId();
         $this->user_id = $message->getReplyToMessage()->getFrom()->getId();
@@ -28,11 +33,18 @@ class CommandOff extends AbstractAuthCommand {
         
         $user_banned = $this->banUser();
         
-        $quote = $message->getQuote()->getText();
+        $quote = null;
+        if ($message->getQuote()) {
+            $quote = $message->getQuote()->getText();
+        }
         $text = $message->getReplyToMessage()->getText();
 
         if (!$text) {
             $text = $message->getReplyToMessage()->getCaption();
+        }
+        
+        if (!$text) {
+            $text = Service::__('Новая заявка из сообщения');
         }
         
         if (!$quote) {
@@ -41,11 +53,13 @@ class CommandOff extends AbstractAuthCommand {
         
         $ticket_created = $this->createTicket($quote, $text);
         
-        $tpl = new Template('controllerOff.php', Service::getUserDataById($this->user_id)->language_code);
-        $tpl->assign('user_banned', $user_banned);
-        $tpl->assign('ticket_created', $ticket_created);
-        
-        Bot::$api->sendMessage($this->group_id, $tpl->process(), 'html', false, $this->message_id, null, false, $this->thread_id);
+        if ($user_banned) {
+            $tpl = new Template('controllerOff.php', Service::getUserDataById($this->user_id)->language_code);
+            $tpl->assign('user_banned', $user_banned);
+            $tpl->assign('ticket_created', $ticket_created);
+
+            Bot::$api->sendMessage($this->group_id, $tpl->process(), 'html', false, $this->message_id, null, false, $this->thread_id);
+        }
         
         return true;
     }
@@ -72,8 +86,9 @@ class CommandOff extends AbstractAuthCommand {
         
         $forum_topic = Bot::$api->createForumTopic($this->group_id, $subject, Service::getRandomTopicIconColor());
         $new_thread = $forum_topic->getMessageThreadId();
-        Bot::$api->sendMessage($this->group_id, $text, null, false, null, null, false, $new_thread);
-
+        Bot::$api->forwardMessage($this->group_id, $this->group_id, $this->message_id, false, false, $new_thread);
+        Service::message('none', Service::__('Исходное сообщение: '. Service::messageLink($this->group_id, $this->thread_id, $this->message_id)), null, $new_thread);
+        
         $new_ticket = ticket::create($this->group_id, $new_thread, $subject, $this->user_id);
         $new_ticket->linkCustomer($this->user_id);
         $new_ticket->accept();

@@ -18,7 +18,11 @@ class RemindRunningTimer extends AbstractDisarmableBackgroundProcess {
         
         $ticket = ticket::getById($ticket_id);
         
+        $pending = Service::getOldestTicket($user->id);
+        if ($pending->is_task) {
+            $pending = null;
+        }
         $view = new BotView(Bot::$api, $user->id, $user->language_code);
-        $view->show('backgroundRemindRunningTimer', null, ['ticket' => $ticket]);
+        $view->show('backgroundRemindRunningTimer', null, ['ticket' => $ticket, 'pending' => $pending]);
     }
 }

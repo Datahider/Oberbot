@@ -22,7 +22,9 @@ class TicketUnlink extends DBTracker {
             $this->object = $event->object;
             $this->ticket = ticket::getById($this->object->topic_number);
             
-            Service::message('info', Service::mentionById($this->object->user_id). Service::__(' покинул(а) заявку.'), null, $this->ticket->topic_id);
+            if (empty($event->data['mute'])) {
+                Service::message('info', Service::mentionById($this->object->user_id). Service::__(' покинул(а) заявку.'), null, $this->ticket->topic_id);
+            }
             $ticket_info = new AcceptingMessage($this->ticket);
             $ticket_info->show();
             

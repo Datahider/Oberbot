@@ -21,7 +21,7 @@ class CallbackPause extends AbstractCallback {
         Bot::$api->editMessageReplyMarkup($group_id, $message_id);
 
         $ticket = ticket::getByGroupThread($group_id, $thread_id);
-        $ticket->touchAdmin();
+        $ticket->touchAdmin($user_id);
         $ticket->timerStop($user_id);
         
         Service::showNextTicket($user_id);

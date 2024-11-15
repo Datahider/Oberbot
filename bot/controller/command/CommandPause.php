@@ -17,7 +17,7 @@ class CommandPause extends AbstractAuthCommand {
         $user_id = $message->getFrom()->getId();
         
         $ticket = ticket::getByGroupThread($group_id, $thread_id);
-        $ticket->touchAdmin();
+        $ticket->touchAdmin($user_id);
         $ticket->timerStop($user_id);
         
         Service::showNextTicket($message->getFrom()->getId());

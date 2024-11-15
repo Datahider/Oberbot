@@ -65,28 +65,18 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
             return true; 
         }
         
-        if (isAgent($user_id, $group_id)) {
-            if ($ticket->hasAgent($user_id)) {
-                $ticket->touchAdmin();
-            }
+        if ($ticket->hasAgent($user_id)) {
+            $ticket->touchAdmin($user_id);
         } else {
             $ticket->touchUser();
             $ticket->hasCustomer($user_id) || $ticket->linkCustomer($user_id);
         }
 
         foreach (getMentionedIds($message) as $mentioned_id) {
-            if (isAgent($mentioned_id, $group_id)) {
-                try {
-                    $ticket->linkAgent($mentioned_id);
-                } catch (\Exception $ex) {
-                    Bot::logException($ex);
-                }
-            } else {
-                try {
-                    $ticket->linkCustomer($mentioned_id);
-                } catch (\Exception $ex) {
-                    Bot::logException($ex);
-                }
+            try {
+                $ticket->linkCustomer($mentioned_id);
+            } catch (\Exception $ex) {
+                // Bot::logException($ex); -- не надо логировать, это нормально упоминать пользователей
             }
         }
         

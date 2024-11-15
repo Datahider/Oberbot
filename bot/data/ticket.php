@@ -11,6 +11,8 @@ use losthost\DB\DBView;
 use losthost\DB\DBValue;
 use losthost\Oberbot\data\accepting_message;
 use losthost\Oberbot\service\Service;
+use losthost\DB\DB;
+use losthost\telle\Bot;
 
 class ticket extends topic {
     
@@ -74,9 +76,21 @@ class ticket extends topic {
         return $this;
     }
 
-    public function touchAdmin() : ticket {
+    public function touchAdmin(int $user_id) : ticket {
         $this->last_admin_activity = \time();
-        $this->write('', ['function' => 'touchAdmin']);
+        
+        $topic_admin = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id]);
+        $topic_admin->last_activity = date_create();
+        
+        DB::beginTransaction();
+        try {
+            $topic_admin->write();
+            $this->write('', ['function' => 'touchAdmin']);
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            Bot::logException($ex);
+        }
         return $this;
     }
 
@@ -236,14 +250,15 @@ class ticket extends topic {
     }
     
     public function linkAgent(int $user_id) {
+        $this->unlinkCustomer($user_id, true);
         $agent_link = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
         $agent_link->isNew() && $agent_link->write();
         return $this;
     }
     
-    public function unlinkCustomer(int $user_id) {
+    public function unlinkCustomer(int $user_id, bool $mute=false) {
         $customer_link = new topic_user(['topic_number' => $this->id, 'user_id' => $user_id], true);
-        $customer_link->isNew() || $customer_link->delete();
+        $customer_link->isNew() || $customer_link->delete('', ['mute' => $mute]);
         return $this;
     }
     

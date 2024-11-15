@@ -58,7 +58,7 @@ class CommandWait extends AbstractAuthCommand {
             if ($this->args) {
                 Service::message('info', $this->processArguments(), null, $this->thread_id);
             } else {
-                $this->ticket->touchAdmin();
+                $this->ticket->touchAdmin($this->user_id);
                 Service::message('info', $this->ticket->entityName(1, true). Service::__(' перемещена в конец очереди.'), null, $this->thread_id);
             }
             

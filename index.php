@@ -33,6 +33,9 @@ use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\Oberbot\data\accepting_message;
 
+use losthost\timetracker\Timer;
+use losthost\timetracker\TagBinder;
+
 use losthost\Oberbot\data\message_map;
 
 require_once 'vendor/autoload.php';
@@ -51,6 +54,10 @@ topic_user::initDataStructure();
 chat::initDataStructure();
 user_chat_role::initDataStructure();
 accepting_message::initDataStructure();
+
+Timer::initDataStructure();
+TimerEvent::initDataStructure();
+TagBinder::initDataStructure();
 
 losthost\ProxyMessage\message_map::initDataStructure();
 
@@ -89,9 +96,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);
-Bot::addHandler(losthost\Oberbot\controller\command\CommandRun::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
-Bot::addHandler(\losthost\Oberbot\controller\command\CommandStop::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandTask::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandUngroup::class);
@@ -106,9 +111,6 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandNext::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandReviewHandler::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandReportHandler::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandMd::class);
-
-// Этот хендлер не даёт пройти обработке дальше если в chat->process_tickets не true
-Bot::addHandler(\losthost\Oberbot\handlers\NonCommandChatCheckerHandler::class);                                
 
 // REVIEW - похоже это обработка кнопки присоединения к тикету. Проверить
 //Bot::addHandler(CallbackLink::class);

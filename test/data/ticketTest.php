@@ -56,7 +56,7 @@ class ticketTest extends TestCase {
         
         sleep(1);
         $now = time();
-        $ticket->touchAdmin();
+        $ticket->touchAdmin(static::TEST_USER_ID);
         
         $this->assertEquals($now, $ticket->last_admin_activity);
     }

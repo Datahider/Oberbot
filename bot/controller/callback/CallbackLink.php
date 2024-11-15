@@ -9,7 +9,7 @@ use losthost\Oberbot\view\AcceptingMessage;
 class CallbackLink extends AbstractCallback {
     
     const CALLBACK_DATA_PATTERN = "/^link$/";
-    const PERMIT = self::PERMIT_USER;
+    const PERMIT = self::PERMIT_USER | self::PERMIT_AGENT;
     
     public function processCallback(\TelegramBot\Api\Types\CallbackQuery &$callback_query): string|bool {
         $ticket = ticket::getByGroupThread(

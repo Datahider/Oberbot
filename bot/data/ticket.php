@@ -79,12 +79,14 @@ class ticket extends topic {
     public function touchAdmin(int $user_id) : ticket {
         $this->last_admin_activity = \time();
         
-        $topic_admin = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id]);
+        $topic_admin = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], create);
         $topic_admin->last_activity = date_create();
         
         DB::beginTransaction();
         try {
-            $topic_admin->write();
+            $topic_admin->isNew() || $topic_admin->write(); // может быть новый, если агент отвязался
+                                                            // TODO -- проверить что делаем при касании не привязанного агента
+                                                            // возможно надо сделать touchCustomer
             $this->write('', ['function' => 'touchAdmin']);
             DB::commit();
         } catch (\Exception $ex) {

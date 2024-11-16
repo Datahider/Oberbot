@@ -79,7 +79,7 @@ class ticket extends topic {
     public function touchAdmin(int $user_id) : ticket {
         $this->last_admin_activity = \time();
         
-        $topic_admin = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], create);
+        $topic_admin = new topic_admin(['topic_number' => $this->id, 'user_id' => $user_id], true);
         $topic_admin->last_activity = date_create();
         
         DB::beginTransaction();

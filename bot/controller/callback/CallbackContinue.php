@@ -25,7 +25,7 @@ class CallbackContinue extends AbstractCallback {
         if ($ticket->hasAgent($user_id)) {
             $ticket->timerStart($user_id);
         } else {
-            message('warning', sprintf(__('%s, вы не связаны с этой заявкой. Испольуйте команду /take.'), mentionById($user_id)), null, $thread_id);
+            Service::message('warning', sprintf(__('%s, вы не связаны с этой заявкой. Испольуйте команду /take.'), mentionById($user_id)), null, $thread_id);
         }
         
         return true;

@@ -17,6 +17,10 @@ use losthost\Oberbot\view\TicketUnlink;
 use losthost\Oberbot\view\NoteCreation;
 
 use losthost\Oberbot\data\ticket;
+use losthost\Oberbot\data\topic_user;
+use losthost\Oberbot\data\topic_admin;
+use losthost\Oberbot\data\chat;
+use losthost\Oberbot\data\note;
 
 require_once 'bot/functions.php';
 require_once 'bot/show.php';

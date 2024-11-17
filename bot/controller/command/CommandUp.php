@@ -29,8 +29,8 @@ class CommandUp extends AbstractAuthCommand {
                 SELECT 
                     tickets.topic_id AS topic_id 
                 FROM 
-                    sprt_topics AS tickets
-                    LEFT JOIN sprt_topics AS wait_for ON wait_for.id = tickets.wait_for
+                    [topics] AS tickets
+                    LEFT JOIN [topics] AS wait_for ON wait_for.id = tickets.wait_for
                 WHERE 
                     tickets.chat_id = ?
                     AND tickets.status IN ($statuses)

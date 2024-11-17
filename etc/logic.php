@@ -48,6 +48,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
 
 // Команды
 Bot::addHandler(losthost\Oberbot\controller\command\CommandAgent::class);
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandArchive::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandCreate::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandCustomer::class);
@@ -111,4 +112,4 @@ $data = Bot::$api->getMe();
 $bot_username->value = $data->getUsername();
 $bot_userid->value = $data->getId();
 
-Bot::param('workers_count', 5);
+Bot::param('workers_count', 1);

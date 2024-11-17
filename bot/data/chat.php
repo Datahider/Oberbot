@@ -14,4 +14,17 @@ class chat extends DBObject {
         'wizard_message_id' => 'BIGINT(20)',
         'PRIMARY KEY' => 'id'
     ];
+    
+    static public function getById(int $id, ?string $language_code=null) {
+        $chat = new chat(['id' => $id], true);
+        if ($chat->isNew()) {
+            if (isset($language_code)) {
+                $chat->language_code = $language_code;
+            }
+            $chat->process_tickets = true;
+            $chat->write();
+        }
+        return $chat;
+    }
 }
+

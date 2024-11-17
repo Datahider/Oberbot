@@ -17,7 +17,7 @@ class TicketRating {
     
     public function show(?int $message_id=null) {
         
-        $chat = new chat(['id' => $this->ticket->chat_id]); 
+        $chat = chat::getById($this->ticket->chat_id); 
         $view = new BotView(Bot::$api, $chat->id, $chat->language_code);
         
         $view->show('viewRating', null, ['ticket' => $this->ticket], $message_id, $this->ticket->topic_id);

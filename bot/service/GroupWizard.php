@@ -18,7 +18,7 @@ class GroupWizard {
     public function __construct(int $chat_id) {
         $this->chat = new chat(['id' => $chat_id], true);
         if ($this->chat->isNew()) {
-            $this->chat->process_tickets = false;
+            $this->chat->process_tickets = true;
             $this->chat->language_code = Bot::$language_code;
             $this->chat->delete_commands = false;
             $this->chat->write('', ['mute' => true]);

@@ -14,6 +14,9 @@ use losthost\DB\DBView;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\telle\model\DBPendingJob;
 
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
+
 class TicketUpdating extends DBTracker {
     
     protected DBEvent $event;
@@ -92,7 +95,7 @@ class TicketUpdating extends DBTracker {
     }
     
     protected function notifyClosing() {
-        $chat = new chat(['id' => $this->ticket->chat_id]);
+        $chat = chat::getById($this->ticket->chat_id);
         
         $view = new BotView(Bot::$api, $this->ticket->chat_id, $chat->language_code);
         $view->show('viewTicketClosing', 'kbdTicketClosing', [
@@ -111,7 +114,7 @@ class TicketUpdating extends DBTracker {
     
     protected function notifyReopen() {
         
-        $chat = new chat(['id' => $this->ticket->chat_id]);
+        $chat = chat::getById($this->ticket->chat_id);
         
         $view = new BotView(Bot::$api, $this->ticket->chat_id, $chat->language_code);
         $view->show('viewTicketReopen', 'kbdTicketReopen', [], null, $this->ticket->topic_id);
@@ -126,7 +129,9 @@ class TicketUpdating extends DBTracker {
     }
 
     protected function notifyArchived() {
-        
+    
+        sendMessage(__('Эта заявка перенеcена в архив.'), null, $this->ticket->chat_id, $this->ticket->topic_id);
+        $this->editTopic();
     }
 
     protected function notifyPriorityChange() {
@@ -177,7 +182,7 @@ class TicketUpdating extends DBTracker {
     
     protected function editTopic() {
 
-        if ($this->ticket->status == ticket::STATUS_CLOSED || $this->ticket->status == ticket::STATUS_ARCHIVED) {
+        if ($this->ticket->status == ticket::STATUS_CLOSED) {
             $icon = Emoji::ID_FINISH;
         } elseif ($this->ticket->is_urgent && !$this->ticket->is_task) {
             $icon = Emoji::ID_URGENT;
@@ -185,6 +190,8 @@ class TicketUpdating extends DBTracker {
             $icon = Emoji::ID_EXCLAMATION;
         } elseif ($this->ticket->is_urgent && $this->ticket->is_task) {
             $icon = Emoji::ID_STAR;
+        } elseif ($this->ticket->status == ticket::STATUS_ARCHIVED) {
+            $icon = Emoji::ID_ARCHIVE;
         } else {
             $icon = Emoji::ID_NONE;
         }

@@ -5,10 +5,13 @@ namespace losthost\Oberbot\controller\command;
 use losthost\DB\DB;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\telle\Bot;
+use losthost\DB\DBView;
 
 use function \losthost\Oberbot\getMentionedIds;
-use function \losthost\Oberbot\message;
-use function \losthost\Oberbot\mentionById;
+use function \losthost\Oberbot\mentionByView;
+use function \losthost\Oberbot\mentionByIdArray;
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
 
 class CommandAgent extends AbstractAuthCommand {
     
@@ -27,7 +30,7 @@ class CommandAgent extends AbstractAuthCommand {
                 if ($role->role != user_chat_role::ROLE_AGENT) {
                     $role->role = user_chat_role::ROLE_AGENT;
                     $role->write();
-                    $modified_mentions[] = mentionById($id);
+                    $modified_mentions[] = $id;
                 }
             }
             DB::commit();
@@ -36,11 +39,11 @@ class CommandAgent extends AbstractAuthCommand {
             Bot::logException($e);
         }
         
-        if (count($modified_mentions)) {
-            message('done', "Следующим пользователям присвоена роль агентов в этом чате:\n\n🔸 ". implode("\n🔸 ", $modified_mentions));
-        } else {
-            message('warning', "Ни одному из указанных пользователей не присвоена роль агента в этом чате.");
-        }
+        $agent_ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$message->getChat()->getId()]);
+        $all_agents = mentionByView($agent_ids, '-', true, 'user_id');
+        $added_agents = mentionByIdArray($modified_mentions, '-', true);
+
+        sendMessage(__("Актуальный список агентов: %all_agents%\n\nДобавлены: <b>%added_agents%</b>", compact('all_agents', 'added_agents')));
         return true;
         
     }

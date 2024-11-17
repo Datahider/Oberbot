@@ -4,3 +4,4 @@
 /composer.lock
 /test/dbpass.php
 /log/
+test-env.php

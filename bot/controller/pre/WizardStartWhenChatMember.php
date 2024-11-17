@@ -8,7 +8,8 @@ use losthost\Oberbot\service\GroupWizard;
 class WizardStartWhenChatMember extends AbstractHandlerMyChatMember {
     
     protected function check(\TelegramBot\Api\Types\ChatMemberUpdated &$chat_member): bool {
-        if ($chat_member->getNewChatMember()->getStatus() == 'kicked') {
+        if ($chat_member->getNewChatMember()->getStatus() == 'kicked'
+         || $chat_member->getNewChatMember()->getStatus() == 'left' ) {
             return false;
         }
         return true;

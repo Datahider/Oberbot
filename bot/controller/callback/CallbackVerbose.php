@@ -52,6 +52,7 @@ class CallbackVerbose extends AbstractCallback {
                 break;
             case '':
                 $view->show('controllerCallbackVerbose', 'ctrlkbdCallbackVerbose', [], $callback_query->getMessage()->getMessageId());
+                break;
             default: 
                 return 'ПОКА НЕ РЕАЛИЗОВАНО.';
         }

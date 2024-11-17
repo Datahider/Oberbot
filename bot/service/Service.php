@@ -17,6 +17,7 @@ class Service {
     static public function __($text) {
         $template = new Template('translations.php', Bot::$language_code);
         $template->assign('text', $text);
+        Bot::logComment(__FUNCTION__. ' is deprecated. Use __');
         return $template->process();
     }
 
@@ -29,7 +30,7 @@ class Service {
         } else {
             return "<a href=\"tg://user?id=$tg_id\">&lt;Неизвестный&gt;</a>";
         }
-
+        Bot::logComment(__FUNCTION__. ' is deprecated. Use __');
     }
 
     static public function mentionByIdArray(array $tg_ids, mixed $show_none='') {
@@ -57,6 +58,7 @@ class Service {
     static public function message(string $type, string $text, ?string $header=null, ?int $message_tread_id=null) {
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
         $view->show('tpl_message', null, ['type' => $type, 'header' => Service::__($header), 'text' => Service::__($text)], null, $message_tread_id);
+        Bot::logComment(__FUNCTION__. 'is deprecated. use message.');
     }
 
     static public function isAgent($user_id, $chat_id) : bool {

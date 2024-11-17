@@ -10,6 +10,7 @@ use losthost\templateHelper\Template;
 use losthost\BotView\BotView;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\Oberbot\data\topic;
+use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 
 function barIndicator($value, $max_value=100, $max_bars=30) {
     $bars_symbols = ['█', '▌', '▏'];
@@ -26,12 +27,41 @@ function barIndicator($value, $max_value=100, $max_bars=30) {
     }
 }
 
-function __($text) {
+function __(string $text, array $vars=[]) {
     $template = new Template('translations.php', Bot::$language_code);
     $template->assign('text', $text);
-    return $template->process();
+    $translated = $template->process();
+    
+    foreach ($vars as $key => $value) {
+        $translated = str_replace("%$key%", $value, $translated);
+    }
+    
+    return $translated;
 }
 
+function ifnull(mixed $value, mixed $default) {
+    if (is_null($value)) {
+        return $default;
+    }
+    return $value;
+}
+
+function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?int $thread_id=null, $language_code=null) {
+    
+    Bot::$api->sendMessage(
+            ifnull($chat_id, Bot::$chat->id),
+            $text, 'html',
+            false, null,
+            new InlineKeyboardMarkup(ifnull($keyboard, [])),
+            false,
+            $thread_id
+    );
+            
+    
+    
+    
+    
+}
 function message(string $type, string $text, ?string $header=null, ?int $message_tread_id=null) {
     $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
     $view->show('tpl_message', null, ['type' => $type, 'header' => __($header), 'text' => __($text)], null, $message_tread_id);

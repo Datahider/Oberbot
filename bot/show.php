@@ -13,11 +13,11 @@ function mention(user $user) : string {
     return "<a href=tg://user?id=$user->tg_id>$user->name</a>";
 }
 
-function mentionById(int $tg_id) {
+function mentionById(int $tg_id, bool $use_usernames = false) {
     
     $user = new DBView("SELECT first_name, last_name, username FROM [telle_users] WHERE id = ?", [$tg_id]);
     if ($user->next()) {
-        if ($user->username) {
+        if ($use_usernames && $user->username) {
             return "@$user->username";
         } else {
             return "<a href=tg://user?id=$tg_id>$user->first_name</a>";

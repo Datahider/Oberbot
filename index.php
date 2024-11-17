@@ -21,8 +21,6 @@ require_once 'vendor/autoload.php';
 
 Bot::setup();
 
-include 'test-env.php';
-
 chat_group::initDataStructure();
 note::initDataStructure();
 note_mention::initDataStructure();

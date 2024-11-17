@@ -26,7 +26,7 @@ require_once 'bot/functions.php';
 require_once 'bot/show.php';
 
 // Предварительная обработка
-Bot::addHandler(losthost\Oberbot\controller\pre\WizardStartWhenAdded::class);
+Bot::addHandler(\losthost\Oberbot\controller\pre\WizardStartWhenChatMember::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 
 // Обработка кнопок

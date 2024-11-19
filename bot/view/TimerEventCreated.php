@@ -9,8 +9,6 @@ use losthost\timetracker\Timer;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DBValue;
 use losthost\telle\Bot;
-use losthost\BotView\BotView;
-use losthost\Oberbot\data\chat;
 use losthost\Oberbot\view\AgentsMessage;
 use losthost\Oberbot\background\RemindRunningTimer;
 use losthost\Oberbot\background\StopRunningTimer;

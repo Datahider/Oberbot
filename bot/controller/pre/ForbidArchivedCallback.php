@@ -25,7 +25,7 @@ class ForbidArchivedCallback extends AbstractHandlerCallback {
             return $ticket->status == ticket::STATUS_ARCHIVED 
                     && $this->user_id != Bot::param('bot_userid', null);
             
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return false;
         }
     }

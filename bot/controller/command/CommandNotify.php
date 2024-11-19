@@ -15,13 +15,17 @@ class CommandNotify extends AbstractAuthCommand {
         $group_id = $message->getChat()->getId();
         $topic_id = $message->getMessageThreadId();
         
-        $ticket = ticket::getByGroupThread($group_id, $topic_id);
-        $customers = $ticket->getCustomers();
-        
-        if (!empty($customers)) {
-            Service::message('notification', Service::mentionByIdArray($customers), Service::__('<b>Ответьте</b>'), $topic_id);
+        if ($topic_id) {
+            $ticket = ticket::getByGroupThread($group_id, $topic_id);
+            $customers = $ticket->getCustomers();
+
+            if (!empty($customers)) {
+                Service::message('notification', Service::mentionByIdArray($customers), Service::__('<b>Ответьте</b>'), $topic_id);
+            } else {
+                Service::message('info', 'К тикету не привязан ни один пользователь.', null, $topic_id);
+            }
         } else {
-            Service::message('info', 'К тикету не привязан ни один пользователь.', null, $topic_id);
+            // TODO
         }
         
         return true;

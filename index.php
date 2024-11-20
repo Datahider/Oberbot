@@ -16,6 +16,7 @@ use losthost\Oberbot\data\accepting_message;
 use losthost\timetracker\Timer;
 use losthost\timetracker\TimerEvent;
 use losthost\timetracker\TagBinder;
+use losthost\Oberbot\data\chat_user;
 
 require_once 'vendor/autoload.php';
 
@@ -30,6 +31,7 @@ topic_admin::initDataStructure();
 topic_user::initDataStructure();
 chat::initDataStructure();
 user_chat_role::initDataStructure();
+chat_user::initDataStructure();
 accepting_message::initDataStructure();
 Timer::initDataStructure();
 TimerEvent::initDataStructure();

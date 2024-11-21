@@ -3,6 +3,10 @@
 namespace losthost\Oberbot\data;
 
 use losthost\DB\DBObject;
+use losthost\DB\DBView;
+use losthost\Oberbot\data\chat_user;
+use losthost\Oberbot\data\user_chat_role;
+use losthost\telle\Bot;
 
 class chat extends DBObject {
     
@@ -25,6 +29,41 @@ class chat extends DBObject {
             $chat->write();
         }
         return $chat;
+    }
+    
+    public function getCustomerIds() : array {
+        
+        $agent_ids_as_string = implode(', ', $this->getAgentIds());
+        $bot_userid = Bot::param('bot_userid', -1);
+        $ids = new DBView("SELECT user_id FROM [chat_user] WHERE user_id NOT IN ($bot_userid, $agent_ids_as_string) AND chat_id = ?", [$this->id]);
+        
+        $result = [];
+        while ($ids->next()) {
+            $result[] = $ids->user_id;
+        }
+        
+        return $result;
+    }
+    
+    public function isAgent(int $user_id) : bool {
+        
+        $role = new user_chat_role(['user_id' => $user_id, 'chat_id' => $this->id], true);
+        if ($role->isNew()) {
+            return false;
+        }
+        return $role->role == 'agent';
+    }
+    
+    public function getAgentIds() : array {
+        
+        $ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->id]);
+        
+        $result = [];
+        while ($ids->next()) {
+            $result[] = $ids->user_id;
+        }
+        
+        return $result;
     }
 }
 

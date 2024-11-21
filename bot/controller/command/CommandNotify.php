@@ -5,6 +5,11 @@ namespace losthost\Oberbot\controller\command;
 use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\service\Service;
 use losthost\telle\Bot;
+use losthost\Oberbot\data\chat;
+
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\mentionByIdArray;
+use function \losthost\Oberbot\__;
 
 class CommandNotify extends AbstractAuthCommand {
     
@@ -20,18 +25,16 @@ class CommandNotify extends AbstractAuthCommand {
             $ticket = ticket::getByGroupThread($group_id, $topic_id);
             $customers = $ticket->getCustomers();
         } else {
-            $customers = null; // Здесь нужно получать список пользователей чата,
-                               // но бот не может их запросить у телеги, значит надо вести самому
-                               // Можно обновлять данные при сообщениях пользователей, а ночью 
-                               // чистить тех, кто у нас учтён, но уже не является членом группы
-                               //
+            $chat = new chat(['id' => $group_id]); 
+            $customers = $chat->getCustomerIds();
         }   
 
-        if (!empty($customers)) {
-            Service::message('notification', Service::mentionByIdArray($customers), Service::__('<b>Ответьте</b>'), $topic_id);
-        } else {
-            Service::message('info', 'К тикету не привязан ни один пользователь.', null, $topic_id);
+        if (!$this->args) {
+            $this->args = __('ознакомьтесь с последними сообщениями в этом чате.');
         }
+
+        Bot::$api->deleteMessage($group_id, $message->getMessageId());
+        sendMessage(mentionByIdArray($customers, __('Уважаемые пользователи'), true). ', '. $this->args, null, $group_id, $topic_id);
         
         return true;
     }

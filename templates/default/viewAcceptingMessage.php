@@ -70,4 +70,4 @@ do {
 <?= $priority_footer; ?>️
 
 <b>Для агентов:</b>
-/take
+/take /done

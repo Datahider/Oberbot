@@ -7,6 +7,9 @@ use losthost\BotView\BotView;
 use losthost\Oberbot\data\note;
 use losthost\Oberbot\service\Service;
 
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
+
 class CommandStart extends AbstractAuthCommand {
     
     const COMMAND = 'start';
@@ -15,8 +18,10 @@ class CommandStart extends AbstractAuthCommand {
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         if (!$this->args) {
-            $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-            $view->show('controllerCommandStart', 'controllerKeyboardCommandStart');
+            sendMessage(__('Приветственное сообщение'), 
+                    [
+                        [['text' => __('️Кнопка Что дальше?'), 'callback_data' => 'verbose']]
+                    ]);
         } else {
             $user_id = $message->getFrom()->getId();
 

@@ -3,12 +3,11 @@
 namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\data\ticket;
-use losthost\Oberbot\service\Service;
 
 class CommandDone extends AbstractAuthCommand {
     
     const COMMAND = 'done';
-    const PERMIT = self::PERMIT_AGENT;
+    const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER; // Пользователи тоже могут закрывать заявки, почему бы и нет
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         

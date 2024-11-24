@@ -54,7 +54,7 @@ function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?i
             false, null,
             new InlineKeyboardMarkup(ifnull($keyboard, [])),
             false,
-            $thread_id
+            $thread_id == 1 ? null : $thread_id
     );
             
     

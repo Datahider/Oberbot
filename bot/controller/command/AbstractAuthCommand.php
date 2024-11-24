@@ -23,6 +23,8 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     
     const PERMIT = self::PERMIT_NONE;
 
+    protected int $current_permit;
+    
     public function handleUpdate(\TelegramBot\Api\BaseType &$data): bool {
         
         $from_id = $data->getFrom()->getId();
@@ -33,22 +35,26 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         try {
             if ($from_id == $chat_id) {
                 if (static::PERMIT & static::PERMIT_PRIVATE) {
+                    $this->current_permit = static::PERMIT_PRIVATE;
                     return parent::handleUpdate($data);
                 }
             }
 
             if ( isAgent($from_id, $chat_id) ) {
                 if (static::PERMIT & static::PERMIT_AGENT) {
+                    $this->current_permit = static::PERMIT_AGENT;
                     return parent::handleUpdate($data);
                 }
             } else {
                 if (static::PERMIT & static::PERMIT_USER) {
+                    $this->current_permit = static::PERMIT_USER;
                     return parent::handleUpdate($data);
                 }
             }
 
             if (isChatAdministrator($from_id, $chat_id)) {
                 if (static::PERMIT & static::PERMIT_ADMIN) {
+                    $this->current_permit = static::PERMIT_ADMIN;
                     return parent::handleUpdate($data);
                 }
             }

@@ -12,15 +12,11 @@ class CommandCreate extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
-        
         try {
-            ticket::getByGroupThread($group_id, $thread_id);
-            Service::message('warning', "Заявка связанная с этим топиком уже существует.", null, $thread_id);
+            ticket::getByGroupThread($this->chat_id, $this->thread_id);
+            Service::message('warning', "Заявка связанная с этим топиком уже существует.", null, $this->thread_id);
         } catch (\Exception $ex) {
-            $ticket = ticket::create($group_id, $thread_id, $this->args, $user_id);
+            $ticket = ticket::create($this->chat_id, $this->thread_id, $this->args, $this->user_id);
             $ticket->accept();
         }
         

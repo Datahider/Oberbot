@@ -51,5 +51,10 @@ class CommandHelp extends AbstractAuthCommand {
         
     }
     
-    
+    static public function getSupportKeyboardArray() : array {
+        
+        return [
+            [[ 'text' => __('Связаться с поддержкой'), 'callback_data' => 'call_help']],
+        ];
+    }
 }

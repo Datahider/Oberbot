@@ -12,11 +12,8 @@ class CommandArchive extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        
         try {
-            $ticket = ticket::getByGroupThread($group_id, $thread_id);
+            $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         } catch (\Exception $ex) {
             throw new \Exception(__('Эта команда предназначена для использования внутри заявки.'));
         }

@@ -11,12 +11,8 @@ class CommandUnlink extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
     
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
-        
-        $ticket = ticket::getByGroupThread($group_id, $thread_id);
-        $ticket->unlink($user_id);
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
+        $ticket->unlink($this->user_id);
         
         return true;
     }

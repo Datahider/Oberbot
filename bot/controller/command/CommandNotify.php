@@ -18,14 +18,11 @@ class CommandNotify extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $topic_id = $message->getMessageThreadId();
-        
         if ($topic_id) {
-            $ticket = ticket::getByGroupThread($group_id, $topic_id);
+            $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
             $customers = $ticket->getCustomers();
         } else {
-            $chat = new chat(['id' => $group_id]); 
+            $chat = new chat(['id' => $this->chat_id]); 
             $customers = $chat->getCustomerIds();
         }   
 
@@ -33,8 +30,8 @@ class CommandNotify extends AbstractAuthCommand {
             $this->args = __('ознакомьтесь с последними сообщениями в этом чате.');
         }
 
-        Bot::$api->deleteMessage($group_id, $message->getMessageId());
-        sendMessage(mentionByIdArray($customers, __('Уважаемые пользователи'), true). ', '. $this->args, null, $group_id, $topic_id);
+        Bot::$api->deleteMessage($this->chat_id, $message->getMessageId());
+        sendMessage(mentionByIdArray($customers, __('Уважаемые пользователи'), true). ', '. $this->args, null, $this->chat_id, $this->thread_id);
         
         return true;
     }

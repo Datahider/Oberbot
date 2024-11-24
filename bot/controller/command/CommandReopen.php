@@ -11,10 +11,7 @@ class CommandReopen extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        
-        $ticket = ticket::getByGroupThread($group_id, $thread_id);
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         $ticket->reopen();
         
         return true;

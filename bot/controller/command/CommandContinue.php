@@ -15,16 +15,12 @@ class CommandContinue extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
-        
-        $ticket = ticket::getByGroupThread($group_id, $thread_id);
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
 
-        if ($ticket->hasAgent($user_id)) {
-            $ticket->timerStart($user_id);
+        if ($ticket->hasAgent($this->user_id)) {
+            $ticket->timerStart($this->user_id);
         } else {
-            message('warning', sprintf(__('%s, вы не связаны с этой заявкой. Испольуйте команду /take.'), mentionById($user_id)), null, $thread_id);
+            message('warning', sprintf(__('%s, вы не связаны с этой заявкой. Испольуйте команду /take.'), mentionById($this->user_id)), null, $this->thread_id);
         }
         
         return true;

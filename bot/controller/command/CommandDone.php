@@ -11,10 +11,7 @@ class CommandDone extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $topic_id = $message->getMessageThreadId();
-        
-        $ticket = ticket::getByGroupThread($group_id, $topic_id);
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         $ticket->close();
 
         return true;

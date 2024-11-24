@@ -25,22 +25,27 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
 
     protected int $current_permit;
     
+    protected int $chat_id;
+    protected ?int $thread_id;
+    protected int $user_id;
+
     public function handleUpdate(\TelegramBot\Api\BaseType &$data): bool {
         
-        $from_id = $data->getFrom()->getId();
-        $chat_id = $data->getChat()->getId();
+        $this->user_id = $data->getFrom()->getId();
+        $this->chat_id = $data->getChat()->getId();
+        $this->thread_id = $data->getIsTopicMessage() ? $data->getMessageThreadId() : 1;
 
         $this->deleteMessageIfNeeded($data);
         
         try {
-            if ($from_id == $chat_id) {
+            if ($this->user_id == $this->chat_id) {
                 if (static::PERMIT & static::PERMIT_PRIVATE) {
                     $this->current_permit = static::PERMIT_PRIVATE;
                     return parent::handleUpdate($data);
                 }
             }
 
-            if ( isAgent($from_id, $chat_id) ) {
+            if ( isAgent($this->user_id, $this->chat_id) ) {
                 if (static::PERMIT & static::PERMIT_AGENT) {
                     $this->current_permit = static::PERMIT_AGENT;
                     return parent::handleUpdate($data);
@@ -52,7 +57,7 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
                 }
             }
 
-            if (isChatAdministrator($from_id, $chat_id)) {
+            if (isChatAdministrator($this->user_id, $this->chat_id)) {
                 if (static::PERMIT & static::PERMIT_ADMIN) {
                     $this->current_permit = static::PERMIT_ADMIN;
                     return parent::handleUpdate($data);
@@ -86,8 +91,11 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         } catch (\Exception $ex) {
             Bot::logException($ex);
         }
-            
-        
 
     }
+    
+    protected function showHelp() {
+        sendMessage(__('Помощь по команде /%command%', ['command' => static::COMMAND]), CommandHelp::getSupportKeyboardArray(), null, $this->thread_id);
+    }
+    
 }

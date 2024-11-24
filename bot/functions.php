@@ -57,11 +57,9 @@ function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?i
             $thread_id == 1 ? null : $thread_id
     );
             
-    
-    
-    
-    
 }
+
+
 function message(string $type, string $text, ?string $header=null, ?int $message_tread_id=null) {
     $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
     $view->show('tpl_message', null, ['type' => $type, 'header' => __(ifnull($header, '')), 'text' => __($text)], null, $message_tread_id);

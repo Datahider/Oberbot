@@ -14,11 +14,7 @@ class CommandUp extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
-        
-        if ($thread_id) {
+        if ($this->thread_id) {
             Service::message('warning', 'Команда /up предназначена для использования в общем чате группы.');
             return true;
         }
@@ -38,10 +34,10 @@ class CommandUp extends AbstractAuthCommand {
                     AND (wait_for.status IS NULL OR wait_for.status NOT IN ($statuses))
                 FIN;
         
-        $ticket = new DBView($sql, [$group_id]);
+        $ticket = new DBView($sql, [$this->chat_id]);
         
         while ($ticket->next()) {
-            Service::message('none', sprintf(Service::__('%s поднял заявку.'), Service::mentionById($user_id)), null, $ticket->topic_id);
+            Service::message('none', sprintf(Service::__('%s поднял заявку.'), Service::mentionById($this->user_id)), null, $ticket->topic_id);
         }
         
         return true;

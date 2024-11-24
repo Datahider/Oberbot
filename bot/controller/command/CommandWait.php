@@ -40,19 +40,15 @@ class CommandWait extends AbstractAuthCommand {
         'с' => 'S'
     ];
     
-    protected int $group_id;
-    protected int $thread_id;
-    protected int $user_id;
-
     protected ticket $ticket;
 
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $this->group_id = $message->getChat()->getId();
+        $this->chat_id = $message->getChat()->getId();
         $this->thread_id = $message->getMessageThreadId();
         $this->user_id = $message->getFrom()->getId();
-        $this->ticket = ticket::getByGroupThread($this->group_id, $this->thread_id);
+        $this->ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         
         if ($this->thread_id > 1) {
             if ($this->args) {

@@ -11,13 +11,9 @@ class CommandTake extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
-        
-        $ticket = ticket::getByGroupThread($group_id, $thread_id);
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
 
-        $ticket->linkAgent($user_id)->timerStart($user_id);
+        $ticket->linkAgent($this->user_id)->timerStart($this->user_id);
         
         return true;
     }

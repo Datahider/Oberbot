@@ -12,15 +12,11 @@ class CommandPause extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $group_id = $message->getChat()->getId();
-        $thread_id = $message->getMessageThreadId();
-        $user_id = $message->getFrom()->getId();
+        $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
+        $ticket->touchAdmin($this->user_id);
+        $ticket->timerStop($this->user_id);
         
-        $ticket = ticket::getByGroupThread($group_id, $thread_id);
-        $ticket->touchAdmin($user_id);
-        $ticket->timerStop($user_id);
-        
-        Service::showNextTicket($message->getFrom()->getId());
+        Service::showNextTicket($this->user_id);
         return true;
     }
 }

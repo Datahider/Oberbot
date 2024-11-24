@@ -48,7 +48,7 @@ function ifnull(mixed $value, mixed $default) {
 
 function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?int $thread_id=null, $language_code=null) {
     
-    Bot::$api->sendMessage(
+    $message = Bot::$api->sendMessage(
             ifnull($chat_id, Bot::$chat->id),
             $text, 'html',
             false, null,
@@ -57,6 +57,7 @@ function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?i
             $thread_id == 1 ? null : $thread_id
     );
             
+    return $message->getMessageId();
 }
 
 

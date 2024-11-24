@@ -35,6 +35,7 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHelp::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHid::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
@@ -65,6 +66,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandReserve::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandTask::class);

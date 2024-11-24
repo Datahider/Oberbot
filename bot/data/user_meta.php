@@ -52,4 +52,5 @@ class user_meta extends DBObject {
             static::set($user_id, 'paid_till', $paid_till->format(DB::DATE_FORMAT));
         }
     }
+    
 }

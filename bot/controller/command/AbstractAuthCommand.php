@@ -12,6 +12,8 @@ use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\message;
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\isChatAdministrator;
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\mentionById;
 
 abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     
@@ -65,10 +67,10 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
             }
 
             
-            throw new \Exception('%s, you are not allowed to run this command.');
+            throw new \Exception('%mention%, you are not allowed to run this command.');
             
         } catch (\Exception $ex) {
-            Service::message('warning', sprintf(Service::__($ex->getMessage()), Service::mentionById(Bot::$user->id)), null, $data->getMessageThreadId());
+            sendMessage(__($ex->getMessage(), ['mention' => mentionById(Bot::$user->id)]), null, null, $this->thread_id);
             Bot::logException($ex);
         }
         
@@ -95,7 +97,7 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     }
     
     protected function showHelp() {
-        sendMessage(__('Помощь по команде /%command%', ['command' => static::COMMAND]), CommandHelp::getSupportKeyboardArray(), null, $this->thread_id);
+        sendMessage(__(__('Помощь по команде /%command%', ['command' => static::COMMAND])), CommandHelp::getSupportKeyboardArray(Bot::$chat->id), null, $this->thread_id);
     }
     
 }

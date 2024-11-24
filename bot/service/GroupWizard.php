@@ -10,6 +10,7 @@ use losthost\Oberbot\data\user_meta;
 
 use function losthost\Oberbot\__;
 use function losthost\Oberbot\mentionById;
+use function \losthost\Oberbot\sendMessage;
 
 class GroupWizard {
     
@@ -37,15 +38,7 @@ class GroupWizard {
         
         if ($is_forum && $is_admin) {
             $this->chat->wizard_message_id = null;
-            Service::message('info', "Проверка группы завершена.");
-            
-            if (user_meta::get(Bot::$user->id, 'AddAgentTip', 'on') == 'on') {
-                $view = new BotView(Bot::$api, $this->chat->id, Bot::$language_code);
-                $view->show('viewTip', 'kbdTip', [
-                    'tip_text' => sprintf(__('AddAgentTip'), mentionById(Bot::$user->id, true)),
-                    'tip_name' => 'AddAgentTip',
-                ]);
-            }
+            sendMessage(__('Проверка группы завершена.'));
         }
         $this->chat->isModified() && $this->chat->write('', ['mute' => true]);
         

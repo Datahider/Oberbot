@@ -20,10 +20,10 @@ function mentionById(int $tg_id, bool $use_usernames = false) {
         if ($use_usernames && $user->username) {
             return "@$user->username";
         } else {
-            return "<a href=tg://user?id=$tg_id>$user->first_name</a>";
+            return "<a href=\"tg://user?id=$tg_id\">$user->first_name</a>";
         }
     } else {
-        return "<a href=tg://user?id=$tg_id>&lt;Неизвестный&gt;</a>";
+        return "Уважаемый пользователь";
     }
     
 }

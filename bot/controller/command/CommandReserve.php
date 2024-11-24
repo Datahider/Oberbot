@@ -27,6 +27,15 @@ class CommandReserve extends AbstractAuthCommand {
             $support_chat->invite_link = Bot::$api->exportChatInviteLink($this->chat_id);
             $support_chat->reserved_message_id = $this->reportSuccess();
             $support_chat->write();
+            
+            try {
+                Bot::$api->call('editGeneralForumTopic', [
+                    'chat_id' => Bot::$chat->id,
+                    'name' => __('Общий чат')
+                ]);
+            } catch (\Exception $ex) {
+                Bot::logException($ex);
+            }
         }
         
         Bot::$api->deleteMessage($this->chat_id, $message->getMessageId());

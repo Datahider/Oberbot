@@ -6,6 +6,7 @@ use losthost\telle\Bot;
 
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
+use function \losthost\Oberbot\mentionById;
 
 class CommandReserve extends AbstractAuthCommand {
     
@@ -13,6 +14,11 @@ class CommandReserve extends AbstractAuthCommand {
     const PERMIT = self::PERMIT_ADMIN;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        $allowed_user_ids = explode(' ', Bot::param('allow_group_reserve', ''));
+        if (array_search(Bot::$user->id, $allowed_user_ids) === false) {
+            throw new \Exception(__('%mention%, you are not allowed to run this command.', ['mention' => mentionById(Bot::$user->id)]));
+        }
         
         $support_chat = new support_chat(['id' => $this->chat_id], true);
         if (!$support_chat->isNew()) {

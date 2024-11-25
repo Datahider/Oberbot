@@ -66,6 +66,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandReport::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandReserve::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);
@@ -80,7 +81,6 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandNext::class);
 
 // Эти команды обрабатываются в любых чатах, куда добавлен бот
 Bot::addHandler(losthost\Oberbot\handlers\CommandReviewHandler::class);
-Bot::addHandler(losthost\Oberbot\handlers\CommandReportHandler::class);
 Bot::addHandler(losthost\Oberbot\handlers\CommandMd::class);
 
 // REVIEW - похоже это обработка кнопки присоединения к тикету. Проверить

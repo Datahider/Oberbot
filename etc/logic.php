@@ -21,6 +21,8 @@ use losthost\Oberbot\data\topic_user;
 use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\note;
+use losthost\Oberbot\data\wait;
+use losthost\DB\DBList;
 
 require_once 'bot/functions.php';
 require_once 'bot/show.php';
@@ -120,3 +122,21 @@ $bot_username->value = $data->getUsername();
 $bot_userid->value = $data->getId();
 
 Bot::param('workers_count', 1);
+
+$modify = new DBList(ticket::class, 'wait_for IS NOT NULL', []);
+
+while ($ticket = $modify->next()) {
+    $wait = new wait(['task_id' => $ticket->id, 'subtask_id' => $ticket->wait_for], true);
+    DB::beginTransaction();
+    try {
+        if ($wait->isNew()) {
+            $wait->write();
+        }
+        $ticket->wait_for = null;
+        $ticket->write();
+    } catch (\Exception $exc) {
+        DB::rollBack();
+        Bot::logException($exc);
+    }
+    DB::commit();
+}

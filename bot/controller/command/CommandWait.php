@@ -103,8 +103,7 @@ class CommandWait extends AbstractAuthCommand {
             $depending_topic = ticket::getById($matches[1]);
             $entity = $depending_topic->entityName(2);
             
-            $this->ticket->wait_for = $matches[1];
-            $this->ticket->write();
+            $this->ticket->waitTask($matches[1]);
             
             return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до решения "). "$entity ". Service::ticketMention($depending_topic);
         } elseif (preg_match("/^\d*$/", $this->args)) {
@@ -112,8 +111,7 @@ class CommandWait extends AbstractAuthCommand {
             $interval = new \DateInterval("PT{$this->args}M");
             $now = \date_create_immutable();
             $till = $now->add($interval);
-            $this->ticket->wait_till = $till->format('Y-m-d H:i:s');
-            $this->ticket->write();
+            $this->ticket->waitTime($till);
             
             Bot::runAt($till, RemindTicket::class, "$this->user_id {$this->ticket->id}");
             return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до "). $till->format('d-m-Y H:i');

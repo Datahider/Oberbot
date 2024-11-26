@@ -14,7 +14,7 @@ class CommandUp extends AbstractAuthCommand {
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        if ($this->thread_id) {
+        if ($this->thread_id > 1) {
             Service::message('warning', 'Команда /up предназначена для использования в общем чате группы.');
             return true;
         }

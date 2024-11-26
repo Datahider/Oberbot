@@ -77,10 +77,15 @@ class CommandAgent extends AbstractAuthCommand {
     }
     
     protected function reportSuccess(array $modified) {
-        
+        $agent_ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [Bot::$chat->id]);
+        $all_agents = mentionByView($agent_ids, '-', true, 'user_id');
+        $added_agents = mentionByIdArray($modified, '-', true);
+
+        sendMessage(__("Актуальный список агентов: %all_agents%\n\nДобавлены: <b>%added_agents%</b>", compact('all_agents', 'added_agents')));
+        return true;
     }
     
     protected function getUnpaid() {
-        
+        return [];
     }
 }

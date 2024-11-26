@@ -13,6 +13,7 @@ use losthost\Oberbot\data\accepting_message;
 use losthost\Oberbot\service\Service;
 use losthost\DB\DB;
 use losthost\telle\Bot;
+use losthost\Oberbot\data\wait;
 
 class ticket extends topic {
     
@@ -318,6 +319,20 @@ class ticket extends topic {
         $accepted_message = new accepting_message(['ticket_id' => $this->id], true);
         $accepted_message->message_id = $message_id;
         $accepted_message->isModified() && $accepted_message->write();
+    }
+    
+    public function waitTime(\DateTime|\DateTimeImmutable $time) {
+        $this->wait_till = $time->format(DB::DATE_FORMAT);
+        $this->write();
+    }
+    
+    public function waitTask(int $ticket_id) {
+        $wait = new wait(['task_id' => $this->id, 'subtask_id' => $ticket_id], true);
+        if ($wait->isNew()) {
+            $wait->write();
+            return true;
+        }
+        return false;
     }
     
     protected function entityTaskName($case) {

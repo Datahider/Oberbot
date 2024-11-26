@@ -11,6 +11,7 @@ use losthost\Oberbot\data\session;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DBValue;
 use TelegramBot\Api\Types\Message;
+use losthost\Oberbot\view\TicketQueue;
 
 class Service {
     
@@ -97,6 +98,14 @@ class Service {
     }
     
     static public function getOldestTicket(int $user_id, ?string $group=null) : ?ticket {
+        
+        $q = TicketQueue::getQueue($user_id, is_null($group) ? 'all' : $group);
+        if (empty($q)) {
+            return null;
+        } else {
+            return $q[0];
+        }
+        
         
         $chat_ids = implode(',', static::getAgentChatIds($user_id));
         $status_new = ticket::STATUS_NEW;

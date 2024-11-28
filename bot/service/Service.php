@@ -168,6 +168,11 @@ class Service {
         $user = new DBView('SELECT language_code FROM [telle_users] WHERE id=?', [$session->user_id]);
         if ($user->next()) {
             $ticket = static::getOldestTicket($user_id, $session->working_group);
+            $ticket_from_all = static::getOldestTicket($user_id);
+            
+            if ($ticket->is_task && !$ticket_from_all->is_task) {
+                $ticket = $ticket_from_all;
+            }
 
             $view = new BotView(Bot::$api, $user_id, $user->language_code);
             $view->show('controllerCommandNext', null, ['ticket' => $ticket, 'working_group' => $session->working_group]);

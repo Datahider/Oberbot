@@ -6,6 +6,9 @@ use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\Oberbot\service\Service;
 
+use function \losthost\Oberbot\__;
+use function \losthost\Oberbot\sendMessage;
+
 class CallbackContinue extends AbstractCallback {
     
     const CALLBACK_DATA_PATTERN = "/^continue$/";
@@ -25,7 +28,7 @@ class CallbackContinue extends AbstractCallback {
         if ($ticket->hasAgent($user_id)) {
             $ticket->timerStart($user_id);
         } else {
-            Service::message('warning', sprintf(__('%s, вы не связаны с этой заявкой. Испольуйте команду /take.'), mentionById($user_id)), null, $thread_id);
+            sendMessage(__('%mention%, вы не связаны с этой заявкой. Испольуйте команду /take.', ['mention' => mentionById($user_id)]), null, null, $thread_id);
         }
         
         return true;

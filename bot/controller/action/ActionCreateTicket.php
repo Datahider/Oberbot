@@ -2,19 +2,49 @@
 
 namespace losthost\Oberbot\controller\action;
 
+use losthost\telle\Bot;
+use losthost\Oberbot\data\ticket;
+
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\mentionById;
+use function \losthost\Oberbot\ifnull;
 
 class ActionCreateTicket {
     
-    static public function do(int $chat_id, int $user_id, string $title, string $message) {
+    static public function do(?int $from_chat_id, int $chat_id, int $user_id, string $title, int|string|array $messages) : ticket {
 
-        $forum_topic = Bot::$api->createForumTopic($chat_id, $title, Service::getRandomTopicIconColor());
-        $new_thread = $forum_topic->getMessageThreadId();
-        sendMessage($message, null, $chat_id, $new_thread);
-
+        $from_chat_id = ifnull($from_chat_id, $chat_id);
+        
+        if (!is_array($messages)) {
+            $messages = [$messages];
+        }
+        
+        $new_thread = static::createTopicInGroup($chat_id, $title);
+        
+        foreach ($messages as $message) {
+            if (is_int($message)) {
+                Bot::$api->forwardMessage($chat_id, $from_chat_id, $message, false, false, $new_thread);
+            } else {
+                $text = __('От %author%:', mentionById($user_id, true)). "\n";
+                sendMessage($text, null, $chat_id, $new_thread);
+            }
+        }
+        
         $new_ticket = ticket::create($chat_id, $new_thread, $title, $user_id);
         $new_ticket->linkCustomer($user_id);
         $new_ticket->accept();
+        
+        return $new_ticket;
+    }
+    
+    static public function createTopicInGroup(int $chat_id, string $title, ?int $icon_color=null, ?int $icon=null) {
+        if (is_null($icon_color)) {
+            $icon_color = Service::getRandomTopicIconColor();
+        }
+        
+        $forum_topic = Bot::$api->createForumTopic($chat_id, $title, $icon_color, $icon);
+        $new_thread = $forum_topic->getMessageThreadId();
+        return $new_thread;
     }
 }

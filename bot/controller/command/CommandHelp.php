@@ -30,7 +30,7 @@ class CommandHelp extends AbstractAuthCommand {
     }
     
     protected function privateHelp(\TelegramBot\Api\Types\Message &$message) {
-        
+        sendMessage(__('Сообщение помощи в чате с ботом'));
     }
     
     protected function groupHelp(\TelegramBot\Api\Types\Message &$message) {

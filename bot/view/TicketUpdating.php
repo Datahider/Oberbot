@@ -13,6 +13,7 @@ use losthost\Oberbot\view\Emoji;
 use losthost\DB\DBView;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\telle\model\DBPendingJob;
+use losthost\timetracker\Timer;
 
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
@@ -62,12 +63,16 @@ class TicketUpdating extends DBTracker {
             return;
         }
         
-        if (!$this->ticket->is_urgent || $this->ticket->is_task) {
+        if ($this->ticket->is_task) {
             return;
         }
         
         // TODO -- доставать так же language_code
-        $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
+        if ($this->ticket->is_urgent) {
+            $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
+        } else {
+            $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] AS r LEFT JOIN [timers] AS t ON t.subject = r.user_id WHERE r.role = "agent" AND r.chat_id = ? AND t.current_event IS NULL', [$this->ticket->chat_id]);
+        }
         
         while ($agent->next()) {
             $view = new BotView(Bot::$api, $agent->id);

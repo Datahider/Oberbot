@@ -19,6 +19,7 @@ class Emoji {
 
     const ICON_SOS = '🆘';
     const ICON_LIFEBUOY = '🛟';
+    const ICON_EXCLAMATION = '❗️';
     const ICON_DONE = '✅';
     const ICON_TODO = '🔲';
     

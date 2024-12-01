@@ -38,7 +38,7 @@ class GroupWizard {
         
         if ($is_forum && $is_admin) {
             $this->chat->wizard_message_id = null;
-            sendMessage(__('Проверка группы завершена.'));
+            sendMessage(__('Проверка группы завершена.', ['mention' => mentionById(Bot::$user->id, true)]));
         }
         $this->chat->isModified() && $this->chat->write('', ['mute' => true]);
         

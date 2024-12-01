@@ -10,6 +10,8 @@ class CommandSub extends AbstractAuthCommand {
     const COMMAND = 'sub';
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
+    protected array $m;
+    
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         $this->check2($message);
@@ -23,7 +25,22 @@ class CommandSub extends AbstractAuthCommand {
     }
     
     protected function check2(\TelegramBot\Api\Types\Message &$message) {
-        throw new \Exception('Not implemented yet');
+        $this->m = [];
+        preg_match_all("/^(.*)$/m", $this->args, $this->m);
+        
+        if ($message->getIsTopicMessage()) {
+            if ($message->getReplyToMessage()->getMessageId() == $message->getMessageThreadId()) {
+                $reply_to_message = null;
+            } else {
+                $reply_to_message = $message->getReplyToMessage()->getMessageId();
+            }
+        } else {
+            $reply_to_message = $message->getReplyToMessage();
+        }
+        
+        if (!$reply_to_message && !isset($this->m[1][1])) {
+            throw new \Exception('Команда /sub должна цитировать сообщение или содержать более одной строки текста.');
+        }
     }
     
     protected function getTitle(\TelegramBot\Api\Types\Message &$message) : string {

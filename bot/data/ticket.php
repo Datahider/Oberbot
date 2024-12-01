@@ -164,7 +164,16 @@ class ticket extends topic {
             throw new \Exception("Can not archive non-closed ticket.");
         }
         $this->status = static::STATUS_ARCHIVED;
-        $this->write('', ['function' => 'archive']);
+        DB::beginTransaction();
+        try {
+            $this->write('', ['function' => 'archive']);
+            $sth = DB::prepare('DELETE FROM [private_topic] WHERE ticket_id = ?');
+            $sth->execute([$this->id]);
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            Bot::logException($ex);
+        }
         
         return $this;
     }

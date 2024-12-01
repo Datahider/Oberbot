@@ -4,6 +4,7 @@ namespace losthost\Oberbot\controller\action;
 
 use losthost\telle\Bot;
 use losthost\Oberbot\data\ticket;
+use losthost\Oberbot\service\Service;
 
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\sendMessage;
@@ -43,8 +44,19 @@ class ActionCreateTicket {
             $icon_color = Service::getRandomTopicIconColor();
         }
         
-        $forum_topic = Bot::$api->createForumTopic($chat_id, $title, $icon_color, $icon);
+        $forum_topic = Bot::$api->createForumTopic($chat_id, static::normalizeTitle($title), $icon_color, $icon);
         $new_thread = $forum_topic->getMessageThreadId();
         return $new_thread;
+    }
+    
+    static protected function normalizeTitle(string $text) {
+        $m = [];
+        preg_match("/^(.*)$/m", $text, $m);
+        
+        $first_line = $m[1];
+        if (mb_strlen($first_line) > 128) {
+            $first_line = mb_substr($first_line, 0, 127). '…';
+        }
+        return $first_line;
     }
 }

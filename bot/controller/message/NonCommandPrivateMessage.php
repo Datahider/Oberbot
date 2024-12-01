@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\handlers;
+namespace losthost\Oberbot\controller\message;
 
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\private_topic;
@@ -11,12 +11,13 @@ use losthost\DB\DB;
 use losthost\ProxyMessage\Proxy;
 use TelegramBot\Api\Types\MessageEntity;
 use losthost\ProxyMessage\MessageText;
+use losthost\Oberbot\controller\action\ActionCreateTicket;
+use losthost\Oberbot\data\ticket;
 
 use function \losthost\Oberbot\message;
 use function \losthost\Oberbot\__;
 use function losthost\Oberbot\cleanup_message_for_ticket_title;
-use function \losthost\Oberbot\newTopicTitle;
-use function \losthost\Oberbot\showNewTopicGreating;
+use function \losthost\Oberbot\sendMessage;
 
 /**
  * Обрабатывает сообщения (не команды) в личном чате с ботом
@@ -25,6 +26,10 @@ use function \losthost\Oberbot\showNewTopicGreating;
  */
 class NonCommandPrivateMessage extends AbstractHandlerMessage {
     
+    protected private_topic $private_topic;
+    protected ticket $ticket;
+
+
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
         
         if (substr($message->getText(), 0, 1) === '/') {
@@ -45,12 +50,12 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
             return true;
         }
         
-        $private_topic = new private_topic(['user_id' => $message->getFrom()->getId()], true);
-        if ($private_topic->isNew()) {
+        $this->private_topic = new private_topic(['user_id' => $message->getFrom()->getId()], true);
+        if ($this->private_topic->isNew()) {
             DB::beginTransaction();
             try {
-                $private_topic->ticket_id = $this->newTopic($message);
-                $private_topic->write();
+                $this->private_topic->ticket_id = $this->newTopic($message);
+                $this->private_topic->write();
                 DB::commit();
             } catch (Exception $exc) {
                 Bot::logException($exc);
@@ -60,44 +65,28 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
         } else {
             $this->oldTopic($message);
         }
-        
+
         return true;
     }
     
     protected function newTopic(\TelegramBot\Api\Types\Message &$message) : int { // new topic id
         
         $chat_id = Bot::param('chat_for_private_tickets', null);
-        $title = $this->makeTitle($message);
+        $uid = $message->getFrom()->getUsername() ? '@'. $message->getFrom()->getUsername() : $message->getFrom()->getId();
+        $title = trim(sprintf('%s | %s %s', $uid, $message->getFrom()->getFirstName(), $message->getFrom()->getLastName()));
 
-        $topic = Bot::$api->createForumTopic(
-            $chat_id, 
-            $title,
-            [7322096, 16766590, 13338331, 9367192, 16749490, 16478047][rand(0,5)]
-        );
+        $from_id = $message->getFrom()->getId();
+        $message_id = $message->getMessageId();
         
+        $this->ticket = ActionCreateTicket::do($from_id, $chat_id, $from_id, $title, [$message_id]);
+
         $proxy = new Proxy(Bot::$api, $this->getUserPrefix($message));
-        $proxy->proxy($message, $chat_id, $topic->getMessageThreadId());
+        $proxy->proxy($message, $chat_id, $this->ticket->topic_id);
 
-        $ticket = new topic(['chat_id' => $chat_id, 'topic_id' => $topic->getMessageThreadId(), 'topic_title' => $title], true);
-        if ($ticket->isNew()) {
-            $ticket->last_activity = time();
-            $ticket->last_admin_activity = 0;
-            $ticket->status = topic::STATUS_NEW;
-            $ticket->is_urgent = false;
-            $ticket->is_task = false;
-            $ticket->write();
-            $ticket->addIdToTitle();
-            $ticket->write();
-        } else {
-            throw new \Exception('This topic already exists.');
-        }
-
-        $ticket_user = new topic_user(['user_id' => $message->getFrom()->getId(), 'topic_number' => $ticket->id], true);
-        $ticket_user->isNew() && $ticket_user->write();
-        Bot::$api->editForumTopic($chat_id, $ticket->topic_id, $ticket->topic_title);
+        $this->ticket->toTicket();
+        $this->ticket->setUrgent();
         
-        showNewTopicGreating($ticket);
-        return $ticket->id;
+        return $this->ticket->id;
     }
 
     protected function getUserPrefix(\TelegramBot\Api\Types\Message &$message) {
@@ -117,20 +106,21 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
     }
     
     protected function oldTopic(\TelegramBot\Api\Types\Message &$message) {
-        $private_topic = new private_topic(['user_id' => $message->getFrom()->getId()]);
-        $ticket = new topic(['id' => $private_topic->ticket_id]);
+        $this->ticket = ticket::getById($this->private_topic->ticket_id);
         
         $proxy = new Proxy(Bot::$api, $this->getUserPrefix($message));
-        $proxy->proxy($message, Bot::param('chat_for_private_tickets', null), $ticket->topic_id);
-        $ticket->last_activity = time();
-        $ticket->write();
+        $proxy->proxy($message, Bot::param('chat_for_private_tickets', null), $this->ticket->topic_id);
+        $this->ticket->touchUser();
+        if ($this->ticket->status == ticket::STATUS_CLOSED) {
+            $this->ticket->reopen();
+        }
     }
     
     protected function makeTitle(\TelegramBot\Api\Types\Message &$message) : string {
         if ($message->getText()) {
-            return substr(cleanup_message_for_ticket_title($message->getText()), 0, 120);
+            return mb_substr(cleanup_message_for_ticket_title($message->getText()), 0, 120);
         } elseif ($message->getCaption()) {
-            return substr(cleanup_message_for_ticket_title($message->getCaption()), 0, 120);
+            return mb_substr(cleanup_message_for_ticket_title($message->getCaption()), 0, 120);
         } else {
             return __('Новое обращение');
         }

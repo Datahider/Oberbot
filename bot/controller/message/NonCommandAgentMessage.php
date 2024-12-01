@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\handlers;
+namespace losthost\Oberbot\controller\message;
 
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\topic;
@@ -11,6 +11,7 @@ use losthost\telle\Bot;
 use losthost\ProxyMessage\Proxy;
 use TelegramBot\Api\Types\MessageEntity;
 use losthost\ProxyMessage\MessageText;
+use losthost\Oberbot\data\ticket;
 
 use function \losthost\Oberbot\isAgent;
 use function losthost\Oberbot\getMentionedIds;
@@ -27,11 +28,11 @@ class NonCommandAgentMessage extends AbstractHandlerMessage {
             return false;
         } 
         
-        if (!$message->getText()) {
+        if ($message->getChat()->getId() != Bot::param('chat_for_private_tickets', null)) {
             return false;
         }
-
-        if (isAgent($message->getFrom()->getId(), $message->getChat()->getId())) {
+        
+        if ($message->getMessageThreadId() > 1 && isAgent($message->getFrom()->getId(), $message->getChat()->getId())) {
             return true;
         }
 
@@ -40,7 +41,6 @@ class NonCommandAgentMessage extends AbstractHandlerMessage {
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $this->processMentions($message);
         $this->processPrivateTicket($message);
         
         return true;
@@ -48,22 +48,14 @@ class NonCommandAgentMessage extends AbstractHandlerMessage {
 
     protected function processPrivateTicket(\TelegramBot\Api\Types\Message &$message) {
 
-        $ticket = new topic(['topic_id' => $message->getMessageThreadId(), 'chat_id' => $message->getChat()->getId()]);
+        $group_id = $message->getChat()->getId();
+        $thread_id = $message->getMessageThreadId();
+        
+        $ticket = ticket::getByGroupThread($group_id, $thread_id);
         $private_topic = new private_topic(['ticket_id' => $ticket->id]);
         
         $proxy = new Proxy(Bot::$api, $this->getAgentPrefix($message));
         $proxy->proxy($message, $private_topic->user_id);
-    }
-    
-    protected function processMentions(\TelegramBot\Api\Types\Message &$message) {
-        
-        $topic = new topic(['topic_id' => $message->getMessageThreadId(), 'chat_id' => $message->getChat()->getId()]);
-        
-        $ids = getMentionedIds($message);
-        foreach ($ids as $id) {
-            $ticket_user = new topic_user(['topic_number' => $topic->$topic->id, 'user_id' => $id], true);
-            $ticket_user->isNew() && $ticket_user->write();
-        }
     }
     
     protected function getAgentPrefix(\TelegramBot\Api\Types\Message &$message) {

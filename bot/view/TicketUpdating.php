@@ -14,6 +14,7 @@ use losthost\DB\DBView;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\telle\model\DBPendingJob;
 use losthost\timetracker\Timer;
+use losthost\Oberbot\data\private_topic;
 
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
@@ -59,11 +60,13 @@ class TicketUpdating extends DBTracker {
     }
     
     protected function notifyUrgentTicket() {
-        if (array_search('is_urgent', $this->event->fields) === false && array_search('is_task', $this->event->fields) === false ) {
+        if (array_search('is_urgent', $this->event->fields) === false 
+                && array_search('is_task', $this->event->fields) === false 
+                && array_search('status', $this->event->fields) === false) {
             return;
         }
         
-        if ($this->ticket->is_task) {
+        if ($this->ticket->is_task || $this->ticket->status == ticket::STATUS_CLOSED || $this->ticket->status == ticket::STATUS_ARCHIVED) {
             return;
         }
         
@@ -114,7 +117,27 @@ class TicketUpdating extends DBTracker {
             //Bot::logException($ex);
         }
         
+        if ($this->ticket->chat_id == Bot::param('chat_for_private_tickets', null)) {
+            $this->notifyPrivateClosing();
+        }
+        
         $this->editTopic();
+    }
+    
+    protected function notifyPrivateClosing() {
+        $private_topic = new private_topic(['ticket_id' => $this->ticket->id], true);
+        if ($private_topic->isNew()) {
+            return;
+        }
+        sendMessage(__('Оператор закрыл ваше обращение.'), null, $private_topic->user_id);
+    }
+    
+    protected function notifyPrivateReopen() {
+        $private_topic = new private_topic(['ticket_id' => $this->ticket->id], true);
+        if ($private_topic->isNew()) {
+            return;
+        }
+        sendMessage(__('Ожидайте ответа оператора.'), null, $private_topic->user_id);
     }
     
     protected function notifyReopen() {
@@ -128,6 +151,10 @@ class TicketUpdating extends DBTracker {
             Bot::$api->reopenForumTopic($this->ticket->chat_id, $this->ticket->topic_id);
         } catch (Exception $ex) {
             //Bot::logException($ex);
+        }
+
+        if ($this->ticket->chat_id == Bot::param('chat_for_private_tickets', null)) {
+            $this->notifyPrivateReopen();
         }
         
         $this->editTopic();

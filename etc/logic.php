@@ -15,6 +15,7 @@ use losthost\Oberbot\view\TimerEventUpdated;
 use losthost\Oberbot\view\TicketCustomerLink;
 use losthost\Oberbot\view\TicketUnlink;
 use losthost\Oberbot\view\NoteCreation;
+use losthost\Oberbot\view\PrivateTopicCreating;
 
 use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\data\topic_user;
@@ -22,6 +23,7 @@ use losthost\Oberbot\data\topic_admin;
 use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\note;
 use losthost\Oberbot\data\wait;
+use losthost\Oberbot\data\private_topic;
 use losthost\DB\DBList;
 
 require_once 'bot/functions.php';
@@ -93,6 +95,8 @@ Bot::addHandler(losthost\Oberbot\handlers\CommandMd::class);
 //Bot::addHandler(AdminRightsCheckerMessage::class);
 //Bot::addHandler(AdminRightsCheckerCallback::class);
 
+Bot::addHandler(losthost\Oberbot\controller\message\NonCommandPrivateMessage::class);
+Bot::addHandler(\losthost\Oberbot\controller\message\NonCommandAgentMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\ForumTopicCreatedHandler::class);
 Bot::addHandler(losthost\Oberbot\controller\message\FirstTopicMessageHandler::class);
 Bot::addHandler(\losthost\Oberbot\controller\message\TicketCloseReopenMessage::class);
@@ -114,6 +118,8 @@ DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, Chat
 
 DB::addTracker(DBEvent::INTRAN_DELETE, [topic_admin::class, topic_user::class], TicketUnlink::class);
 DB::addTracker(DBEvent::AFTER_INSERT, note::class, NoteCreation::class);
+
+DB::addTracker(DBEvent::AFTER_INSERT, private_topic::class, PrivateTopicCreating::class);
 
 $bot_username = new DBBotParam('bot_username');
 $bot_userid = new DBBotParam('bot_userid');

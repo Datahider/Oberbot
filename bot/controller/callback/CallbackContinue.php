@@ -8,6 +8,7 @@ use losthost\Oberbot\service\Service;
 
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\mentionById;
 
 class CallbackContinue extends AbstractCallback {
     

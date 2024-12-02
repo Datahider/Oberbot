@@ -12,6 +12,10 @@ use function \losthost\Oberbot\sendMessage;
 class CommandHelp extends AbstractAuthCommand {
     
     const COMMAND = 'help';
+    const DESCRIPTION = [
+        'default' => 'Справка'
+    ];
+    
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER | self::PERMIT_PRIVATE;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

@@ -12,9 +12,14 @@ use losthost\DB\DBView;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 
-class CommandNext extends AbstractHandlerCommand {
+class CommandNext extends AbstractAuthCommand {
     
     const COMMAND = 'next';
+    const DESCRIPTION = [
+        'default' => 'Следующая задача в очереди'
+    ];
+    
+    const PERMIT = self::PERMIT_PRIVATE;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         $user_id = $message->getFrom()->getId();

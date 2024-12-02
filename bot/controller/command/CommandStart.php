@@ -13,6 +13,10 @@ use function \losthost\Oberbot\__;
 class CommandStart extends AbstractAuthCommand {
     
     const COMMAND = 'start';
+    const DESCRIPTION = [
+        'default' => 'Начальное приветствие бота и краткое описание работы'
+    ];
+    
     const PERMIT = self::PERMIT_PRIVATE;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

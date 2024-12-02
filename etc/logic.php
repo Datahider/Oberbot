@@ -147,3 +147,5 @@ while ($ticket = $modify->next()) {
     }
     DB::commit();
 }
+
+\losthost\Oberbot\makePrivateCommands();

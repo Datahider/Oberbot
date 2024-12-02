@@ -7,6 +7,7 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\Oberbot\service\Service;
 use losthost\Oberbot\data\chat;
+use TelegramBot\Api\Types\BotCommand;
 
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\message;
@@ -100,4 +101,13 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         sendMessage(__(__('Помощь по команде /%command%', ['command' => static::COMMAND])), CommandHelp::getSupportKeyboardArray(Bot::$chat->id), null, $this->thread_id);
     }
     
+    public static function getBotCommand(string $scope = 'default') {
+        switch ($scope) {
+            default:
+                $command = new BotCommand();
+                $command->setCommand(static::COMMAND);
+                $command->setDescription(static::DESCRIPTION['default']);
+        }
+        return $command;
+    }
 }

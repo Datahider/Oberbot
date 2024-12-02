@@ -4,6 +4,7 @@ namespace losthost\Oberbot\view;
 
 use losthost\DB\DBView;
 use losthost\Oberbot\data\ticket;
+use losthost\DB\DB;
 
 class TicketQueue {
     
@@ -32,7 +33,7 @@ class TicketQueue {
                         
             WHERE 
                 ticket.status IN (0, 1, 102) /* Все открытые */
-                AND (ticket.wait_till IS NULL OR ticket.wait_till < NOW())
+                AND (ticket.wait_till IS NULL OR ticket.wait_till < :now)
                 AND ticket.chat_id IN (      /* Чат в нужном списке и пользователь агент в этом чате */
                     SELECT 
                         role.chat_id 
@@ -60,7 +61,7 @@ class TicketQueue {
      
         $sql = static::SQL_GET_TICKET_QUEUE. " LIMIT $length";
         
-        $queue = new DBView($sql, ['user_id' => $user_id, 'list_name' => $list]);
+        $queue = new DBView($sql, ['user_id' => $user_id, 'list_name' => $list, 'now' => date_create()->format(DB::DATE_FORMAT)]);
         
         $result = [];
         

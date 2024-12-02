@@ -11,6 +11,8 @@ use losthost\BotView\BotView;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\Oberbot\data\topic;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
+use TelegramBot\Api\Types\ArrayOfBotCommand;
+use TelegramBot\Api\Types\BotCommand;
 
 function barIndicator($value, $max_value=100, $max_bars=30) {
     $bars_symbols = ['█', '▌', '▏'];
@@ -155,3 +157,12 @@ function seconds2dateinterval(?int $seconds) : \DateInterval {
     return $zero->diff($offset);
 }
 
+function makePrivateCommands() {
+    
+    Bot::$api->setMyCommands([
+            controller\command\CommandNext::getBotCommand(),
+            controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandHelp::getBotCommand(),
+            controller\command\CommandStart::getBotCommand()
+    ]);
+}

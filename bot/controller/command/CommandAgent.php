@@ -6,6 +6,7 @@ use losthost\DB\DB;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\telle\Bot;
 use losthost\DB\DBView;
+use TelegramBot\Api\Types\BotCommand;
 
 use function \losthost\Oberbot\getMentionedIds;
 use function \losthost\Oberbot\mentionByView;
@@ -16,6 +17,9 @@ use function \losthost\Oberbot\__;
 class CommandAgent extends AbstractAuthCommand {
     
     const COMMAND = 'agent';
+    const DESCRIPTION = [
+        'default' => 'Сводная информация по вашим задачам'
+    ];
     const PERMIT = self::PERMIT_ADMIN;
     
     protected array $mentioned_ids;
@@ -88,4 +92,5 @@ class CommandAgent extends AbstractAuthCommand {
     protected function getUnpaid() {
         return [];
     }
+
 }

@@ -66,7 +66,7 @@ class TicketUpdating extends DBTracker {
             return;
         }
         
-        if ($this->ticket->is_task || $this->ticket->status == ticket::STATUS_CLOSED || $this->ticket->status == ticket::STATUS_ARCHIVED) {
+        if ($this->ticket->is_task || $this->ticket->status == ticket::STATUS_CLOSED || $this->ticket->status == ticket::STATUS_ARCHIVED || $this->ticket->status == ticket::STATUS_IN_PROGRESS) {
             return;
         }
         

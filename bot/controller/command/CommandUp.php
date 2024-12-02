@@ -19,7 +19,7 @@ class CommandUp extends AbstractAuthCommand {
             return true;
         }
         
-        $statuses = implode(', ', [ticket::STATUS_NEW, ticket::STATUS_IN_PROGRESS, ticket::STATUS_REOPEN]);
+        $statuses = implode(', ', [ticket::STATUS_NEW, ticket::STATUS_IN_PROGRESS, ticket::STATUS_REOPEN, ticket::STATUS_AWAITING_USER, ticket::STATUS_USER_ANSWERED]);
         
         $sql = <<<FIN
                 SELECT 

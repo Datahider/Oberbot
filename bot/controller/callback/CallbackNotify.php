@@ -32,7 +32,6 @@ class CallbackNotify extends AbstractCallback {
         $customers = $ticket->getCustomers();
         if (!empty($customers)) {
             $ticket->awaitUser();
-            sendMessage(__('%mentions%, работа над заявкой приостановлена до получения ответа.', [ 'mentions' => mentionByIdArray($customers)]), null, $group_id, $thread_id);
         } else {
             sendMessage(__('К тикету не привязан ни один пользователь.'), null, $group_id, $thread_id);
         }

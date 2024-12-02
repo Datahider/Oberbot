@@ -18,6 +18,7 @@ use losthost\Oberbot\data\private_topic;
 
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
+use function \losthost\Oberbot\mentionByIdArray;
 
 class TicketUpdating extends DBTracker {
     
@@ -102,10 +103,24 @@ class TicketUpdating extends DBTracker {
             case ticket::STATUS_REOPEN:
                 $this->notifyReopen();
                 break;
+            case ticket::STATUS_AWAITING_USER:
+                $this->notifyAwaitingUser();
+                break;
+            case ticket::STATUS_USER_ANSWERED:
+                $this->editTopic();
+                break;
             case ticket::STATUS_ARCHIVED:
                 $this->notifyArchived();
                 break;
         }
+    }
+    
+    protected function notifyAwaitingUser() {
+
+        $params = ['mentions' => mentionByIdArray($this->ticket->getCustomers())];
+        sendMessage(__('%mentions%, работа над заявкой приостановлена до получения ответа.', $params), null, $this->ticket->chat_id, $this->ticket->topic_id);
+
+        $this->editTopic();
     }
     
     protected function notifyClosing() {
@@ -222,14 +237,16 @@ class TicketUpdating extends DBTracker {
 
         if ($this->ticket->status == ticket::STATUS_CLOSED) {
             $icon = Emoji::ID_FINISH;
+        } elseif ($this->ticket->status == ticket::STATUS_ARCHIVED) {
+            $icon = Emoji::ID_ARCHIVE;
+        } elseif ($this->ticket->status == ticket::STATUS_AWAITING_USER) {
+            $icon = Emoji::ID_QUESTION;
         } elseif ($this->ticket->is_urgent && !$this->ticket->is_task) {
             $icon = Emoji::ID_URGENT;
         } elseif (!$this->ticket->is_urgent && !$this->ticket->is_task) {
             $icon = Emoji::ID_EXCLAMATION;
         } elseif ($this->ticket->is_urgent && $this->ticket->is_task) {
             $icon = Emoji::ID_STAR;
-        } elseif ($this->ticket->status == ticket::STATUS_ARCHIVED) {
-            $icon = Emoji::ID_ARCHIVE;
         } else {
             $icon = Emoji::ID_NONE;
         }

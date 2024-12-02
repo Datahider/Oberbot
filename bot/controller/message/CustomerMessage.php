@@ -25,6 +25,8 @@ class CustomerMessage extends AbstractMemberMessage {
         
         if ($ticket->status == ticket::STATUS_CLOSED) {
             $view->show('controllerCustomerMessageClosed', 'ctrlkbdCustomerMessageClosed', [], null, $thread_id);
+        } elseif ($ticket->status == ticket::STATUS_AWAITING_USER) {
+            $ticket->userAnswered();
         }
         
         return true;

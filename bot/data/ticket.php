@@ -21,6 +21,8 @@ class ticket extends topic {
     const STATUS_NEW = parent::STATUS_NEW;
     const STATUS_REOPEN = 102;
     const STATUS_IN_PROGRESS = parent::STATUS_IN_PROGRESS;
+    const STATUS_AWAITING_USER = 88;
+    const STATUS_USER_ANSWERED = 89;
     const STATUS_CLOSED = parent::STATUS_CLOSED;
     const STATUS_ARCHIVED = 120;
     
@@ -139,6 +141,22 @@ class ticket extends topic {
         return $this;
     }
 
+    public function awaitUser() : ticket {
+        $this->status = static::STATUS_AWAITING_USER;
+        $this->write('', ['function' => 'awaitUser']);
+        return $this;
+    }
+    
+    public function userAnswered() : ticket {
+        if ($this->status == static::STATUS_AWAITING_USER) {
+            $this->status = static::STATUS_USER_ANSWERED;
+            $this->write('', ['function' => 'userAnswered']);
+        } else {
+            throw new \Exception('Current status is not AWAITING_ANSWER');
+        }
+        return $this;
+    }
+    
     public function rate(int|string $score) {
         switch ($score) {
             case -1:
@@ -188,6 +206,8 @@ class ticket extends topic {
             static::STATUS_NEW,
             static::STATUS_IN_PROGRESS,
             static::STATUS_REOPEN,
+            static::STATUS_AWAITING_USER,
+            static::STATUS_USER_ANSWERED,
         ];
         
         if (array_search($this->status, $statuses_allowed) === false) {

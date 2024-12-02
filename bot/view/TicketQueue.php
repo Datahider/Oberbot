@@ -14,8 +14,9 @@ class TicketQueue {
                 ticket.topic_title AS title,
                 CASE
                     WHEN ticket.status = 0 THEN 1
-                    WHEN ticket.status = 102 THEN 2
-                    ELSE 3
+                    WHEN ticket.status = 89 THEN 2
+                    WHEN ticket.status = 102 THEN 3
+                    ELSE 4
                 END AS status_order,
                 COUNT(agent.topic_number) AS agent_count,
                 COUNT(iagent.topic_number) AS amiagent,
@@ -29,7 +30,7 @@ class TicketQueue {
                     LEFT JOIN [wait] AS wait
                         ON wait.task_id = ticket.id
                     LEFT JOIN [topics] AS subtask
-                        ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 102)
+                        ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 89, 102)
                         
             WHERE 
                 ticket.status IN (0, 1, 102) /* Все открытые */

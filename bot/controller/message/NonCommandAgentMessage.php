@@ -15,6 +15,8 @@ use losthost\Oberbot\data\ticket;
 
 use function \losthost\Oberbot\isAgent;
 use function losthost\Oberbot\getMentionedIds;
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
 
 /**
  * Обработка сообщений агентов в заявке
@@ -52,7 +54,11 @@ class NonCommandAgentMessage extends AbstractHandlerMessage {
         $thread_id = $message->getMessageThreadId();
         
         $ticket = ticket::getByGroupThread($group_id, $thread_id);
-        $private_topic = new private_topic(['ticket_id' => $ticket->id]);
+        $private_topic = new private_topic(['ticket_id' => $ticket->id], true);
+        if ($private_topic->isNew()) {
+            sendMessage(__('К этому тикету не привязая чат пользователя'), null, $group_id, $thread_id);
+            return;
+        }
         
         $proxy = new Proxy(Bot::$api, $this->getAgentPrefix($message));
         $proxy->proxy($message, $private_topic->user_id);

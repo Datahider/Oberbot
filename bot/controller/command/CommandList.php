@@ -7,9 +7,9 @@ use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\service\Service;
 use losthost\DB\DBView;
 
-class CommandGroup extends AbstractAuthCommand {
+class CommandList extends AbstractAuthCommand {
     
-    const COMMAND = 'group';
+    const COMMAND = 'list';
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
@@ -23,7 +23,7 @@ class CommandGroup extends AbstractAuthCommand {
         $msg_type = 'info';
         
         if ($this->args) {
-            $group_array = explode(" ", $this->args);
+            $group_array = preg_split("/\s*\,\s*/", $this->args);
             foreach ($group_array as $group) {
                 $chat_group = new chat_group(['chat_id' => $chat_id, 'chat_group' => $group], true);
                 $chat_group->isNew() && $chat_group->write();
@@ -39,7 +39,7 @@ class CommandGroup extends AbstractAuthCommand {
         }
         
         if (count($groups)) {
-            Service::message($msg_type, implode(" ", $groups));
+            Service::message($msg_type, implode(", ", $groups));
         } else {
             Service::message($msg_type, 'Группы не заданы.');
         }

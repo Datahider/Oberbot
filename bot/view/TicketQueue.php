@@ -33,7 +33,7 @@ class TicketQueue {
                         ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 89, 102)
                         
             WHERE 
-                ticket.status IN (0, 1, 102) /* Все открытые */
+                ticket.status IN (0, 1, 89, 102) /* Все открытые */
                 AND (ticket.wait_till IS NULL OR ticket.wait_till < :now)
                 AND ticket.chat_id IN (      /* Чат в нужном списке и пользователь агент в этом чате */
                     SELECT 

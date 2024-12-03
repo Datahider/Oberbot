@@ -21,7 +21,8 @@ class ActionCreateTicket {
             $messages = [$messages];
         }
         
-        $new_thread = static::createTopicInGroup($chat_id, $title);
+        $normalized_title = static::normalizeTitle($title);
+        $new_thread = static::createTopicInGroup($chat_id, $normalized_title);
         
         foreach ($messages as $message) {
             if (is_int($message)) {
@@ -32,7 +33,7 @@ class ActionCreateTicket {
             }
         }
         
-        $new_ticket = ticket::create($chat_id, $new_thread, $title, $user_id);
+        $new_ticket = ticket::create($chat_id, $new_thread, $normalized_title, $user_id);
         $new_ticket->linkCustomer($user_id);
         $new_ticket->accept();
         

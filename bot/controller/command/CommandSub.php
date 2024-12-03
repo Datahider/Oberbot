@@ -5,6 +5,9 @@ namespace losthost\Oberbot\controller\command;
 use losthost\Oberbot\controller\action\ActionCreateTicket;
 use losthost\telle\Bot;
 
+use function \losthost\Oberbot\__;
+//use function 
+
 class CommandSub extends AbstractAuthCommand {
     
     const COMMAND = 'sub';
@@ -44,9 +47,21 @@ class CommandSub extends AbstractAuthCommand {
     }
     
     protected function getTitle(\TelegramBot\Api\Types\Message &$message) : string {
-        $result = '';
-        throw new \Exception('Not implemented yet');
-        return $result;
+
+        if ($this->args) {
+            $title = $this->args;
+        } elseif ($message->getQuote()) {
+            $title = $message->getQuote()->getText();
+        } elseif ($message->getReplyToMessage()) {
+            $title = $message->getReplyToMessage()->getText() 
+                    ? $message->getReplyToMessage()->getText() 
+                    : $message->getReplyToMessage()->getCaption();
+            if (!$title) {
+                $title = __('Новая заявка из сообщения');
+            }
+        }
+
+        return $title;
     }
     
     protected function getMessages(\TelegramBot\Api\Types\Message &$message) : array {

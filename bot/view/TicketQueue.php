@@ -30,7 +30,7 @@ class TicketQueue {
                     LEFT JOIN [wait] AS wait
                         ON wait.task_id = ticket.id
                     LEFT JOIN [topics] AS subtask
-                        ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 89, 102)
+                        ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 88, 89, 102)
                         
             WHERE 
                 ticket.status IN (0, 1, 89, 102) /* Все открытые */

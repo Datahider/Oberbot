@@ -6,14 +6,18 @@ use losthost\Oberbot\controller\command\AbstractAuthCommand;
 use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\service\Service;
 use losthost\DB\DBView;
+use losthost\telle\Bot;
 
 class CommandList extends AbstractAuthCommand {
     
     const COMMAND = 'list';
-    const PERMIT = self::PERMIT_AGENT;
+    const PERMIT = self::PERMIT_AGENT | self::PERMIT_PRIVATE;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
+        if ($message->getChat()->getType() == 'private') {
+            $this->processPrivate($message);
+        }
         if ($message->getMessageThreadId() > 1) {
             Service::message('warning', 'Эта команда предназначена для использования только в общем чате группы.');
             return true;

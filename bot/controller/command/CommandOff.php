@@ -48,13 +48,20 @@ class CommandOff extends AbstractAuthCommand {
         if (!is_numeric($matches[1])) {
             $this->minutes = 10;
         }
-        
-        ($this->new_title = $matches[2]) 
-                || ($this->new_title = $message->getQuote()->getText()) 
-                || ($this->new_title = $this->reply_message->getText()) 
-                || ($this->new_title = $this->reply_message->getCaption())
-                || ($this->new_title = 'Новая заявка из сообщения');
 
+        if ($matches[2]) {
+            $this->new_title = $matches[2];
+        } elseif ($message->getQuote()) {
+            $this->new_title = $message->getQuote()->getText();
+        } elseif ($message->getReplyToMessage()) {
+            $this->new_title = $message->getReplyToMessage()->getText() 
+                    ? $message->getReplyToMessage()->getText() 
+                    : $message->getReplyToMessage()->getCaption();
+            if (!$this->new_title) {
+                $this->new_title = __('Новая заявка из сообщения');
+            }
+        }
+        
     }
     
     protected function banUser() {

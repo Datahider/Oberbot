@@ -8,10 +8,7 @@ use losthost\Oberbot\data\topic;
 
 class TimeReport extends AbstractBuilder {
     
-    public function build(?array $params = null): array {
-    
-        $this->checkBuildParams($params);
-        
+    protected function getSql() {
         $sql = <<<FIN
             SELECT 
                 project,
@@ -38,13 +35,22 @@ class TimeReport extends AbstractBuilder {
                 topic_title
             ORDER BY total_seconds DESC
             FIN;
+        
+        return $sql;
+    }
+    
+    public function build(?array $params = null): array {
+    
+        $this->checkBuildParams($params);
+        
+        $sql = $this->getSql();
         $view = new DBView($sql, $params);
         
         $result = [];
         while ($view->next()) {
             $result[] = (object)[
                 'project' => $view->project,
-                'topic' => new topic(['id' => $view->object]),
+                'topic_title' => $view->topic_title,
                 'total_seconds' => $view->total_seconds
             ];
         }

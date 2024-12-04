@@ -3,17 +3,22 @@
 namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\builders\TimeReport;
+use losthost\Oberbot\builders\AgentReport;
 use losthost\BotView\BotView;
 use losthost\telle\Bot;
 
 class CommandReport extends AbstractAuthCommand {
     
     const COMMAND = 'report';
-    const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
+    const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER | self::PERMIT_PRIVATE;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $report = new TimeReport();
+        if (Bot::$chat->id != Bot::$user->id) {
+            $report = new TimeReport();
+        } else {
+            $report = new AgentReport();
+        }
         $params = $this->reportParams();
         $result = $report->build($params);
         

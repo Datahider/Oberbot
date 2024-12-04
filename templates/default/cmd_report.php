@@ -13,7 +13,7 @@ foreach ($report as $line) {
     $m = round(($line->total_seconds-$h*3600) / 60);
     $time = sprintf("%02d:%02d", $h, $m);
     if (mb_strlen($text_report) < 3072) {
-        $text_report .= "{$line->topic->topic_title}\n<code>{$time} $bar</code>\n";
+        $text_report .= "{$line->topic_title}\n<code>{$time} $bar</code>\n";
     } else {
         $the_other += $line->total_seconds;
     }

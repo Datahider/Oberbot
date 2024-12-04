@@ -7,6 +7,11 @@ use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\service\Service;
 use losthost\DB\DBView;
 use losthost\telle\Bot;
+use losthost\Oberbot\data\session;
+use losthost\Oberbot\controller\action\ActionActiveListDisplay;
+
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
 
 class CommandList extends AbstractAuthCommand {
     
@@ -17,6 +22,8 @@ class CommandList extends AbstractAuthCommand {
         
         if ($message->getChat()->getType() == 'private') {
             $this->processPrivate($message);
+            return true;
+            // TODO - то что после if вынести в отдельный метод
         }
         if ($message->getMessageThreadId() > 1) {
             Service::message('warning', 'Эта команда предназначена для использования только в общем чате группы.');
@@ -49,5 +56,10 @@ class CommandList extends AbstractAuthCommand {
         }
         
         return true;
+    }
+    
+    protected function processPrivate(\TelegramBot\Api\Types\Message &$message) {
+        
+        ActionActiveListDisplay::do(Bot::$user->id, Bot::$chat->id);
     }
 }

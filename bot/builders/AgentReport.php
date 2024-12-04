@@ -2,6 +2,8 @@
 
 namespace losthost\Oberbot\builders;
 
+use losthost\Oberbot\controller\action\ActionActiveListDisplay;
+
 class AgentReport extends TimeReport {
     
     protected function getSql() {
@@ -26,11 +28,19 @@ class AgentReport extends TimeReport {
                 (:project = 'any' OR timers.subject = :project)
                 AND end_time >= :period_start
                 AND start_time <= :period_end
+                AND (:list = 'all' OR events.project IN (
+                    SELECT chat_id FROM [chat_groups] WHERE chat_group = :list
+                ))
             GROUP BY 
                 timers.subject,
                 events.project,
                 chat.title
             ORDER BY total_seconds DESC
             FIN;
+    }
+    
+    protected function checkBuildParams(?array &$params) {
+        parent::checkBuildParams($params);
+        $params['list'] = ActionActiveListDisplay::getActiveList($params['project']);
     }
 }

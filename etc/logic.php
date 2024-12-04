@@ -42,6 +42,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHelp::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHid::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackLink::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackList::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);

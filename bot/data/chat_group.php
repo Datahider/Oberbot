@@ -23,8 +23,8 @@ class chat_group extends DBObject {
         
         $lists = new DBView(<<<FIN
             SELECT DISTINCT g.chat_group AS list
-            FROM ober_chat_groups AS g
-            LEFT JOIN ober_user_chat_role AS r ON r.chat_id = g.chat_id
+            FROM [chat_groups] AS g
+            LEFT JOIN [user_chat_role] AS r ON r.chat_id = g.chat_id
             WHERE r.user_id = ? AND r.role = 'agent'                 
             FIN, [$user_id]);
         

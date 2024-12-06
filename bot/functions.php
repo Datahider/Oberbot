@@ -162,6 +162,7 @@ function makePrivateCommands() {
     Bot::$api->setMyCommands([
             controller\command\CommandNext::getBotCommand(),
             controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandList::getBotCommand(),
             controller\command\CommandHelp::getBotCommand(),
             controller\command\CommandStart::getBotCommand()
     ]);

@@ -8,7 +8,7 @@ use losthost\Oberbot\service\Service;
 use losthost\DB\DBView;
 use losthost\telle\Bot;
 use losthost\Oberbot\data\session;
-use losthost\Oberbot\controller\action\ActionActiveListDisplay;
+use losthost\Oberbot\controller\display\ActiveListDisplay;
 
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
@@ -16,6 +16,10 @@ use function \losthost\Oberbot\__;
 class CommandList extends AbstractAuthCommand {
     
     const COMMAND = 'list';
+    const DESCRIPTION = [
+        'default' => 'Выбор активного списка'
+    ];
+
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_PRIVATE;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
@@ -60,6 +64,6 @@ class CommandList extends AbstractAuthCommand {
     
     protected function processPrivate(\TelegramBot\Api\Types\Message &$message) {
         
-        ActionActiveListDisplay::do(Bot::$user->id, Bot::$chat->id);
+        ActiveListDisplay::display(Bot::$user->id, Bot::$chat->id);
     }
 }

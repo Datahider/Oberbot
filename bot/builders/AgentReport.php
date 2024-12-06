@@ -2,7 +2,7 @@
 
 namespace losthost\Oberbot\builders;
 
-use losthost\Oberbot\controller\action\ActionActiveListDisplay;
+use losthost\Oberbot\controller\display\ActiveListDisplay;
 
 class AgentReport extends TimeReport {
     
@@ -41,6 +41,6 @@ class AgentReport extends TimeReport {
     
     protected function checkBuildParams(?array &$params) {
         parent::checkBuildParams($params);
-        $params['list'] = ActionActiveListDisplay::getActiveList($params['project']);
+        $params['list'] = ActiveListDisplay::getActiveList($params['project']);
     }
 }

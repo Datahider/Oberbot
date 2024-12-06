@@ -66,7 +66,22 @@ class CommandSub extends AbstractAuthCommand {
     
     protected function getMessages(\TelegramBot\Api\Types\Message &$message) : array {
         $result = [];
-        throw new \Exception('Not implemented yet');
+        
+        if ($message->getReplyToMessage() && $message->getReplyToMessage()->getMessageId() != $message->getMessageThreadId()) {
+            $result[] = $message->getReplyToMessage()->getMessageId();
+        }
+ 
+        $index = 1;
+        $text = '';
+        while (isset($this->m[1][$index])) {
+            $text .= $this->m[1][$index]. "\n";
+            $index++;
+        }
+        
+        if ($text) {
+            $result[] = $this->m[1][0]. "\n$text";
+        }
+        
         return $result;
     }
 }

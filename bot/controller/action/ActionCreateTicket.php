@@ -28,7 +28,7 @@ class ActionCreateTicket {
             if (is_int($message)) {
                 Bot::$api->forwardMessage($chat_id, $from_chat_id, $message, false, false, $new_thread);
             } else {
-                $text = __('От %author%:', mentionById($user_id, true)). "\n";
+                $text = __("<i>От %author%:</i>\n%text%", ['author' => mentionById($user_id, true), 'text' => $message]);
                 sendMessage($text, null, $chat_id, $new_thread);
             }
         }

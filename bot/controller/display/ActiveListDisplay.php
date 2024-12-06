@@ -1,6 +1,6 @@
 <?php
 
-namespace losthost\Oberbot\controller\action;
+namespace losthost\Oberbot\controller\display;
 
 use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\data\session;
@@ -9,9 +9,9 @@ use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 
 use function \losthost\Oberbot\__;
 
-class ActionActiveListDisplay {
+class ActiveListDisplay {
     
-    static public function do(int $user_id, int $chat_id, int $message_to_edit=null) {
+    static public function display(int $user_id, int $chat_id, int $message_to_edit=null) {
 
         $agent_lists = chat_group::getUserLists($user_id);
         $active = static::getActiveList($user_id);
@@ -21,11 +21,12 @@ class ActionActiveListDisplay {
         
         if (!empty($agent_lists)) {
             foreach ($agent_lists as $list) {
-                $keyboard[] = [['text' => $list, 'callback_data' => "list_$list"]];
+                $prefix = $list == $active ? '⚙️ ' : '';
+                $keyboard[] = [['text' => "$prefix$list", 'callback_data' => "list_$list"]];
             }
         }
         
-        $text = __("Текущий активный список групп: <b>%active%</b>\n\nДля получения следующей задачи нажмите /next\n\nДля изменения активного списка нажмите кнопку:", ['active' => $active]);
+        $text = __("Текущий активный список групп: <b>%active%</b>", ['active' => $active]);
         $reply_markup = new InlineKeyboardMarkup($keyboard);
         
         if ($message_to_edit) {

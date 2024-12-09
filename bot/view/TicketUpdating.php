@@ -112,6 +112,9 @@ class TicketUpdating extends DBTracker {
             case ticket::STATUS_ARCHIVED:
                 $this->notifyArchived();
                 break;
+            case ticket::STATUS_IN_PROGRESS:
+                $this->editTopic();
+                break;
         }
     }
     

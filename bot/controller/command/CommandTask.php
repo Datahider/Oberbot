@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandTask extends AbstractAuthCommand {
     
     const COMMAND = 'task';
+    const DESCRIPTION = [
+        'default' => 'Изменение типа заявки (Задача/Неисправность)',
+        'all_group_chats' => 'Изменение типа заявки (Задача/Неисправность)'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

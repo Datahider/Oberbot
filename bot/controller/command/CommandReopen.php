@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandReopen extends AbstractAuthCommand {
     
     const COMMAND = 'reopen';
+    const DESCRIPTION = [
+        'default' => 'Переотрытие закрытой заявки',
+        'all_group_chats' => 'Переоткрытие закрытой заявки'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

@@ -10,6 +10,10 @@ use losthost\telle\Bot;
 class CommandReport extends AbstractAuthCommand {
     
     const COMMAND = 'report';
+    const DESCRIPTION = [
+        'default' => 'Отчет по затраченному времени (активный список)',
+        'all_group_chats' => 'Отчет по затраченному времени по задачам групы'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER | self::PERMIT_PRIVATE;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

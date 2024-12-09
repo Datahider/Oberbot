@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandArchive extends AbstractAuthCommand {
     
     const COMMAND = 'archive';
+    const DESCRIPTION = [
+        'default' => 'Архивирование заявки',
+        'all_group_chats' => 'Архивирование заявки'
+    ];
     
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     

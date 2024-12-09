@@ -10,6 +10,10 @@ use losthost\Oberbot\data\ticket;
 class CommandUp extends AbstractAuthCommand {
     
     const COMMAND = 'up';
+    const DESCRIPTION = [
+        'default' => '«Поднятие» открытых заявок',
+        'all_group_chats' => '«Поднятие» открытых заявок'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER; // пользователи тоже должны иметь возможность поднять нерешенные заявки
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

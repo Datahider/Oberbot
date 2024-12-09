@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandDone extends AbstractAuthCommand {
     
     const COMMAND = 'done';
+    const DESCRIPTION = [
+        'default' => 'Отметить заявку как завершенную',
+        'all_group_chats' => 'Отметить заявку как завершенную'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER; // Пользователи тоже могут закрывать заявки, почему бы и нет
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

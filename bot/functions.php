@@ -167,3 +167,62 @@ function makePrivateCommands() {
             controller\command\CommandStart::getBotCommand()
     ]);
 }
+
+function makeGroupCommands() {
+    Bot::$api->setMyCommands([
+        controller\command\CommandHid::getBotCommand(),
+        controller\command\CommandSub::getBotCommand(),
+        controller\command\CommandUp::getBotCommand(),
+        controller\command\CommandUnlink::getBotCommand(),
+        controller\command\CommandReport::getBotCommand(),
+        controller\command\CommandDone::getBotCommand(),
+        controller\command\CommandReopen::getBotCommand(),
+        controller\command\CommandArchive::getBotCommand(),
+        controller\command\CommandTask::getBotCommand(),
+        controller\command\CommandTask::getBotCommand(),
+        controller\command\CommandUrgent::getBotCommand(),
+        controller\command\CommandHelp::getBotCommand()
+    ], json_encode(['type' => 'all_group_chats']));
+}
+
+function makeGroupAdminCommands() {
+    Bot::$api->setMyCommands([
+            controller\command\CommandAgent::getBotCommand()
+    ], json_encode(['type' => 'all_chat_administrators']));
+}
+
+function makeAllAgentsCommands() {
+
+    $chat_agent = new DBView('SELECT chat_id, user_id FROM [user_chat_role] WHERE role = "agent"');
+    
+    while ($chat_agent->next()) {
+        if (isChatAdministrator($chat_agent->user_id, $chat_agent->chat_id)) {
+            makeAdminAgentCommands($chat_agent->chat_id, $chat_agent->user_id);
+        } else {
+            makeAgentCommands($chat_agent->chat_id, $chat_agent->user_id);
+        }
+    }
+}
+
+function makeAgentCommands(int $chat_id, int $user_id) {
+    Bot::$api->setMyCommands([
+            controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandHelp::getBotCommand(),
+    ], json_encode([
+        'type' => 'chat_member',
+        'chat_id' => $chat_id,
+        'user_id' => $user_id
+    ]));
+}
+
+function makeAdminAgentCommands(int $chat_id, int $user_id) {
+    
+}
+
+function deleteAgentCommands(int $chat_id, int $user_id) {
+    Bot::$api->call('deleteMyCommands', [
+        'type' => 'chat_memeber',
+        'chat_id' => $chat_id, 
+        'user_id' => $user_id
+    ]);
+}

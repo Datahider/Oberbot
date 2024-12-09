@@ -122,13 +122,6 @@ DB::addTracker(DBEvent::AFTER_INSERT, note::class, NoteCreation::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, private_topic::class, PrivateTopicCreating::class);
 
-$bot_username = new DBBotParam('bot_username');
-$bot_userid = new DBBotParam('bot_userid');
-
-$data = Bot::$api->getMe();
-$bot_username->value = $data->getUsername();
-$bot_userid->value = $data->getId();
-
 Bot::param('workers_count', 1);
 
 $modify = new DBList(ticket::class, 'wait_for IS NOT NULL', []);
@@ -150,3 +143,6 @@ while ($ticket = $modify->next()) {
 }
 
 \losthost\Oberbot\makePrivateCommands();
+\losthost\Oberbot\makeGroupCommands();
+losthost\Oberbot\makeAllAgentsCommands();
+

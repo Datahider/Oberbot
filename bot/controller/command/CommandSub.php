@@ -11,6 +11,10 @@ use function \losthost\Oberbot\__;
 class CommandSub extends AbstractAuthCommand {
     
     const COMMAND = 'sub';
+    const DESCRIPTION = [
+        'default' => 'Создание подзадачи',
+        'all_group_chats' => 'Создание подзадачи'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
     protected array $m;

@@ -7,25 +7,19 @@ use losthost\Oberbot\service\Service;
 use losthost\Oberbot\data\note;
 use losthost\telle\abst\AbstractHandlerMessage;
 
-class CommandHid extends AbstractHandlerMessage {
-    
-    protected function check(\TelegramBot\Api\Types\Message &$message): bool {
-        
-        if ($message->getChat()->getId() == $message->getFrom()->getId()) {
-            return false;
-        }
-        
-        $text = substr($message->getText(), 0, 5);
-        
-        if ($text == '/hid' || $text == '/hid ') {
-            return true;
-        }
-        return false;
-    }
 
+class CommandHid extends AbstractAuthCommand {
+
+    const COMMAND = 'hid';
+    const DESCRIPTION = [
+        'default' => 'Отправка скрытого сообщения',
+        'all_group_chats' => 'Отправка скрытого сообщения'
+    ];
+    const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
+    
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $args = substr($message->getText(), 5);
+        $args = $this->args;
         $group_id = $message->getChat()->getId();
         $thread_id = $message->getMessageThreadId();
         $user_id = $message->getFrom()->getId();

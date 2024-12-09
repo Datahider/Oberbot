@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandUnlink extends AbstractAuthCommand {
     
     const COMMAND = 'unlink';
+    const DESCRIPTION = [
+        'default' => '«Отключение» от заявки',
+        'all_group_chats' => '«Отключение» от заявки'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

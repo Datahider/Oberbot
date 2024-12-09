@@ -7,6 +7,10 @@ use losthost\Oberbot\data\ticket;
 class CommandUrgent extends AbstractAuthCommand {
     
     const COMMAND = 'urgent';
+    const DESCRIPTION = [
+        'default' => 'Изменение приоритета заявки',
+        'all_group_chats' => 'Изменение приоритета заявки'
+    ];
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

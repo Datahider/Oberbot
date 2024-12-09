@@ -6,6 +6,7 @@ use losthost\telle\Bot;
 use losthost\Oberbot\service\Service;
 use losthost\Oberbot\data\note;
 use losthost\telle\abst\AbstractHandlerMessage;
+use losthost\Oberbot\data\ticket;
 
 
 class CommandHid extends AbstractAuthCommand {
@@ -29,6 +30,10 @@ class CommandHid extends AbstractAuthCommand {
             $mentioned_ids = Service::getMentionedIds($message);
             note::create($args, $group_id, $thread_id, $user_id, $mentioned_ids);
             
+            $ticket = ticket::getByGroupThread($group_id, $thread_id);
+            if ($ticket->status == ticket::STATUS_AWAITING_USER) {
+                $ticket->userAnswered();
+            }
         } else {
             Service::message('info', 'Описание команды /hid', null, $thread_id);
         }

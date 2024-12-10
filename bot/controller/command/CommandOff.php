@@ -14,6 +14,9 @@ use function \losthost\Oberbot\ifnull;
 class CommandOff extends AbstractAuthCommand {
 
     const COMMAND = 'off';
+    const DESCRIPTION = [
+        'default' => 'Создание другой задачи с блокировкой пользователя',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected $minutes;

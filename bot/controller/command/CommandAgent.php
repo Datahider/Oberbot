@@ -18,7 +18,8 @@ class CommandAgent extends AbstractAuthCommand {
     
     const COMMAND = 'agent';
     const DESCRIPTION = [
-        'default' => 'Сводная информация по вашим задачам'
+        'default' => 'Сводная информация по вашим задачам',
+        'all_group_chats' => 'Назначение агентов в группе',
     ];
     const PERMIT = self::PERMIT_ADMIN;
     

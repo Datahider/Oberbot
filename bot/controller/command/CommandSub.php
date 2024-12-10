@@ -4,9 +4,10 @@ namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\controller\action\ActionCreateTicket;
 use losthost\telle\Bot;
+use losthost\Oberbot\data\ticket;
 
 use function \losthost\Oberbot\__;
-//use function 
+use function \losthost\Oberbot\sendMessage;
 
 class CommandSub extends AbstractAuthCommand {
     
@@ -26,8 +27,11 @@ class CommandSub extends AbstractAuthCommand {
         $title = $this->getTitle($message);
         $messages = $this->getMessages($message);
         
+        $old_ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         $ticket = ActionCreateTicket::do(Bot::$chat->id, Bot::$chat->id, $message->getFrom()->getId(), $title, $messages);
         
+        $old_ticket->waitTask($ticket->id);
+
         return true;
     }
     

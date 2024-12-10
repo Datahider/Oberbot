@@ -163,6 +163,7 @@ function makePrivateCommands() {
             controller\command\CommandNext::getBotCommand(),
             controller\command\CommandAgent::getBotCommand(),
             controller\command\CommandList::getBotCommand(),
+            controller\command\CommandReport::getBotCommand(),
             controller\command\CommandHelp::getBotCommand(),
             controller\command\CommandStart::getBotCommand()
     ]);
@@ -206,7 +207,25 @@ function makeAllAgentsCommands() {
 
 function makeAgentCommands(int $chat_id, int $user_id) {
     Bot::$api->setMyCommands([
-            controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandWait::getBotCommand(),
+            controller\command\CommandHid::getBotCommand(),
+            controller\command\CommandSub::getBotCommand(),
+            controller\command\CommandTake::getBotCommand(),
+            controller\command\CommandUnlink::getBotCommand(),
+            controller\command\CommandNotify::getBotCommand(),
+            controller\command\CommandReport::getBotCommand(),
+            controller\command\CommandDone::getBotCommand(),
+            controller\command\CommandReopen::getBotCommand(),
+            controller\command\CommandArchive::getBotCommand(),
+            controller\command\CommandUp::getBotCommand(),
+            controller\command\CommandList::getBotCommand(),
+            controller\command\CommandDelist::getBotCommand(),
+            controller\command\CommandPause::getBotCommand(),
+            controller\command\CommandContinue::getBotCommand(),
+            controller\command\CommandCreate::getBotCommand(),
+            controller\command\CommandOff::getBotCommand(),
+            controller\command\CommandTask::getBotCommand(),
+            controller\command\CommandUrgent::getBotCommand(),
             controller\command\CommandHelp::getBotCommand(),
     ], json_encode([
         'type' => 'chat_member',
@@ -216,7 +235,34 @@ function makeAgentCommands(int $chat_id, int $user_id) {
 }
 
 function makeAdminAgentCommands(int $chat_id, int $user_id) {
-    
+    Bot::$api->setMyCommands([
+            controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandCustomer::getBotCommand(),
+            controller\command\CommandWait::getBotCommand(),
+            controller\command\CommandHid::getBotCommand(),
+            controller\command\CommandSub::getBotCommand(),
+            controller\command\CommandTake::getBotCommand(),
+            controller\command\CommandUnlink::getBotCommand(),
+            controller\command\CommandNotify::getBotCommand(),
+            controller\command\CommandReport::getBotCommand(),
+            controller\command\CommandDone::getBotCommand(),
+            controller\command\CommandReopen::getBotCommand(),
+            controller\command\CommandArchive::getBotCommand(),
+            controller\command\CommandUp::getBotCommand(),
+            controller\command\CommandList::getBotCommand(),
+            controller\command\CommandDelist::getBotCommand(),
+            controller\command\CommandPause::getBotCommand(),
+            controller\command\CommandContinue::getBotCommand(),
+            controller\command\CommandCreate::getBotCommand(),
+            controller\command\CommandOff::getBotCommand(),
+            controller\command\CommandTask::getBotCommand(),
+            controller\command\CommandUrgent::getBotCommand(),
+            controller\command\CommandHelp::getBotCommand(),
+    ], json_encode([
+        'type' => 'chat_member',
+        'chat_id' => $chat_id,
+        'user_id' => $user_id
+    ]));
 }
 
 function deleteAgentCommands(int $chat_id, int $user_id) {

@@ -8,6 +8,9 @@ use losthost\Oberbot\service\Service;
 class CommandCreate extends AbstractAuthCommand {
     
     const COMMAND = 'create';
+    const DESCRIPTION = [
+        'default' => 'Создание тикета в базе данных бота (служебная)',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

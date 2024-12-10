@@ -16,6 +16,10 @@ use function \losthost\Oberbot\__;
 class CommandCustomer extends AbstractAuthCommand {
     
     const COMMAND = 'customer';
+    const DESCRIPTION = [
+        'default' => '"Разжалование" агентов в группе',
+        'all_chat_administrators' => '"Разжалование" агентов в группе',
+    ];
     const PERMIT = self::PERMIT_ADMIN;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

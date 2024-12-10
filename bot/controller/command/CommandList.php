@@ -17,7 +17,8 @@ class CommandList extends AbstractAuthCommand {
     
     const COMMAND = 'list';
     const DESCRIPTION = [
-        'default' => 'Выбор активного списка'
+        'default' => 'Выбор активного списка',
+        'all_group_chats' => 'Включение группы из список(ки)'
     ];
 
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_PRIVATE;

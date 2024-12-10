@@ -7,6 +7,9 @@ use losthost\Oberbot\data\ticket;
 class CommandTake extends AbstractAuthCommand {
     
     const COMMAND = 'take';
+    const DESCRIPTION = [
+        'default' => 'Взятие заявки в работу',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

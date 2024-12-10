@@ -14,6 +14,9 @@ use function \losthost\Oberbot\__;
 class CommandNotify extends AbstractAuthCommand {
     
     const COMMAND = 'notify';
+    const DESCRIPTION = [
+        'default' => 'Уведомление пользователей задачи или группы',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

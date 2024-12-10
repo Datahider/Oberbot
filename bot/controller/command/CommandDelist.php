@@ -10,6 +10,9 @@ use losthost\DB\DBView;
 class CommandDelist extends AbstractAuthCommand {
     
     const COMMAND = 'delist';
+    const DESCRIPTION = [
+        'default' => 'Исключение группы из списка(ов)',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

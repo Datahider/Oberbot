@@ -11,6 +11,9 @@ use function \losthost\Oberbot\mentionById;
 class CommandContinue extends AbstractAuthCommand {
     
     const COMMAND = 'continue';
+    const DESCRIPTION = [
+        'default' => 'Продолжение решения задачи',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

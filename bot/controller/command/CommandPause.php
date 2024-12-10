@@ -8,6 +8,9 @@ use losthost\Oberbot\service\Service;
 class CommandPause extends AbstractAuthCommand {
 
     const COMMAND = 'pause';
+    const DESCRIPTION = [
+        'default' => 'Приостановка выполнения задачи',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

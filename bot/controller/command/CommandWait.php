@@ -11,6 +11,9 @@ use losthost\timetracker\Timer;
 class CommandWait extends AbstractAuthCommand {
     
     const COMMAND = 'wait';
+    const DESCRIPTION = [
+        'default' => 'Откладывание задачи на время или до решения другой задачи',
+    ];
     const PERMIT = self::PERMIT_AGENT;
     
     const DATE_TOKENS = [

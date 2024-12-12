@@ -4,7 +4,9 @@ namespace losthost\Oberbot\view;
 
 class Emoji {
 
-    const TICKET_REGULAR = '🛟';
+//    const TICKET_REGULAR = '🛟';
+    const TICKET_REGULAR = '❗';
+    
     const TICKET_URGENT = '🆘';
     const TASK_REGULAR = '🎓️';
     const TASK_PRIORITY = '⭐️';
@@ -18,7 +20,8 @@ class Emoji {
 
 
     const ICON_SOS = '🆘';
-    const ICON_LIFEBUOY = '🛟';
+//    const ICON_LIFEBUOY = '🛟';
+    const ICON_LIFEBUOY = '❗';
     const ICON_EXCLAMATION = '❗️';
     const ICON_DONE = '✅';
     const ICON_TODO = '🔲';

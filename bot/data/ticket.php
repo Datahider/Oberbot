@@ -364,6 +364,17 @@ class ticket extends topic {
         return false;
     }
     
+    public function getExpectingTickets() : array {
+        $view = new DBView('SELECT subtask_id FROM [wait] WHERE task_id = ?', [$this->id]);
+        
+        $result = [];
+        while ($view->next()) {
+            $result[] = static::getById($view->subtask_id);
+        }
+        
+        return $result;
+    }
+    
     protected function entityTaskName($case) {
         switch ($case) {
             case 1:

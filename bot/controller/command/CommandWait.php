@@ -5,6 +5,7 @@ namespace losthost\Oberbot\controller\command;
 use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\service\Service;
 use losthost\telle\Bot;
+use losthost\BotView\BotView;
 use losthost\Oberbot\background\RemindTicket;
 use losthost\timetracker\Timer;
 
@@ -57,8 +58,7 @@ class CommandWait extends AbstractAuthCommand {
             if ($this->args) {
                 Service::message('info', $this->processArguments(), null, $this->thread_id);
             } else {
-                $this->ticket->touchAdmin($this->user_id);
-                Service::message('info', $this->ticket->entityName(1, true). Service::__(' перемещена в конец очереди.'), null, $this->thread_id);
+                $this->processNoArgs();
             }
             
             if ($this->ticket->isTimerStarted($this->user_id)) {
@@ -70,6 +70,18 @@ class CommandWait extends AbstractAuthCommand {
         }
         
         return true;
+    }
+    
+    protected function processNoArgs() {
+
+        $this->ticket->touchAdmin($this->user_id);
+
+        $view_params = [
+            'ticket' => $this->ticket
+        ];
+        
+        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+        $view->show('controllerCommandWait', null, $view_params, null, $this->ticket->topic_id);
     }
     
     protected function toIntervalString($arguments) {

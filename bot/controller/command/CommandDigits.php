@@ -5,6 +5,7 @@ namespace losthost\Oberbot\controller\command;
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
+use losthost\Oberbot\service\Service;
 
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\__;
@@ -39,6 +40,12 @@ class CommandDigits extends AbstractHandlerMessage {
         } else {
             $this->waitTime();
         }
+        
+        if ($this->ticket->isTimerStarted(Bot::$user->id)) {
+            $this->ticket->timerStop(Bot::$user->id);
+        }
+        Service::showNextTicket(Bot::$user->id);
+        
         return true;
     }
     

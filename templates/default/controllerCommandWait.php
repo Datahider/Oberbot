@@ -32,7 +32,7 @@ while ($subtask_view->next()) {
 }
 
 if (empty($wait_till) && empty($subtasks)) {
-    echo __("Эта %entity% не была отложена.", $ticket->entityName());
+    echo __("Эта %entity% не была отложена.", ['entity' => $ticket->entityName()]);
 } else {
     $text = __("Эта %entity% отложена\n", ['entity' => $ticket->entityName()]);
     if ($wait_till) {

@@ -30,6 +30,7 @@ require_once 'bot/functions.php';
 require_once 'bot/show.php';
 
 // Предварительная обработка
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandDigits::class);
 Bot::addHandler(losthost\Oberbot\controller\pre\UpdateLastSeenByMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedCallback::class);

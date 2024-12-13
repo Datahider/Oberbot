@@ -8,6 +8,7 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\OberbotModel\Model;
 use losthost\DB\DBView;
+use losthost\Oberbot\data\ticket;
 
 function mention(user $user) : string {
     return "<a href=tg://user?id=$user->tg_id>$user->name</a>";
@@ -50,6 +51,19 @@ function mentionByView(DBView $view, mixed $show_none='', bool $use_usernames = 
     }
     return empty($mentions) ? $show_none : implode(', ', $mentions);
 }
+
+function ticketMention(ticket $ticket) {
+    $url = str_replace('-100', 'c/', "https://t.me/$ticket->chat_id/$ticket->topic_id");
+    $link = "<a href=\"$url\">$ticket->title - #$ticket->id</a>";
+    return $link;
+}
+
+function ticketMentionNoId(ticket $ticket) : string {
+    $url = str_replace('-100', 'c/', "https://t.me/$ticket->chat_id/$ticket->topic_id");
+    $link = "<a href=\"$url\">$ticket->title</a>";
+    return $link;
+}
+
 
 function showNewTopicGreating(topic $ticket) {
     $view = new BotView(Bot::$api, $ticket->chat_id, Bot::$language_code);

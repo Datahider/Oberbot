@@ -33,7 +33,7 @@ class ForwardedMessageToGeneral extends AbstractHandlerMessage {
             $text = 'Создана новая заявка: %ticket_mention%';
         } else {
             $originator_id = $message->getFrom()->getId();
-            $text = "Создана новая заявка: %ticket_mention%\n\nПользователем по заявке назначен %mention%, т.к. отправитель скрыл свои данные.";
+            $text = "Создана новая заявка: %ticket_mention%\n\nПользователем по заявке назначен %mention%, т.к. отправитель оригинала скрыл свои данные.";
         }
         
         $title = 'Новая заявка';

@@ -28,7 +28,7 @@ class CommandSub extends AbstractAuthCommand {
         $messages = $this->getMessages($message);
         
         $old_ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
-        $ticket = ActionCreateTicket::do(Bot::$chat->id, Bot::$chat->id, $message->getFrom()->getId(), $title, $messages);
+        $ticket = ActionCreateTicket::do($this->chat_id, $this->chat_id, $this->user_id, $title, $messages);
         
         $old_ticket->waitTask($ticket->id);
 
@@ -77,6 +77,7 @@ class CommandSub extends AbstractAuthCommand {
         
         if ($message->getReplyToMessage() && $message->getReplyToMessage()->getMessageId() != $message->getMessageThreadId()) {
             $result[] = $message->getReplyToMessage()->getMessageId();
+            $this->user_id = $message->getReplyToMessage()->getFrom()->getId();
         }
  
         $index = 1;

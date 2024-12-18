@@ -6,6 +6,7 @@ use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\Oberbot\service\Service;
+use losthost\Oberbot\background\RemindTicket;
 
 use function \losthost\Oberbot\isAgent;
 use function \losthost\Oberbot\__;

@@ -16,6 +16,7 @@ use losthost\Oberbot\view\TicketCustomerLink;
 use losthost\Oberbot\view\TicketUnlink;
 use losthost\Oberbot\view\NoteCreation;
 use losthost\Oberbot\view\PrivateTopicCreating;
+use losthost\Oberbot\view\WaitCreating;
 
 use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\data\topic_user;
@@ -30,6 +31,9 @@ require_once 'bot/functions.php';
 require_once 'bot/show.php';
 
 // Предварительная обработка
+Bot::addHandler(losthost\Oberbot\controller\pre\ForwardedMessageToGeneral::class);
+Bot::addHandler(\losthost\Oberbot\controller\pre\ForumTopicEditedByBot::class);
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandDigits::class);
 Bot::addHandler(losthost\Oberbot\controller\pre\UpdateLastSeenByMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedCallback::class);
@@ -120,6 +124,7 @@ DB::addTracker(DBEvent::INTRAN_DELETE, [topic_admin::class, topic_user::class], 
 DB::addTracker(DBEvent::AFTER_INSERT, note::class, NoteCreation::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, private_topic::class, PrivateTopicCreating::class);
+DB::addTracker(DBEvent::AFTER_INSERT, wait::class, WaitCreating::class);
 
 Bot::param('workers_count', 1);
 

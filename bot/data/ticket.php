@@ -356,6 +356,11 @@ class ticket extends topic {
     }
     
     public function waitTask(int $ticket_id) {
+        $ticket = new static(['id' => $ticket_id], true);
+        if ($ticket->isNew()) {
+            throw new \Exception('Тикет не найден.');
+        }
+        
         $wait = new wait(['task_id' => $this->id, 'subtask_id' => $ticket_id], true);
         if ($wait->isNew()) {
             $wait->write();

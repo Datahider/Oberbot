@@ -35,6 +35,7 @@ class TicketUpdating extends DBTracker {
         $this->notifyPriorityChange();
         $this->notifyStatusChanging();
         $this->notifyUrgentTicket();
+        $this->notifyWaitTill();
 
         // Creating/updating ticket info message
         $accepting_message = new AcceptingMessage($this->ticket);
@@ -88,6 +89,17 @@ class TicketUpdating extends DBTracker {
             $view = new BotView(Bot::$api, $agent->id);
             $view->show('privateUrgentNotification', null, ['ticket' => $this->ticket]);
         }
+    }
+    
+    protected function notifyWaitTill() {
+        if (array_search('wait_till', $this->event->fields) === false) {
+            return;
+        }
+        
+        sendMessage(__("%entity% отложена до %till%", [
+            'entity' => $this->ticket->entityName(1, true),
+            'till' => date_create($this->ticket->wait_till)->format('d-m-Y H:i')
+        ]), null, $this->ticket->chat_id, $this->ticket->topic_id);
     }
     
     protected function notifyStatusChanging() {

@@ -38,12 +38,8 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
             $this->reason = self::BLOCK_REGULAR_GROUP;
             return true; 
         } elseif ($is_forum && !$topic_id) {
-            $hid_handler = new CommandHid();
-            $hid_handler->initHandler();
-            if (!$hid_handler->checkUpdate($message)) {
-                $this->reason = self::BLOCK_GENERAL_TOPIC; // для всего кроме команды /hid
-                return true;
-            }
+            $this->reason = self::BLOCK_GENERAL_TOPIC; // для всего кроме команды /hid
+            return true;
         }
         
         if (!$message->getText() && !$message->getCaption()) {

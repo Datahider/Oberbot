@@ -56,7 +56,7 @@ class CommandWait extends AbstractAuthCommand {
         
         if ($this->thread_id > 1) {
             if ($this->args) {
-                Service::message('info', $this->processArguments(), null, $this->thread_id);
+                $this->processArguments();
             } else {
                 $this->processNoArgs();
             }
@@ -120,7 +120,7 @@ class CommandWait extends AbstractAuthCommand {
             
             $this->ticket->waitTask($matches[1]);
             
-            return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до решения "). "$entity ". Service::ticketMention($depending_topic);
+            return;
         } elseif (preg_match("/^\d*$/", $this->args)) {
             // Заданы только цифры - считаем, что это минуты
             $interval = new \DateInterval("PT{$this->args}M");
@@ -129,7 +129,7 @@ class CommandWait extends AbstractAuthCommand {
             $this->ticket->waitTime($till);
             
             Bot::runAt($till, RemindTicket::class, "$this->user_id {$this->ticket->id}");
-            return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до "). $till->format('d-m-Y H:i');
+            return;
         } else {
             // Задано что-то, надо попробовать преобразовать это в интервал или дату
             $till = \date_create_immutable($this->args);
@@ -142,7 +142,7 @@ class CommandWait extends AbstractAuthCommand {
             $this->ticket->write();
 
             Bot::runAt($till, RemindTicket::class, "$this->user_id {$this->ticket->id}");
-            return Service::__($this->ticket->entityName(1, true)). Service::__(" отложена до "). $till->format('d-m-Y H:i');
+            return;
         }
         
         throw new Exception("Ошибка аргументов команды");

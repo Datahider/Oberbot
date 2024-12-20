@@ -102,7 +102,7 @@ class CommandWait extends AbstractAuthCommand {
         
         
         if ($time) {
-            $result = "${date}T$time";
+            $result = "{$date}T$time";
         } else {
             $result = $date;
         }

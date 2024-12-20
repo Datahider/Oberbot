@@ -1,17 +1,33 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace losthost\Oberbot\controller\command;
 
-/**
- * Description of CommandPay
- *
- * @author drweb
- */
-class CommandPay {
-    //put your code here
+use losthost\Oberbot\controller\action\ActionInvoice;
+use losthost\Oberbot\controller\command\AbstractAuthCommand;
+
+use function \losthost\Oberbot\getMentionedIds;
+
+class CommandPay extends AbstractAuthCommand {
+    
+    const COMMAND = 'pay';
+    const PERMIT = self::PERMIT_PRIVATE;
+    
+    protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        if (!$this->args) {
+            $user_ids = [$this->user_id];
+            $this->sendBill($user_ids);
+        } else {
+            $user_ids = getMentionedIds($message);
+            $this->sendBill($user_ids);
+        }
+        
+        return true;
+    }
+    
+    protected function sendBill(array $user_ids) {
+        
+        ActionInvoice::do(ActionInvoice::PERIOD_1_MONTH, count($user_ids));
+        
+    }
 }

@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller\action;
 
 use losthost\telle\Bot;
+use TelegramBot\Api\Types\Payments\LabeledPrice;
 
 use function \losthost\Oberbot\__;
 
@@ -13,26 +14,27 @@ class ActionInvoice {
     const PERIOD_6_MONTHS = '6months';
     const PERIOD_12_MONTHS = '12months';
     
-    protected int $chat_id;
-    protected int $thread_id;
-
-    public function __construct(int $chat_id, int $thread_id = null) {
-        $this->chat_id = $chat_id;
-        $this->thread_id = $thread_id;
-    }
-    
-    public function do(int $period=self::PERIOD_1_MONTH, int $quantity=1) {
+    static public function do(string $period=self::PERIOD_1_MONTH, int $quantity=1) {
         
-        Bot::$api->sendInvoice(
-                $this->chat_id, 
-                __('Название счета %period%', [$period]), 
-                __('Описание счета %period%', [$period]), 
-                'payload', 
-                Bot::param('payment_token', 'secret_payment_token'), 
-                null, 
-                'RUR',
-                [Bot::param('price_'. $period, 0)], 
-                false, 
-                '');
+        $price = new LabeledPrice();
+        $price->setLabel('product price');
+        $price->setAmount($quantity * 100 * Bot::param('price_'. $period, 0));
+        
+        $method = 'sendInvoice';
+        $data = [
+            'chat_id' => Bot::$chat->id,
+            'title' => __('Название счета %period%', ['period' => __($period)]),
+            'description' => __('Описание счета %period% %quantity%', ['period' => __($period), 'quantity' => $quantity]),
+            'payload' => 'payload',
+            'provider_token' => Bot::param('payment_token', 'secret_payment_token'),
+            'currency' => 'RUB',
+            'prices' => json_encode([
+                ['label' => __('%quantity% агент(а,ов) на %period%', ['period' => __($period), 'quantity' => $quantity]), 'amount' => $quantity * 100 * Bot::param('price_'. $period, 0)]
+            ]),
+            'photo_url' => 'https://oberdesk.ru/img/bill.png'
+        ];
+        
+        Bot::$api->call($method, $data);
+        
     }
 }

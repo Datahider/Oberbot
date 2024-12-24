@@ -52,6 +52,23 @@ function mentionByView(DBView $view, mixed $show_none='', bool $use_usernames = 
     return empty($mentions) ? $show_none : implode(', ', $mentions);
 }
 
+function textMentionByIdArray(array $tg_ids) : string {
+    
+    $mentions = [];
+    
+    foreach ($tg_ids as $tg_id) {
+        $user = new DBView("SELECT first_name, last_name, username FROM [telle_users] WHERE id = ?", [$tg_id]);
+        if ($user->next()) {
+            $mention = $user->username ? "@$user->username" : trim("$user->first_name $user->last_name");
+            $mentions[] = $mention;
+        } else {
+            $mentions[] = 'Неизвестный';
+        }
+    }
+    
+    return implode(', ', $mentions);
+}
+
 function ticketMention(ticket $ticket) {
     $url = str_replace('-100', 'c/', "https://t.me/$ticket->chat_id/$ticket->topic_id");
     $link = "<a href=\"$url\">$ticket->title - #$ticket->id</a>";

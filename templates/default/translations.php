@@ -206,7 +206,7 @@ $translations = [
     ActionInvoice::PERIOD_12_MONTHS => '12 месяцев',
         
     'Название счета %period%' => "Оплата подписки на %period%",
-    'Описание счета %period% %quantity%' => 'для %quantity% агент(а,ов)',
+    'Описание счета %period% %quantity% %users%' => 'для %users%',
     '%quantity% агент(а,ов) на %period%' => '%quantity% агент(а,ов) на %period%',
     /// Приватный чат с ботом
     //

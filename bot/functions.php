@@ -103,7 +103,11 @@ function getMentionedIds(Message &$message) : array {
 
 function isChatAdministrator($user_id, $chat_id) : bool {
     
-    $chat_member = Bot::$api->getChatMember($chat_id, $user_id);
+    try {
+        $chat_member = Bot::$api->getChatMember($chat_id, $user_id);
+    } catch (\Exception $ex) {
+        return false;
+    }
     switch ($chat_member->getStatus()) {
         case 'creator': 
         case 'administrator':

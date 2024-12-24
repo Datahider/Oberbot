@@ -3,16 +3,17 @@
 В группах, где вы являетесь администратором найдены следующие агенты:
 
 <?php
-use losthost\DB\DBView;
-use function losthost\Oberbot\__;
 
-$users = new DBView(__('SELECT id, first_name, last_name, username FROM [telle_users] WHERE id IN (%agent_ids%)', ['agent_ids' => implode(',', $agent_ids)]));
-
-while ($users->next()) {
-    $name = trim("$users->first_name $users->last_name");
-    $text = "- <a href=\"tg://user?id=$users->id\">$name</a>";
-    if ($users->username) {
-        $text .= " (@$users->username)";
+foreach ($agents as $agent) {
+    $name = trim("$agent->first_name $agent->last_name");
+    $text = "- <a href=\"tg://user?id=$agent->id\">$name</a>";
+    if ($agent->username) {
+        $text .= " (@$agent->username)";
     }
-    echo "$text\n";
+    if (is_null($agent->paid_till)) {
+        $paid_till = '<u><i>Не оплачен</i></u>';
+    } else {
+        $paid_till = "<u><i>Оплачен до <b>$agent->paid_till</b></i></u>";
+    }
+    echo "$text\n$paid_till\n\n";
 }

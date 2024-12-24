@@ -7,6 +7,7 @@ use losthost\Oberbot\controller\command\AbstractAuthCommand;
 use losthost\DB\DBView;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\DB\DB;
 
 use function \losthost\Oberbot\getMentionedIds;
 use function \losthost\Oberbot\isChatAdministrator;
@@ -36,9 +37,9 @@ class CommandPay extends AbstractAuthCommand {
         sendMessage(__('Агенты не найдены. Вы хотите оплатить тариф себе?'), $this->getPeriodKeyboard());
     }
 
-    protected function offerAgentsPayment(array $agent_ids) {
+    protected function offerAgentsPayment(array $agents) {
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-        $view->show('controllerCommandPay', 'controllerKeyboardCommandPay', ['agent_ids' => $agent_ids]);
+        $view->show('controllerCommandPay', 'controllerKeyboardCommandPay', ['agents' => $agents]);
     }
     
     protected function getPeriodKeyboard() {
@@ -68,15 +69,36 @@ class CommandPay extends AbstractAuthCommand {
         
         $group_ids = $this->getMyAdminGroups();
         
-        $my_agents = new DBView(__('SELECT DISTINCT user_id FROM [user_chat_role] WHERE chat_id IN (%groups%) AND role = "agent"', ['groups' => implode(',', $group_ids)])); 
+        $my_agents = new DBView(__(<<<FIN
+                SELECT DISTINCT 
+                    role.user_id,
+                    users.first_name,
+                    users.last_name, 
+                    users.username,
+                    meta.value AS paid_till
+                FROM 
+                    ober_user_chat_role as role
+                    LEFT JOIN ober_telle_users AS users ON users.id = role.user_id
+                    LEFT JOIN ober_user_meta AS meta 
+                        ON meta.user_id = role.user_id AND meta.name = "paid_till" AND meta.value > '%now%'
+                WHERE 
+                    chat_id IN (%groups%)
+                    AND role = 'agent';
+                FIN, ['groups' => implode(',', $group_ids), 'now' => date_create()->format(DB::DATE_FORMAT)])); 
         
-        $agent_ids = [];
+        $agents_data = [];
         
         while ($my_agents->next()) {
-            $agent_ids[] = $my_agents->user_id;
+            $agent_data = new \stdClass();
+            $agent_data->id = $my_agents->user_id;
+            $agent_data->first_name = $my_agents->first_name;
+            $agent_data->last_name = $my_agents->last_name;
+            $agent_data->username = $my_agents->username;
+            $agent_data->paid_till = $my_agents->paid_till;
+            $agents_data[] = $agent_data;
         }
         
-        return $agent_ids;
+        return $agents_data;
     }
     
     protected function sendBill(array $user_ids) {

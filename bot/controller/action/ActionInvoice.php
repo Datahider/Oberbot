@@ -16,7 +16,7 @@ class ActionInvoice {
     const PERIOD_6_MONTHS = '6months';
     const PERIOD_12_MONTHS = '12months';
     
-    static public function do(string $period=self::PERIOD_1_MONTH, array $user_ids) {
+    static public function do(string $period, array $user_ids) {
         
         $quantity = count($user_ids);
         $price = new LabeledPrice();

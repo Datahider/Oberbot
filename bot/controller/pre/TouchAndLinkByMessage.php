@@ -84,8 +84,10 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
         switch ($this->reason) {
             case self::BLOCK_REGULAR_GROUP:
                 Bot::logComment('Сообщение в обычной группе. Выводим визиря.');
-                $wizard = new GroupWizard($message->getChat()->getId());
-                $wizard->show();
+                // Визиря выводить не надо, ведь мы его уже вывели, когда бот был добавлен в группу
+                //$wizard = new GroupWizard($message->getChat()->getId());
+                //$wizard->show();
+                // поэтому молча игнорим обычные группы
                 return true; // Как будто уже обработано;
             case self::BLOCK_NO_TICKET:
                 $topic_id = $message->getMessageThreadId();

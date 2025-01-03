@@ -23,7 +23,7 @@ class CallbackVerbose extends AbstractCallback {
                     [['text' => __('Как создать группу'), 'callback_data' => 'verbose_how_to_create_group']]
                 ]);
                 break;
-            case '_how_to_create_group':
+            case '_how_to_create_group_old':
                 $media1 = new InputMediaPhoto();
                 $media1->setCaption(__('Инструкции как создать группу'));
                 $media1->setMedia('https://storage.losthost.online/Oberbot/img/create_group_1.png');
@@ -39,6 +39,22 @@ class CallbackVerbose extends AbstractCallback {
                 
                 Bot::$api->sendMediaGroup(Bot::$chat->id, $media);
                 
+                break;
+            case '_how_to_create_group':
+                Bot::$api->sendPhoto(
+                    Bot::$chat->id, 
+                    'https://storage.losthost.online/Oberbot/img/create_group_1.png', 
+                    __('Инструкции как создать группу 1'));
+                sleep(2);
+                Bot::$api->sendPhoto(
+                    Bot::$chat->id, 
+                    'https://storage.losthost.online/Oberbot/img/create_group_2.png', 
+                    __('Инструкции как создать группу 2'));
+                sleep(2);
+                Bot::$api->sendPhoto(
+                    Bot::$chat->id, 
+                    'https://storage.losthost.online/Oberbot/img/create_group_3.png', 
+                    __('Инструкции как создать группу 3'));
                 break;
             default: 
                 return 'ПОКА НЕ РЕАЛИЗОВАНО.';

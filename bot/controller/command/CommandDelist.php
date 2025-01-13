@@ -18,7 +18,7 @@ class CommandDelist extends AbstractAuthCommand {
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         if ($message->getMessageThreadId() > 1) {
-            Service::message('warning', 'Эта команда предназначена для использования только в общем чате группы.');
+            Service::message('warning', 'Эта команда предназначена для использования только в общем чате группы.', null, $this->thread_id);
             return true;
         }
         

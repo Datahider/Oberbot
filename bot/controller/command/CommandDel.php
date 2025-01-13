@@ -11,6 +11,10 @@ class CommandDel extends AbstractAuthCommand {
     
     const COMMAND = 'del';
     const PERMIT = self::PERMIT_AGENT;
+    const DESCRIPTION = [
+        'default' => 'Удаление выбранного сообщения',
+        'all_group_chats' => 'Удаление выбранного сообщения'
+    ];
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         

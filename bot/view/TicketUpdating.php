@@ -165,7 +165,11 @@ class TicketUpdating extends DBTracker {
         if ($private_topic->isNew()) {
             return;
         }
-        sendMessage(__('Оператор закрыл ваше обращение.'), null, $private_topic->user_id);
+        try {
+            sendMessage(__('Оператор закрыл ваше обращение.'), null, $private_topic->user_id);
+        } catch (\Exception $exc) {
+            Bot::logException($ex);
+        }
     }
     
     protected function notifyPrivateReopen() {

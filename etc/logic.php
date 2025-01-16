@@ -41,6 +41,7 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForbidArchivedCallback::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\WizardStartWhenChatMember::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
+Bot::addHandler(losthost\Oberbot\controller\pre\UserJoinsTheGroup::class);
 
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);

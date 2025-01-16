@@ -11,7 +11,7 @@ $emoji[false][true] = Emoji::ICON_SOS;
 $emoji[true][false] = Emoji::TASK_REGULAR;
 $emoji[true][true] = Emoji::TASK_PRIORITY;
 
-$in_group = $working_group ? " в группе <b>$working_group</b>" : '';
+$in_group = $working_group ? " в списке <b>$working_group</b>" : '';
 
 if ($ticket) {
     $ticket_type = $ticket->is_task ? 'заявка' : 'задача';

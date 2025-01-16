@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller\command;
 
 use losthost\Oberbot\data\ticket;
+use function \losthost\Oberbot\__;
 
 class CommandArchive extends AbstractAuthCommand {
     

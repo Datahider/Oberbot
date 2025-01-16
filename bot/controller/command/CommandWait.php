@@ -135,8 +135,12 @@ class CommandWait extends AbstractAuthCommand {
             $till = \date_create_immutable($this->args);
             if ($till === false) {
                 $now = \date_create_immutable();
-                $till = $now->add(new \DateInterval($this->toIntervalString($this->args)));
+                $interval = new \DateInterval($this->toIntervalString($this->args));
+                $till = $now->add($interval);
+            } elseif ($till->getTimestamp() < time()) {
+                $till = $till->add(new \DateInterval('P1D'));
             }
+
 
             $this->ticket->wait_till = $till->format('Y-m-d H:i:s');
             $this->ticket->write();

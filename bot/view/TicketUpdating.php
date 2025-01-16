@@ -167,7 +167,7 @@ class TicketUpdating extends DBTracker {
         }
         try {
             sendMessage(__('Оператор закрыл ваше обращение.'), null, $private_topic->user_id);
-        } catch (\Exception $exc) {
+        } catch (\Exception $ex) {
             Bot::logException($ex);
         }
     }

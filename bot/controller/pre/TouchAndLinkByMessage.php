@@ -42,7 +42,16 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
             return true;
         }
         
-        if (!$message->getText() && !$message->getCaption()) {
+        if (!$message->getText() 
+                && !$message->getAnimation() 
+                && !$message->getAudio() 
+                && !$message->getDocument() 
+                && !$message->getPhoto() 
+                && !$message->getSticker() 
+                && !$message->getStory() 
+                && !$message->getVideo() 
+                && !$message->getVideoNote() 
+                && !$message->getVoice()) {
             return false; // не должны обрабатывать служебные сообщения, 
                           // т.к. они могут содержать упоминания пользователей
                           // но при этом нужны для проверки, возможно это переоткрытие 

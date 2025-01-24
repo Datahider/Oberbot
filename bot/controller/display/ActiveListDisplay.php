@@ -17,7 +17,7 @@ class ActiveListDisplay {
         $active = static::getActiveList($user_id);
         $active = $active == 'all' ? __('all') : $active;
         
-        $keyboard = [[['text' => __('all'), 'callback_data' => 'list_all']]];
+        $keyboard = [[['text' => __('all'), 'callback_data' => 'list_']]];
         
         if (!empty($agent_lists)) {
             foreach ($agent_lists as $list) {

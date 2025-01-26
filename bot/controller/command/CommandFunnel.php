@@ -34,10 +34,14 @@ class CommandFunnel extends AbstractAuthCommand {
             return true;
         }
         
-        $funnel->owner_id = getChatOwner(Bot::$chat->id);
+        $funnel->owner_id = getChatOwner(Bot::$chat->id)->getId();
         $funnel->invite_link = Bot::$api->exportChatInviteLink(Bot::$chat->id);
         $funnel->write();
         
+        Bot::$api->call('editGeneralForumTopic', [
+            'chat_id' => Bot::$chat->id,
+            'name' => __('Общий чат')
+        ]);
         $message_id = sendMessage(__('Группа будет использоваться для подключения новых пользователей.'));
         sleep(3);
         Bot::$api->deleteMessage(Bot::$chat->id, $message_id);

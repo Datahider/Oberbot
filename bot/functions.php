@@ -117,6 +117,22 @@ function isChatAdministrator($user_id, $chat_id) : bool {
     }
 }
 
+function getChatOwner(int $chat_id) : ?\TelegramBot\Api\Types\User {
+    
+    try {
+        $members = Bot::$api->getChatAdministrators($chat_id);
+        foreach ($members as $member) {
+            if ($member->getStatus() == 'creator') {
+                return $member->getUser();
+            }
+        }
+    } catch (\Exception $exc) {
+        Bot::logException($exc);
+    }
+
+    return null;
+}
+
 function isAgent($user_id, $chat_id) : bool {
     return getUserChatRole($user_id, $chat_id) === user_chat_role::ROLE_AGENT;
 }
@@ -192,7 +208,8 @@ function makeGroupCommands() {
 
 function makeGroupAdminCommands() {
     Bot::$api->setMyCommands([
-            controller\command\CommandAgent::getBotCommand()
+            controller\command\CommandAgent::getBotCommand(),
+            controller\command\CommandFunnel::getBotCommand(),
     ], json_encode(['type' => 'all_chat_administrators']));
 }
 

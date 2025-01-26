@@ -91,6 +91,7 @@ Bot::addHandler(\losthost\Oberbot\controller\command\CommandUp::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandUrgent::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandWait::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNext::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandFunnel::class);
 
 
 // Эти команды обрабатываются в любых чатах, куда добавлен бот

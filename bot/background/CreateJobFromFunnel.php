@@ -14,7 +14,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
     public function run() {
         
         $task = new DBValue('SELECT * FROM fun_task_data WHERE id=?', [$this->param]);
-        $messages = new DBView('SELECT * FROM fun_message_data WHERE task_id=? ORDER BY id');
+        $messages = new DBView('SELECT * FROM fun_message_data WHERE task_id=? ORDER BY id', [$this->param]);
         
         $ticket = ActionCreateTicket::do(null, $task->group_id, $task->user_id, $task->subject, []);
         

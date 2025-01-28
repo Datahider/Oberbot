@@ -39,5 +39,6 @@ Timer::initDataStructure();
 TimerEvent::initDataStructure();
 TagBinder::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
+\losthost\Oberbot\data\funnel_chat::initDataStructure();
 
 Bot::run();

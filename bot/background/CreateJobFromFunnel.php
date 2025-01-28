@@ -27,5 +27,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
             $message = unserialize($messages->message);
             $proxy->proxy($message, $task->group_id, $ticket->topic_id);
         }
+        
+        $ticket->toTicket();
     }
 }

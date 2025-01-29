@@ -47,7 +47,7 @@ class ActiveListDisplay {
     
     static protected function getActiveGroupsSQLQuery() {
         return  <<<FIN
-                SELECT
+                SELECT DISTINCT
                     chats.chat_id AS id,
                     titles.title AS title
                 FROM 

@@ -32,7 +32,7 @@ class ActiveListDisplay {
 
     static protected function getActiveGroups(int $user_id, ?string $active) {
         
-        $groups = new DBView(self::getActiveGroupsSQLQuery($active), [$active, $active, $user_id]);
+        $groups = new DBView(self::getActiveGroupsSQLQuery($active), [$active, $user_id]);
         
         $result = [];
         while ($groups->next()) {
@@ -60,7 +60,7 @@ class ActiveListDisplay {
                 FIN;
         
         if (empty($active)) {
-            $sql = str_replace("INNER JOIN [chat_groups] AS chats ON agents.chat_id = chats.chat_id AND chats.chat_group = ?", "AND 1 <> ?", $sql);
+            $sql = str_replace("INNER JOIN [chat_groups] AS chats ON agents.chat_id = chats.chat_id AND chats.chat_group = ?", "AND ? IS NULL", $sql);
         }
         
         return $sql;

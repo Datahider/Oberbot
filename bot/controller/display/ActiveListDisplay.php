@@ -32,7 +32,7 @@ class ActiveListDisplay {
 
     static protected function getActiveGroups(int $user_id, ?string $active) {
         
-        $groups = new DBView(self::getActiveGroupsSQLQuery(), [$active, $active, $user_id]);
+        $groups = new DBView(self::getActiveGroupsSQLQuery($active), [$active, $active, $user_id]);
         
         $result = [];
         while ($groups->next()) {
@@ -45,20 +45,25 @@ class ActiveListDisplay {
         return $result;
     }
     
-    static protected function getActiveGroupsSQLQuery() {
-        return  <<<FIN
-                SELECT DISTINCT
-                    chats.chat_id AS id,
+    static protected function getActiveGroupsSQLQuery(?string $active) {
+        $sql = <<<FIN
+                SELECT
+                    agents.chat_id AS id,
                     titles.title AS title
                 FROM 
-                    [chat_groups] AS chats
-                    INNER JOIN [user_chat_role] as agents ON agents.chat_id = chats.chat_id
+                    [user_chat_role] as agents
                     INNER JOIN [telle_chats] as titles ON titles.id = agents.chat_id
+                    INNER JOIN [chat_groups] AS chats ON agents.chat_id = chats.chat_id AND chats.chat_group = ?
                 WHERE 
-                    (chats.chat_group = ? OR ? IS NULL)
-                    AND agents.role = 'agent'
+                    agents.role = 'agent'
                     AND agents.user_id = ?;                
                 FIN;
+        
+        if (empty($active)) {
+            $sql = str_replace("INNER JOIN [chat_groups] AS chats ON agents.chat_id = chats.chat_id AND chats.chat_group = ?", "AND 1 <> ?", $sql);
+        }
+        
+        return $sql;
     }
 
 

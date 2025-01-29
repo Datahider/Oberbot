@@ -5,6 +5,8 @@ namespace losthost\Oberbot\controller\display;
 use losthost\Oberbot\data\chat_group;
 use losthost\Oberbot\data\session;
 use losthost\telle\Bot;
+use losthost\BotView\BotView;
+use losthost\DB\DBView;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 
 use function \losthost\Oberbot\__;
@@ -14,35 +16,55 @@ class ActiveListDisplay {
     static public function display(int $user_id, int $chat_id, int $message_to_edit=null) {
 
         $agent_lists = chat_group::getUserLists($user_id);
-        $active = static::getActiveList($user_id);
-        $active = $active == 'all' ? __('all') : $active;
+        $active = self::getActiveList($user_id);
+        $active_name = is_null($active) ? __('all') : $active;
+        $active_groups = self::getActiveGroups($user_id, $active);
         
-        $keyboard = [[['text' => __('all'), 'callback_data' => 'list_']]];
+        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+        $view->show('viewActiveListDisplay', 'kbdActiveListDisplay', [
+            'agent_lists' => $agent_lists,
+            'active_list' => $active,
+            'active_name' => $active_name,
+            'active_groups' => $active_groups
+        ], $message_to_edit);
         
-        if (!empty($agent_lists)) {
-            foreach ($agent_lists as $list) {
-                $prefix = $list == $active ? '⚙️ ' : '';
-                $keyboard[] = [['text' => "$prefix$list", 'callback_data' => "list_$list"]];
-            }
+    }
+
+    static protected function getActiveGroups(int $user_id, ?string $active) {
+        
+        $groups = new DBView(self::getActiveGroupsSQLQuery(), [$active, $active, $user_id]);
+        
+        $result = [];
+        while ($groups->next()) {
+            $result[] = [
+                'id' => $groups->id,
+                'title' => $groups->title
+            ];
         }
         
-        $text = __("Текущий активный список групп: <b>%active%</b>", ['active' => $active]);
-        $reply_markup = new InlineKeyboardMarkup($keyboard);
-        
-        if ($message_to_edit) {
-            try {
-                Bot::$api->editMessageText($chat_id, $message_to_edit, $text, 'HTML', false, $reply_markup);
-                return;
-            } catch (Exception $ex) {
-                Bot::logException($ex);
-            }
-        }
-        Bot::$api->sendMessage($chat_id, $text, 'HTML', false, null, $reply_markup);
+        return $result;
     }
     
+    static protected function getActiveGroupsSQLQuery() {
+        return  <<<FIN
+                SELECT
+                    chats.chat_id AS id,
+                    titles.title AS title
+                FROM 
+                    [chat_groups] AS chats
+                    INNER JOIN [user_chat_role] as agents ON agents.chat_id = chats.chat_id
+                    INNER JOIN [telle_chats] as titles ON titles.id = agents.chat_id
+                WHERE 
+                    (chats.chat_group = ? OR ? IS NULL)
+                    AND agents.role = 'agent'
+                    AND agents.user_id = ?;                
+                FIN;
+    }
+
+
     static public function getActiveList(int $user_id) {
         $session = new session(['user_id' => $user_id, 'chat_id' => $user_id], true);
-        $active = !$session->working_group ? 'all' : $session->working_group;
+        $active = !$session->working_group ? null : $session->working_group;
         return $active;
     }
 }

@@ -9,6 +9,7 @@ use losthost\Oberbot\controller\action\ActionCreateTicket;
 use losthost\ProxyMessage\Proxy;
 use losthost\telle\Bot;
 use TelegramBot\Api\BotApi;
+use losthost\telle\model\DBUser;
 
 class CreateJobFromFunnel extends AbstractBackgroundProcess {
     
@@ -30,6 +31,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         }
         
         Bot::$language_code = $lang;
+        Bot::$user = new DBUser(['id' => Bot::param('bot_userid', 674983837)]);
         $ticket->toTicket();
     }
 }

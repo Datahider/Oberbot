@@ -28,7 +28,7 @@ class AgentReport extends TimeReport {
                 (:project = 'any' OR timers.subject = :project)
                 AND end_time >= :period_start
                 AND start_time <= :period_end
-                AND (:list = 'all' OR events.project IN (
+                AND (:list IS NULL OR events.project IN (
                     SELECT chat_id FROM [chat_groups] WHERE chat_group = :list
                 ))
             GROUP BY 

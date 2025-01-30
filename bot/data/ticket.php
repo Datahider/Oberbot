@@ -14,6 +14,7 @@ use losthost\Oberbot\service\Service;
 use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\Oberbot\data\wait;
+use losthost\Oberbot\background\CloseIncompleteTicket;
 
 class ticket extends topic {
     
@@ -137,6 +138,13 @@ class ticket extends topic {
     public function reopen() : ticket {
         $this->status = static::STATUS_REOPEN;
         $this->write('', ['function' => 'reopen']);
+        
+        Bot::runAt(
+                date_create(Bot::param("wait_for_first_message", "+10 min")),
+                CloseIncompleteTicket::class,
+                $this->id,
+                true
+        );
         
         return $this;
     }

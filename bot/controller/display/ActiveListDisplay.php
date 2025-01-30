@@ -56,7 +56,9 @@ class ActiveListDisplay {
                     INNER JOIN [chat_groups] AS chats ON agents.chat_id = chats.chat_id AND chats.chat_group = ?
                 WHERE 
                     agents.role = 'agent'
-                    AND agents.user_id = ?;                
+                    AND agents.user_id = ?
+                ORDER BY
+                    titles.title;
                 FIN;
         
         if (empty($active)) {

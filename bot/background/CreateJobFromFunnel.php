@@ -10,6 +10,7 @@ use losthost\ProxyMessage\Proxy;
 use losthost\telle\Bot;
 use TelegramBot\Api\BotApi;
 use losthost\telle\model\DBUser;
+use losthost\telle\model\DBChat;
 
 class CreateJobFromFunnel extends AbstractBackgroundProcess {
     
@@ -28,11 +29,13 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
             $message = unserialize($messages->message);
             $lang = $message->getFrom()->getLanguageCode();
             $user = $message->getFrom();
+            $chat = $message->getChat();
             $proxy->proxy($message, $task->group_id, $ticket->topic_id);
         }
         
         Bot::$language_code = $lang;
         Bot::$user = new DBUser($user);
+        Bot::$chat = new DBChat($chat);
         $ticket->toTicket();
     }
 }

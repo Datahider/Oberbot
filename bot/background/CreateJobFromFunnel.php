@@ -25,9 +25,11 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         
         while ($messages->next()) {
             $message = unserialize($messages->message);
+            $lang = $message->getFrom()->getLanguageCode();
             $proxy->proxy($message, $task->group_id, $ticket->topic_id);
         }
         
+        Bot::$language_code = $lang;
         $ticket->toTicket();
     }
 }

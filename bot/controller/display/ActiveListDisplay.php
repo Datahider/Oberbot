@@ -32,7 +32,7 @@ class ActiveListDisplay {
 
     static protected function getActiveGroups(int $user_id, ?string $active) {
         
-        $groups = new DBView(self::getActiveGroupsSQLQuery($active), [$active, $user_id]);
+        $groups = new DBView(self::getActiveGroupsSQLQuery($active), [$active, $user_id, $user_id]);
         
         $result = [];
         while ($groups->next()) {
@@ -57,6 +57,11 @@ class ActiveListDisplay {
                 WHERE 
                     agents.role = 'agent'
                     AND agents.user_id = ?
+                    AND agents.chat_id NOT IN (
+                        SELECT id FROM [funnel_chat] WHERE owner_id = ? AND customer_id IS NULL
+                        UNION ALL
+                        SELECT id FROM [support_chat]
+                    )
                 ORDER BY
                     titles.title;
                 FIN;

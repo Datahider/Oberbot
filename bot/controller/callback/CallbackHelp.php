@@ -65,7 +65,7 @@ class CallbackHelp extends AbstractCallback {
         
         try {
             $invite_link = support_chat::getChatInviteLink(Bot::$chat->id);
-            sendMessage(__('Создал чат для поддержки вашей группы: %link%', ['link' => $invite_link]));
+            sendMessage(__('Создал чат для поддержки вашей группы: %link%', ['link' => $invite_link]), null, null, $callback_query->getMessage()->getMessageThreadId());
         } catch (\Exception $ex) {
             $invite_link = Bot::param('public_support_group', null);
             sendMessage(__('Перейдите в нашу группу технической поддержки %link%', ['link' =>  $invite_link]));

@@ -256,7 +256,11 @@ function makeAgentCommands(int $chat_id, int $user_id) {
             'user_id' => $user_id
         ]));
     } catch (\Exception $e) {
-        Bot::logException($e);
+        if ($e->getMessage() == 'Forbidden: bot was kicked from the supergroup chat') {
+            cleanupChat($chat_id);
+        } else {
+            Bot::logException($e);
+        }
     }
 }
 

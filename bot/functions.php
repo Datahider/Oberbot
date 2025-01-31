@@ -13,6 +13,7 @@ use losthost\Oberbot\data\topic;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use TelegramBot\Api\Types\ArrayOfBotCommand;
 use TelegramBot\Api\Types\BotCommand;
+use losthost\DB\DB;
 
 function barIndicator($value, $max_value=100, $max_bars=30) {
     $bars_symbols = ['█', '▌', '▏'];
@@ -317,5 +318,9 @@ function deleteAgentCommands(int $chat_id, int $user_id) {
 }
 
 function cleanupChat(int $chat_id) {
-    /// TODO -- сделать здесь очистку чата (удаление из списка и (возможно) очистку заявок из этого чата
+    $sth = DB::prepare('DELETE FROM [user_chat_role] WHERE chat_id=?');
+    $sth->execute([$chat_id]);
+    
+    /// TODO - возможно надо чистить и другие, связанные с четом таблицы, но я опасаюсь,
+    //  что это может навредить при случайном удалении бота из чата
 }

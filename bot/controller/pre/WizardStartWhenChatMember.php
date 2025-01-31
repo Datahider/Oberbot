@@ -16,6 +16,7 @@ class WizardStartWhenChatMember extends AbstractHandlerMyChatMember {
     }
 
     protected function handle(\TelegramBot\Api\Types\ChatMemberUpdated &$chat_member): bool {
+        sleep(1);
         $wizard = new GroupWizard($chat_member->getChat()->getId());
         $wizard->show();
         return true;

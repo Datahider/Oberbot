@@ -25,7 +25,9 @@ class Emoji {
     const ICON_EXCLAMATION = '❗️';
     const ICON_DONE = '✅';
     const ICON_TODO = '🔲';
-    
+    const ICON_FUNNEL = '💎';
+
+
     const RATING_GOOD = '😊';
     const RATING_ACCEPTABLE = '😐';
     const RATING_BAD = '🙁';

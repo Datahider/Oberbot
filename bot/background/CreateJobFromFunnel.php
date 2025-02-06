@@ -11,6 +11,8 @@ use losthost\telle\Bot;
 use TelegramBot\Api\BotApi;
 use losthost\telle\model\DBUser;
 use losthost\telle\model\DBChat;
+use losthost\Oberbot\data\ticket;
+use losthost\BotView\BotView;
 
 class CreateJobFromFunnel extends AbstractBackgroundProcess {
     
@@ -33,9 +35,23 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
             $proxy->proxy($message, $task->group_id, $ticket->topic_id);
         }
         
-        Bot::$language_code = $lang;
+        $this->notifyAgents($ticket);
+    }
+    
+    protected function notifyAgents(ticket $ticket) {
+        
         Bot::$user = new DBUser($user);
         Bot::$chat = new DBChat($chat);
-        $ticket->toTicket();
+        Bot::$language_code = Bot::$user->language_code;
+        
+        // TODO - доставать так же language_code для агента
+        $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$ticket->chat_id]);
+        
+        while ($agent->next()) {
+            $view = new BotView(Bot::$api, $agent->id);
+            $view->show('privateFunnelNotification', null, ['ticket' => $this->ticket]);
+        }
+        
+        
     }
 }

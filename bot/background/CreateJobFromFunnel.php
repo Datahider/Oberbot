@@ -22,10 +22,14 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         $messages = new DBView('SELECT * FROM fun_message_data WHERE task_id=? ORDER BY id', [$this->param]);
         $bot = new DBValue('SELECT * FROM fun_bot_data WHERE tg_id=?', [$task->bot_id]);
         
+        $alternative_api = new BotApi($bot->token);
+        $bot_data = $alternative_api->getMe();
+        Bot::$language_code = $bot_data->getLanguageCode();
+        
         $ticket = ActionCreateTicket::do(null, $task->group_id, $task->user_id, $task->subject, []);
         
         $proxy = new Proxy(Bot::$api);
-        $proxy->setAlternativeApi(new BotApi($bot->token));
+        $proxy->setAlternativeApi();
         
         while ($messages->next()) {
             $message = unserialize($messages->message);
@@ -35,14 +39,14 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
             $proxy->proxy($message, $task->group_id, $ticket->topic_id);
         }
         
+        Bot::$user = new DBUser($user);
+        Bot::$chat = new DBChat($chat);
+        Bot::$language_code = Bot::$user->language_code;
+        
         $this->notifyAgents($ticket);
     }
     
     protected function notifyAgents(ticket $ticket) {
-        
-        Bot::$user = new DBUser($user);
-        Bot::$chat = new DBChat($chat);
-        Bot::$language_code = Bot::$user->language_code;
         
         // TODO - доставать так же language_code для агента
         $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$ticket->chat_id]);

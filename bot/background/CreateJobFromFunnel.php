@@ -41,7 +41,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         
         Bot::$user = new DBUser($user);
         Bot::$chat = new DBChat($chat);
-        Bot::$language_code = Bot::$user->language_code;
+        Bot::$language_code = $lang;
         
         $this->notifyAgents($ticket);
     }

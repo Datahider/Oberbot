@@ -22,6 +22,8 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         $messages = new DBView('SELECT * FROM fun_message_data WHERE task_id=? ORDER BY id', [$this->param]);
         $bot = new DBValue('SELECT * FROM fun_bot_data WHERE tg_id=?', [$task->bot_id]);
         
+        Bot::logComment("Alternative token is ". substr($bot->token, 0, 20));
+        
         $alternative_api = new BotApi($bot->token);
         $bot_data = $alternative_api->getMe();
         Bot::$language_code = $bot_data->getLanguageCode();

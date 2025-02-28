@@ -31,7 +31,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         $ticket = ActionCreateTicket::do(null, $task->group_id, $task->user_id, $task->subject, []);
         
         $proxy = new Proxy(Bot::$api);
-        $proxy->setAlternativeApi();
+        $proxy->setAlternativeApi($alternative_api);
         
         while ($messages->next()) {
             $message = unserialize($messages->message);

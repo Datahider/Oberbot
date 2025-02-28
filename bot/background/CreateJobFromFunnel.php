@@ -55,7 +55,7 @@ class CreateJobFromFunnel extends AbstractBackgroundProcess {
         
         while ($agent->next()) {
             $view = new BotView(Bot::$api, $agent->id);
-            $view->show('privateFunnelNotification', null, ['ticket' => $this->ticket]);
+            $view->show('privateFunnelNotification', null, ['ticket' => $ticket]);
         }
         
         

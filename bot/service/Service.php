@@ -154,6 +154,8 @@ class Service {
         
         $params = compact('now', 'day_seconds', 'user_id', 'group', 'datenow');
 
+        Bot::logComment(print_r(['sql' => $sql, 'params' => $params], true));
+        
         $view = new DBView($sql, $params);
         
         if ($view->next()) {

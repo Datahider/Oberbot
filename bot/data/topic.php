@@ -29,6 +29,7 @@ class topic extends DBObject {
         'score' => 'TINYINT(4)',
         'is_urgent' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'is_task' => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'user_priority' => 'TINYINT(4) NOT NULL DEFAULT 3',
         'wait_for' => 'BIGINT(20) NULL COMMENT "Ожидание выполнения задачи"',
         'wait_till' => 'VARCHAR(30) NULL COMMENT "Ожидание даты/времени"',
         'PRIMARY KEY' => 'id',
@@ -37,6 +38,13 @@ class topic extends DBObject {
     
     public static function tableName() {
         return DB::$prefix. 'topics';
+    }
+    
+    protected function update($comment, $data) {
+        if (!$this->user_priority) {
+            $this->user_priority = 3;
+        }
+        parent::update($comment, $data);
     }
     
     public function addIdToTitle() {

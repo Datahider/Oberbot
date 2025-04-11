@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\view;
 
 use losthost\DB\DBView;
+use losthost\DB\DBValue;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DB;
 
@@ -73,5 +74,14 @@ class TicketQueue {
         return $result;
     }
     
+    static public function getQueueLen(int $user_id, string $list) : int {
+        
+        DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
+        DB::query('CREATE TEMPORARY TABLE vt_queue '. static::SQL_GET_TICKET_QUEUE);
+        $count = new DBValue('SELECT COUNT(*) AS value FROM vt_queue');
+        DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
+
+        return $count->value;
+    }
     
 }

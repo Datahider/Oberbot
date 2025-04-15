@@ -14,7 +14,7 @@ class user_chat_role extends DBObject {
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
         'user_id' => 'BIGINT(20) NOT NULL',
         'chat_id' => 'BIGINT(20) NOT NULL',
-        'role' => 'ENUM ("agent", "customer")',
+        'role' => 'ENUM ("agent", "customer", "manager")',
         'updated' => 'DATETIME NOT NULL DEFAULT "2024-11-23 22:00:00"',
         'PRIMARY KEY' => 'id', 
         'UNIQUE INDEX USER_CHAT' => ['user_id', 'chat_id']

@@ -40,11 +40,11 @@ class topic extends DBObject {
         return DB::$prefix. 'topics';
     }
     
-    protected function update($comment, $data) {
+    public function write($comment = '', $data = null) {
         if (!$this->user_priority) {
             $this->user_priority = 3;
         }
-        parent::update($comment, $data);
+        parent::write($comment, $data);
     }
     
     public function addIdToTitle() {

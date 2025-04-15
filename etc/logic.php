@@ -74,6 +74,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandHid::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDel::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandDelist::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandManager::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandPause::class);

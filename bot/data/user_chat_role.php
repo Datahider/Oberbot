@@ -9,6 +9,7 @@ class user_chat_role extends DBObject {
     
     const ROLE_AGENT = 'agent';
     const ROLE_CUSTOMER = 'customer';
+    const ROLE_MANAGER = 'manager';
     
     const METADATA = [
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',

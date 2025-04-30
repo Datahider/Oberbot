@@ -14,6 +14,14 @@ if ($ticket->is_task && !$ticket->is_urgent) {
     $line[] = ['text' => Emoji::ICON_SOS, 'callback_data' => 'urgent'];
 }
 
+$user_priority = [
+    ['text' => '1', 'callback_data' => 'user_priority_1'],
+    ['text' => '2', 'callback_data' => 'user_priority_2'],
+    ['text' => Emoji::ICON_3, 'callback_data' => 'user_priority_3'],
+    ['text' => '4', 'callback_data' => 'user_priority_4'],
+    ['text' => '5', 'callback_data' => 'user_priority_5'],
+];
+
 echo serialize(new InlineKeyboardMarkup([
-    $line
+    $user_priority, $line
 ]));

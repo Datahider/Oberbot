@@ -16,6 +16,12 @@ do {
     $emoji[true][false] = Emoji::TASK_REGULAR;
     $emoji[true][true] = Emoji::TASK_PRIORITY;
     
+    $user_priority[1] = Emoji::ICON_1;
+    $user_priority[2] = Emoji::ICON_2;
+    $user_priority[3] = Emoji::ICON_3;
+    $user_priority[4] = Emoji::ICON_4;
+    $user_priority[5] = Emoji::ICON_5;
+    
     $title[false][false] = 'Неисправность';
     $title[false][true] = 'Срочно!';
     $title[true][false] = 'Задача';
@@ -23,7 +29,7 @@ do {
     
     $priority_text[false][false] = 'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
     $priority_text[false][true] = '<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
-    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является приоритетной, нажмите ". Emoji::TASK_PRIORITY;
+    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является срочной, нажмите ". Emoji::TASK_PRIORITY;
     $priority_text[true][true] = 'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
     
     $task_text[false][false] = "";
@@ -60,6 +66,7 @@ do {
 <u><?= Service::ticketMentionNoId($ticket); ?></u>
 
 Идентификатор: <b>#<?= $ticket->id; ?></b>
+Очередность выполнения: <?= $user_priority[$ticket->user_priority]; ?> 
 
 Назначенные агенты: <b><?= Service::mentionByIdArray($ticket->getAgents(), '-'); ?></b>
 Затраченное время: <b><?= $ticket->getTimeElapsed()->format('%H:%I:%S'); ?></b>

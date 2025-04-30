@@ -27,7 +27,12 @@ class Emoji {
     const ICON_TODO = '🔲';
     const ICON_FUNNEL = '💎';
 
-
+    const ICON_1 = '1️⃣';
+    const ICON_2 = '2️⃣';
+    const ICON_3 = '3️⃣';
+    const ICON_4 = '4️⃣';
+    const ICON_5 = '5️⃣';
+    
     const RATING_GOOD = '😊';
     const RATING_ACCEPTABLE = '😐';
     const RATING_BAD = '🙁';

@@ -77,7 +77,14 @@ class TicketQueue {
     static public function getQueueLen(int $user_id, string $list) : int {
         
         DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
-        DB::query('CREATE TEMPORARY TABLE vt_queue '. static::SQL_GET_TICKET_QUEUE);
+        
+        $sql = static::SQL_GET_TICKET_QUEUE;
+        $sql = str_replace(':user_id', $user_id, $sql);
+        $sql = str_replace(':list_name', "'$list'", $sql);
+        $sql = str_replace(':now', "'". date_create()->format(DB::DATE_FORMAT). "'", $sql);
+        
+        DB::query('CREATE TEMPORARY TABLE vt_queue '. $sql);
+        
         $count = new DBValue('SELECT COUNT(*) AS value FROM vt_queue');
         DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
 

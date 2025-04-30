@@ -165,6 +165,11 @@ class ticket extends topic {
         return $this;
     }
     
+    public function setUserPriority(int $priority) {
+        $this->user_priority = $priority;
+        $this->isModified() && $this->write('', ['function' => 'setUserPriority']);
+    }
+    
     public function rate(int|string $score) {
         switch ($score) {
             case -1:

@@ -58,6 +58,7 @@ Bot::addHandler(\losthost\Oberbot\controller\callback\CallbackTip::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUrgent::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUserPriority::class);
 
 // Не найден обработчик кнопки
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);

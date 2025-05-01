@@ -12,6 +12,7 @@ class AgentReport extends TimeReport {
                 timers.subject AS project,
                 events.project AS object,
                 chat.title AS topic_title,
+                'none' AS type,
                 IFNULL(
                     SUM(
                         CASE

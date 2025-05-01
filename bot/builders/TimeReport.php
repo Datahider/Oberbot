@@ -14,6 +14,11 @@ class TimeReport extends AbstractBuilder {
                 project,
                 object,
                 topics.topic_title AS topic_title,
+                CASE
+                    WHEN topics.is_task = 0 THEN 'malfunction'
+                    WHEN topics.is_urgent = 0 THEN 'task'
+                    ELSE 'urgent'
+                END AS type,
                 IFNULL(
                     SUM(
                         CASE
@@ -51,7 +56,8 @@ class TimeReport extends AbstractBuilder {
             $result[] = (object)[
                 'project' => $view->project,
                 'topic_title' => $view->topic_title,
-                'total_seconds' => $view->total_seconds
+                'total_seconds' => $view->total_seconds,
+                'type' => $view->type,
             ];
         }
         

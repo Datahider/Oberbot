@@ -54,9 +54,30 @@ class chat extends DBObject {
         return $role->role == 'agent';
     }
     
+    public function isManager(int $user_id) : bool {
+        
+        $role = new user_chat_role(['user_id' => $user_id, 'chat_id' => $this->id], true);
+        if ($role->isNew()) {
+            return false;
+        }
+        return $role->role == 'manager';
+    }
+    
     public function getAgentIds() : array {
         
         $ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->id]);
+        
+        $result = [];
+        while ($ids->next()) {
+            $result[] = $ids->user_id;
+        }
+        
+        return $result;
+    }
+    
+    public function getManagerIds() : array {
+        
+        $ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "manager" AND chat_id = ?', [$this->id]);
         
         $result = [];
         while ($ids->next()) {

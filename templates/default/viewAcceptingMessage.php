@@ -27,10 +27,10 @@ do {
     $title[true][false] = 'Задача';
     $title[true][true] = 'Приоритетная задача';
     
-    $priority_text[false][false] = 'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
-    $priority_text[false][true] = '<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
+    $priority_text[false][false] = ''; //'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
+    $priority_text[false][true] = ''; //'<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
     $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является срочной, нажмите ". Emoji::TASK_PRIORITY;
-    $priority_text[true][true] = 'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
+    $priority_text[true][true] = ''; //'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
     
     $task_text[false][false] = "";
     $task_text[false][true] = "";
@@ -39,6 +39,9 @@ do {
     
     $header = $emoji[$ticket->is_task][$ticket->is_urgent]. ' '. $title[$ticket->is_task][$ticket->is_urgent];
     $priority_footer = $priority_text[$ticket->is_task][$ticket->is_urgent];
+    if ($priority_footer) {
+        $priority_footer .= "\n(<a href=\"https://oberdesk.ru/for-users/what-to-choose/\">что выбрать?</a>)\n\n";
+    }
     
     // формирование правильной формы(падежа) слова заявка для обозначения количества заявок
     switch (substr($queue_len, -1)) {
@@ -74,10 +77,7 @@ do {
 
 Другие пользователи могут присоединиться к заявке нажав ➕
 
-<?= $priority_footer; ?>️
-(<a href="https://oberdesk.ru/for-users/what-to-choose/">что выбрать?</a>)
-    
-Нажмите /done, если заявка потеряла актуальность.
+<?= $priority_footer; ?>Нажмите /done, если заявка потеряла актуальность.
 
 <b>Для агентов:</b>
 /take

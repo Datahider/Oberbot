@@ -9,6 +9,7 @@ use losthost\telle\Bot;
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\isChatAdministrator;
 use function \losthost\Oberbot\isAgent;
+use function \losthost\Oberbot\isManager;
 
 abstract class AbstractCallback extends AbstractHandlerCallback {
     
@@ -19,6 +20,7 @@ abstract class AbstractCallback extends AbstractHandlerCallback {
     const PERMIT_ADMIN = 2;
     const PERMIT_AGENT = 4;
     const PERMIT_USER = 8;
+    const PERMIT_MANAGER = 16;
     
     const PERMIT = self::PERMIT_NONE;
     
@@ -46,10 +48,14 @@ abstract class AbstractCallback extends AbstractHandlerCallback {
             if (static::PERMIT & static::PERMIT_ADMIN) { return true; }
         }
         
+        if (isManager($from_id, $chat_id)) {
+            if (static::PERMIT & static::PERMIT_MANAGER) { return true; }        
+        } 
+        
         if (isAgent($from_id, $chat_id)) {
             if (static::PERMIT & static::PERMIT_AGENT) { return true; }
         } else {
-            if (static::PERMIT & static::PERMIT_USER) { return true; } 
+            if (static::PERMIT & static::PERMIT_USER) { return true; }
         }
         
         return __('Не разрешено.');

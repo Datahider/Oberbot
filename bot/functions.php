@@ -138,6 +138,10 @@ function isAgent($user_id, $chat_id) : bool {
     return getUserChatRole($user_id, $chat_id) === user_chat_role::ROLE_AGENT;
 }
 
+function isManager($user_id, $chat_id) : bool {
+    return getUserChatRole($user_id, $chat_id) === user_chat_role::ROLE_MANAGER;
+}
+
 function getUserChatRole($user_id, $chat_id) : string {
     $role = new user_chat_role(['user_id' => $user_id, 'chat_id' => $chat_id], true);
     if ($role->isNew()) {

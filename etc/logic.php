@@ -44,6 +44,8 @@ Bot::addHandler(\losthost\Oberbot\controller\pre\TouchAndLinkByMessage::class);
 Bot::addHandler(losthost\Oberbot\controller\pre\UserJoinsTheGroup::class);
 
 // Обработка кнопок
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackAskUrgent::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackCancelUrgent::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackHelp::class);

@@ -74,15 +74,20 @@ class TicketUpdating extends DBTracker {
             ticket::STATUS_IN_PROGRESS,
             ticket::STATUS_AWAITING_USER
         ];
-        if ( $this->ticket->is_task || array_search($this->ticket->status,  $skip_statuses) !== false ) {
+        if ( array_search($this->ticket->status,  $skip_statuses) !== false ) {
+            return;
+        }
+        if ($this->ticket->is_task && !$this->ticket->is_urgent) {
             return;
         }
         
         // TODO -- доставать так же language_code
-        if ($this->ticket->is_urgent) {
-            $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
-        } else {
+        if ($this->ticket->is_task) {
+            // О срочной задаче уведомляем свободных
             $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] AS r LEFT JOIN [timers] AS t ON t.subject = r.user_id WHERE r.role = "agent" AND r.chat_id = ? AND t.current_event IS NULL', [$this->ticket->chat_id]);
+        } else {
+            // О неисправности уведомляем всех
+            $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
         }
         
         while ($agent->next()) {

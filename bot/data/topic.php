@@ -17,15 +17,24 @@ class topic extends DBObject {
     const STATUS_PENDING = 101;
     const STATUS_CLOSED = 111;
     
+    const TYPE_REGULAR_TASK = 1;
+    const TYPE_PRIORITY_TASK = 2;
+    const TYPE_MALFUNCTION = 3;
+    const TYPE_SCHEDULED_CONSULT = 4;
+    const TYPE_URGENT_CONSULT = 5;
+    const TYPE_MALFUNCTION_MULTIUSER = 6;
+    const TYPE_MALFUNCTION_FREE = 7;
+    
     const METADATA = [
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
         'chat_id' => 'BIGINT(20) NOT NULL',
         'topic_id' => 'BIGINT(20) NOT NULL',
         'topic_title' => 'VARCHAR(128) NOT NULL',
         'ticket_creator' => 'BIGINT(20) NULL',
-        'last_activity' => 'INT(11) NOT NULL DEFAULT 0',
+        'last_activity' => 'BIGINT(20) NOT NULL DEFAULT 0',
         'last_admin_activity' => 'BIGINT(20) NOT NULL DEFAULT 0',
         'status' => 'TINYINT(4) NOT NULL DEFAULT 0',
+        'type' => 'INT(11)',
         'score' => 'TINYINT(4)',
         'is_urgent' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'is_task' => 'TINYINT(1) NOT NULL DEFAULT 0',
@@ -43,6 +52,9 @@ class topic extends DBObject {
     public function write($comment = '', $data = null) {
         if (!$this->user_priority) {
             $this->user_priority = 3;
+        }
+        if ($this->type != static::TYPE_REGULAR_TASK && $this->type != static::TYPE_PRIORITY_TASK) {
+            $this->user_priority = 1;
         }
         parent::write($comment, $data);
     }

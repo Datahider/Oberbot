@@ -18,6 +18,7 @@ use losthost\timetracker\TimerEvent;
 use losthost\timetracker\TagBinder;
 use losthost\Oberbot\data\chat_user;
 use losthost\Oberbot\data\wait;
+use losthost\DB\DBList;
 
 require_once 'vendor/autoload.php';
 
@@ -40,5 +41,18 @@ TimerEvent::initDataStructure();
 TagBinder::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 \losthost\Oberbot\data\funnel_chat::initDataStructure();
+
+$list = new DBList(topic::class, 'type IS NULL', []);
+
+foreach ($list->asArray() as $topic) {
+    if (!$topic->is_task) {
+        $topic->type = topic::TYPE_MALFUNCTION;
+    } elseif (!$topic->is_urgent) {
+        $topic->type = topic::TYPE_REGULAR_TASK;
+    } else {
+        $topic->type = topic::TYPE_PRIORITY_TASK;
+    }
+    $topic->write();
+}
 
 Bot::run();

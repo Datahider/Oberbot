@@ -9,34 +9,28 @@ use losthost\DB\DB;
 
 class TicketQueue {
     
-    const SQL_GET_TICKET_QUEUE = <<<FIN
-            SELECT 
-                ticket.id AS id,
-                ticket.topic_title AS title,
-                CASE
-                    WHEN ticket.status = 0 THEN 1
-                    WHEN ticket.status = 89 THEN 2
-                    WHEN ticket.status = 102 THEN 3
-                    ELSE 4
-                END AS status_order,
-                COUNT(agent.topic_number) AS agent_count,
-                COUNT(iagent.topic_number) AS amiagent,
-                COUNT(subtask.id) AS subtask_count
-            FROM 
-                    [topics] AS ticket
-                    LEFT JOIN [topic_admins] AS agent
-                        ON (agent.topic_number = ticket.id)
-                    LEFT JOIN [topic_admins] AS iagent
-                        ON (iagent.topic_number = ticket.id AND iagent.user_id = :user_id)
-                    LEFT JOIN [wait] AS wait
-                        ON wait.task_id = ticket.id
-                    LEFT JOIN [topics] AS subtask
-                        ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 88, 89, 102)
-                        
-            WHERE 
-                ticket.status IN (0, 1, 89, 102) /* Все открытые */
-                AND (ticket.wait_till IS NULL OR ticket.wait_till < :now)
-                AND ticket.chat_id IN (      /* Чат в нужном списке и пользователь агент в этом чате */
+    const SQL_CREATE_TEMP_TABLES = <<<FIN
+
+            DROP TABLE IF EXISTS vt_active_tickets;
+            DROP TABLE IF EXISTS vt_user_priorities_by_chat_id;
+            DROP TABLE IF EXISTS vt_main_query;
+
+            CREATE TEMPORARY TABLE vt_active_tickets SELECT
+                    ticket.id,
+                    ticket.chat_id,
+                    ticket.user_priority,
+                    ticket.type,
+                    COUNT(subtask.id) AS subtask_count
+            FROM
+                [topics] AS ticket
+                LEFT JOIN [wait] AS wait
+                    ON wait.task_id = ticket.id
+                LEFT JOIN [topics] AS subtask
+                    ON subtask.id = wait.subtask_id AND subtask.status IN (0, 1, 88, 89, 102)
+            WHERE
+                 ticket.status IN (0, 1, 89, 102) /* Все открытые */
+                 AND (ticket.wait_till IS NULL OR ticket.wait_till < :now) /* Не отложенные */
+                 AND ticket.chat_id IN (      /* Чат в нужном списке и пользователь агент в этом чате */
                     SELECT 
                         role.chat_id 
                     FROM
@@ -47,24 +41,89 @@ class TicketQueue {
                         role.role = 'agent'
                         AND (:list_name = 'all' OR list.chat_group = :list_name)
                         AND role.user_id = :user_id
-                )
+
+                 )
             GROUP BY
-                id, title, status_order
+                    id, chat_id, user_priority
             HAVING
-            	(agent_count = 0 OR amiagent > 0) AND subtask_count = 0
-            ORDER BY
-                ticket.is_task,
-                status_order - ticket.is_urgent,
-                ticket.last_admin_activity,
-                ticket.last_activity
+                    subtask_count = 0;
+
+
+            CREATE TEMPORARY TABLE vt_user_priorities_by_chat_id SELECT
+                    ticket.chat_id AS chat_id,
+                MIN(ticket.user_priority) AS active_priority
+            FROM
+                    vt_active_tickets AS ticket
+            GROUP BY
+                    ticket.chat_id;
+
+            
+            CREATE TEMPORARY TABLE vt_main_query SELECT 
+                ticket.id AS id,
+                ticket.topic_title AS title,
+                ticket.is_task AS is_task,
+                ticket.user_priority AS user_priority,
+                pbychat.active_priority AS active_priority,
+                CASE
+                        WHEN ticket.type = 5 THEN 0 /* TYPE_URGENT_CONSULT */
+                        WHEN ticket.type = 7 THEN 0 /* TYPE_MALFUNCTION_FREE */
+                        WHEN ticket.type = 6 THEN 1 /* TYPE_MALFUNCTION_MULTIUSER */
+                        WHEN ticket.type = 4 THEN 0 /* TYPE_SCHEDULED_CONSULT */
+                        WHEN ticket.type = 3 THEN 2 /* TYPE_MALFUNCTION */
+                        WHEN ticket.type = 2 THEN 3 /* TYPE_PRIORITY_TASK */
+                        ELSE 4                      /* TYPE_REGULAR_TASK */
+                    END AS type_order, 
+                CASE
+                    WHEN ticket.status = 0 THEN 1
+                    WHEN ticket.status = 89 THEN 2
+                    WHEN ticket.status = 102 THEN 3
+                    ELSE 4
+                END AS status_order,
+                :time - GREATEST(ticket.last_activity, ticket.last_admin_activity) AS waiting_seconds,
+                COUNT(agent.topic_number) AS agent_count,
+                COUNT(iagent.topic_number) AS amiagent
+            FROM 
+                [topics] AS ticket
+                LEFT JOIN [topic_admins] AS agent
+                    ON (agent.topic_number = ticket.id)
+                LEFT JOIN [topic_admins] AS iagent
+                    ON (iagent.topic_number = ticket.id AND iagent.user_id = :user_id)
+                LEFT JOIN vt_user_priorities_by_chat_id AS pbychat
+                        ON pbychat.chat_id = ticket.chat_id
+
+            WHERE 
+                    ticket.id IN (SELECT id FROM vt_active_tickets)
+                 AND ticket.user_priority = pbychat.active_priority
+            GROUP BY
+                    id, title, status_order
+            HAVING
+                    agent_count = 0 OR amiagent > 0;
+
             FIN;
     
+    const SQL_DROP_TEMP_TABLES = <<<FIN
+            DROP TABLE IF EXISTS vt_active_tickets;
+            DROP TABLE IF EXISTS vt_user_priorities_by_chat_id;
+            DROP TABLE IF EXISTS vt_main_query;
+            FIN;
+
+    const SQL_GET_TICKET_QUEUE = 'SELECT * FROM vt_main_query ORDER BY type_order + status_order - waiting_seconds / 86400 /* 24 hours */';
+    
+    const SQL_GET_QUEUE_LEN = 'SELECT COUNT(*) AS value FROM vt_main_query';
+
     static public function getQueue(int $user_id, string $list, int $length = 1) : array {
      
+        $sql = static::SQL_CREATE_TEMP_TABLES;
+        $sql = str_replace(':user_id', $user_id, $sql);
+        $sql = str_replace(':now', "'". date_create()->format(DB::DATE_FORMAT). "'", $sql);
+        $sql = str_replace(':time', time(), $sql);
+        $sql = str_replace(':list_name', "'$list'", $sql);
+        DB::query($sql);
+
         $sql = static::SQL_GET_TICKET_QUEUE. " LIMIT $length";
         
-        $queue = new DBView($sql, ['user_id' => $user_id, 'list_name' => $list, 'now' => date_create()->format(DB::DATE_FORMAT)]);
-        
+        $queue = new DBView($sql);
+        DB::query(static::SQL_DROP_TEMP_TABLES);
         $result = [];
         
         while ($queue->next()) {
@@ -76,17 +135,16 @@ class TicketQueue {
     
     static public function getQueueLen(int $user_id, string $list) : int {
         
-        DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
-        
-        $sql = static::SQL_GET_TICKET_QUEUE;
+        $sql = static::SQL_CREATE_TEMP_TABLES;
         $sql = str_replace(':user_id', $user_id, $sql);
-        $sql = str_replace(':list_name', "'$list'", $sql);
         $sql = str_replace(':now', "'". date_create()->format(DB::DATE_FORMAT). "'", $sql);
+        $sql = str_replace(':time', time(), $sql);
+        $sql = str_replace(':list_name', "'$list'", $sql);
+        $sql = str_replace('AND ticket.user_priority = pbychat.active_priority', '', $sql);
+        DB::query($sql);
         
-        DB::query('CREATE TEMPORARY TABLE vt_queue '. $sql);
-        
-        $count = new DBValue('SELECT COUNT(*) AS value FROM vt_queue');
-        DB::query('DROP TEMPORARY TABLE IF EXISTS vt_queue');
+        $count = new DBValue(static::SQL_GET_QUEUE_LEN);
+        DB::query(static::SQL_DROP_TEMP_TABLES);
 
         return $count->value;
     }

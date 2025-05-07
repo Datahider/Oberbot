@@ -50,6 +50,17 @@ class topic extends DBObject {
     }
     
     public function write($comment = '', $data = null) {
+        
+        if ($this->type == null) {
+            if (!$this->is_task) {
+                $this->type = topic::TYPE_MALFUNCTION;
+            } elseif (!$this->is_urgent) {
+                $this->type = topic::TYPE_REGULAR_TASK;
+            } else {
+                $this->type = topic::TYPE_PRIORITY_TASK;
+            }
+        }
+        
         if (!$this->user_priority) {
             $this->user_priority = 3;
         }

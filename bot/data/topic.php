@@ -64,9 +64,6 @@ class topic extends DBObject {
         if (!$this->user_priority) {
             $this->user_priority = 3;
         }
-        if ($this->type != static::TYPE_REGULAR_TASK && $this->type != static::TYPE_PRIORITY_TASK) {
-            $this->user_priority = 1;
-        }
         parent::write($comment, $data);
     }
     

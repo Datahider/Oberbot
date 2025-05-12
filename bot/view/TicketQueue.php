@@ -44,18 +44,19 @@ class TicketQueue {
 
                  )
             GROUP BY
-                    id, chat_id, user_priority
+                    id, chat_id, user_priority, type
             HAVING
                     subtask_count = 0;
 
 
             CREATE TEMPORARY TABLE vt_user_priorities_by_chat_id SELECT
                     ticket.chat_id AS chat_id,
+                    ticket.type AS type,
                 MIN(ticket.user_priority) AS active_priority
             FROM
                     vt_active_tickets AS ticket
             GROUP BY
-                    ticket.chat_id;
+                    ticket.chat_id, ticket.type;
 
             
             CREATE TEMPORARY TABLE vt_main_query SELECT 
@@ -66,12 +67,12 @@ class TicketQueue {
                 pbychat.active_priority AS active_priority,
                 CASE
                         WHEN ticket.type = 5 THEN 0 /* TYPE_URGENT_CONSULT */
-                        WHEN ticket.type = 7 THEN 0 /* TYPE_MALFUNCTION_FREE */
-                        WHEN ticket.type = 6 THEN 1 /* TYPE_MALFUNCTION_MULTIUSER */
-                        WHEN ticket.type = 4 THEN 0 /* TYPE_SCHEDULED_CONSULT */
-                        WHEN ticket.type = 3 THEN 2 /* TYPE_MALFUNCTION */
-                        WHEN ticket.type = 2 THEN 3 /* TYPE_PRIORITY_TASK */
-                        ELSE 4                      /* TYPE_REGULAR_TASK */
+                        WHEN ticket.type = 7 THEN 1 /* TYPE_MALFUNCTION_FREE */
+                        WHEN ticket.type = 6 THEN 2 /* TYPE_MALFUNCTION_MULTIUSER */
+                        WHEN ticket.type = 4 THEN 3 /* TYPE_SCHEDULED_CONSULT */
+                        WHEN ticket.type = 3 THEN 4 /* TYPE_MALFUNCTION */
+                        WHEN ticket.type = 2 THEN 5 /* TYPE_PRIORITY_TASK */
+                        ELSE 6                      /* TYPE_REGULAR_TASK */
                     END AS type_order, 
                 CASE
                     WHEN ticket.status = 0 THEN 1
@@ -89,7 +90,7 @@ class TicketQueue {
                 LEFT JOIN [topic_admins] AS iagent
                     ON (iagent.topic_number = ticket.id AND iagent.user_id = :user_id)
                 LEFT JOIN vt_user_priorities_by_chat_id AS pbychat
-                        ON pbychat.chat_id = ticket.chat_id
+                        ON pbychat.chat_id = ticket.chat_id AND pbychat.type = ticket.type
 
             WHERE 
                     ticket.id IN (SELECT id FROM vt_active_tickets)

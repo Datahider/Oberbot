@@ -43,6 +43,8 @@ class ticket extends topic {
         $ticket->last_activity = \time();
         $ticket->last_admin_activity = 0;
         $ticket->ticket_creator = $creator_id;
+        $ticket->is_urgent = 0;
+        $ticket->is_task = 1;
         $ticket->type = static::TYPE_REGULAR_TASK;
         
         $ticket->write('', ['function' => 'create']);

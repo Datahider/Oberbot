@@ -170,6 +170,11 @@ class ticket extends topic {
         $this->isModified() && $this->write('', ['function' => 'setUserPriority']);
     }
     
+    public function setType(int $type) {
+        $this->type = $type;
+        $this->isModified() && $this->write('', ['function' => 'setType']);
+    }
+    
     public function rate(int|string $score) {
         switch ($score) {
             case -1:

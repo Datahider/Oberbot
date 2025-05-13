@@ -2,6 +2,8 @@
 
 namespace losthost\Oberbot\view;
 
+use losthost\Oberbot\data\ticket;
+
 class Emoji {
 
 //    const TICKET_REGULAR = '🛟';
@@ -23,6 +25,9 @@ class Emoji {
 //    const ICON_LIFEBUOY = '🛟';
     const ICON_LIFEBUOY = '❗';
     const ICON_EXCLAMATION = '❗️';
+    const ICON_EXCLAMATION_2 = '‼️';
+    const ICON_CONSULT = '🗣';
+    const ICON_URGENT_CONSULT = '👑';
     const ICON_DONE = '✅';
     const ICON_TODO = '🔲';
     const ICON_FUNNEL = '💎';
@@ -48,7 +53,19 @@ class Emoji {
     const ID_QUESTION = 5377316857231450742;
     const ID_SCHEDULED_CONSULT = 5370870893004203704;
     const ID_URGENT_CONSULT = 5357107601584693888;
+    const ID_VOICE = 5370870893004203704;
+    const ID_CROWN = 5357107601584693888;
+    const ID_FIRE = 5312241539987020022;
     
     const ID_NONE = null;
 
+    const TOPIC_ICONS_BY_TYPE = [
+        ticket::TYPE_REGULAR_TASK           => self::ID_NONE,
+        ticket::TYPE_PRIORITY_TASK          => self::ID_STAR,
+        ticket::TYPE_MALFUNCTION            => self::ID_EXCLAMATION,
+        ticket::TYPE_SCHEDULED_CONSULT      => self::ID_VOICE,
+        ticket::TYPE_URGENT_CONSULT         => self::ID_CROWN,
+        ticket::TYPE_MALFUNCTION_MULTIUSER  => self::ID_DOUBLE_EXCLAMATION,
+        ticket::TYPE_MALFUNCTION_FREE       => self::ID_FIRE,
+    ];
 }

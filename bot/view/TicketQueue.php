@@ -108,7 +108,7 @@ class TicketQueue {
             DROP TABLE IF EXISTS vt_main_query;
             FIN;
 
-    const SQL_GET_TICKET_QUEUE = 'SELECT * FROM vt_main_query ORDER BY type_order + status_order - waiting_seconds / 86400 /* 24 hours */';
+    const SQL_GET_TICKET_QUEUE = 'SELECT * FROM vt_main_query ORDER BY type_order + status_order, waiting_seconds/86400 DESC /* 24 hours */';
     
     const SQL_GET_QUEUE_LEN = 'SELECT COUNT(*) AS value FROM vt_main_query';
 

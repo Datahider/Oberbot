@@ -265,14 +265,8 @@ class TicketUpdating extends DBTracker {
             $icon = Emoji::ID_ARCHIVE;
         } elseif ($this->ticket->status == ticket::STATUS_AWAITING_USER) {
             $icon = Emoji::ID_QUESTION;
-        } elseif ($this->ticket->is_urgent && !$this->ticket->is_task) {
-            $icon = Emoji::ID_URGENT;
-        } elseif (!$this->ticket->is_urgent && !$this->ticket->is_task) {
-            $icon = Emoji::ID_EXCLAMATION;
-        } elseif ($this->ticket->is_urgent && $this->ticket->is_task) {
-            $icon = Emoji::ID_STAR;
         } else {
-            $icon = Emoji::ID_NONE;
+            $icon = Emoji::TOPIC_ICONS_BY_TYPE[$this->ticket->type];
         }
         
         try {

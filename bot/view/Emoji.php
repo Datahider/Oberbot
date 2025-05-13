@@ -31,6 +31,7 @@ class Emoji {
     const ICON_DONE = '✅';
     const ICON_TODO = '🔲';
     const ICON_FUNNEL = '💎';
+    const ICON_FIRE = '🔥';
 
     const ICON_1 = '1️⃣';
     const ICON_2 = '2️⃣';
@@ -67,5 +68,15 @@ class Emoji {
         ticket::TYPE_URGENT_CONSULT         => self::ID_CROWN,
         ticket::TYPE_MALFUNCTION_MULTIUSER  => self::ID_DOUBLE_EXCLAMATION,
         ticket::TYPE_MALFUNCTION_FREE       => self::ID_FIRE,
+    ];
+    
+    const TEXT_EMOJI_BY_TYPE = [
+        ticket::TYPE_REGULAR_TASK           => self::TASK_REGULAR,
+        ticket::TYPE_PRIORITY_TASK          => self::TASK_PRIORITY,
+        ticket::TYPE_MALFUNCTION            => self::ICON_EXCLAMATION,
+        ticket::TYPE_SCHEDULED_CONSULT      => self::ICON_CONSULT,
+        ticket::TYPE_URGENT_CONSULT         => self::ICON_URGENT_CONSULT,
+        ticket::TYPE_MALFUNCTION_MULTIUSER  => self::ICON_EXCLAMATION_2,
+        ticket::TYPE_MALFUNCTION_FREE       => self::ICON_FIRE,
     ];
 }

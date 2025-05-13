@@ -112,16 +112,20 @@ class TicketQueue {
     
     const SQL_GET_QUEUE_LEN = 'SELECT COUNT(*) AS value FROM vt_main_query';
 
-    static public function getQueue(int $user_id, string $list, int $length = 1) : array {
+    static public function getQueue(int $user_id, ?string $list, ?int $length = 1) : array {
      
+        $list_name = is_string($list) ? $list : 'all';
         $sql = static::SQL_CREATE_TEMP_TABLES;
         $sql = str_replace(':user_id', $user_id, $sql);
         $sql = str_replace(':now', "'". date_create()->format(DB::DATE_FORMAT). "'", $sql);
         $sql = str_replace(':time', time(), $sql);
-        $sql = str_replace(':list_name', "'$list'", $sql);
+        $sql = str_replace(':list_name', "'$list_name'", $sql);
         DB::query($sql);
 
-        $sql = static::SQL_GET_TICKET_QUEUE. " LIMIT $length";
+        $sql = static::SQL_GET_TICKET_QUEUE;
+        if (is_numeric($length)) {
+            $sql .= " LIMIT $length";
+        }
         
         $queue = new DBView($sql);
         DB::query(static::SQL_DROP_TEMP_TABLES);

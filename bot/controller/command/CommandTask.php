@@ -21,21 +21,6 @@ class CommandTask extends AbstractAuthCommand {
     }
     
     public function do(string $args, ticket $ticket) {
-        switch ($args) {
-            case 'off':
-            case 'false':
-            case '-':
-                $ticket->toTicket();
-                break;
-            case '':
-            case 'on':
-            case 'true':
-            case '+':
-                $ticket->toTask();
-                break;
-            default:
-                throw new \Exception("$args?");
-        }
-        
+            $ticket->setType(ticket::TYPE_REGULAR_TASK);
     }
 }

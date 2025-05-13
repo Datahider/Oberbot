@@ -16,15 +16,11 @@ class CallbackUrgent extends AbstractCallback {
                 $callback_query->getMessage()->getChat()->getId(), 
                 $callback_query->getMessage()->getMessageThreadId());
         
-        if ($this->matches[1] == 'urgent') {
-            $ticket->setUrgent();
-            try {
-                Bot::$api->editMessageReplyMarkup(Bot::$chat->id, $callback_query->getMessage()->getMessageId());
-            } catch (Exception $ex) {
-                Bot::logException($ex);
-            }
-        } elseif ($this->matches[1] == 'urgent_off') {
-            $ticket->setUrgent(false);
+        $ticket->setType(ticket::TYPE_PRIORITY_TASK);
+        try {
+            Bot::$api->editMessageReplyMarkup(Bot::$chat->id, $callback_query->getMessage()->getMessageId());
+        } catch (Exception $ex) {
+            Bot::logException($ex);
         }
         
         return true;

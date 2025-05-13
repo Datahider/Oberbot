@@ -30,10 +30,7 @@ do {
     $title[ticket::TYPE_MALFUNCTION_MULTIUSER] = '<b>Неисправность затрагивающая нескольких пользователей</b>';
     $title[ticket::TYPE_MALFUNCTION_FREE] = '<b>Неисправность в предоставляемых услугах</b>';
 
-    $priority_text[false][false] = ''; //'Если неисправность привела к полной остановке работы, нажмите '. Emoji::ICON_SOS;
-    $priority_text[false][true] = ''; //'<b>Сохраняйте спокойствие. Помощь уже в пути.</b>';
-    $priority_text[true][false] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является срочной, нажмите ". Emoji::TASK_PRIORITY;
-    $priority_text[true][true] = ''; //'Для снижения приоритета задачи, нажмите '. Emoji::ACTION_PRIORITY_DOWN;
+    $priority_text[ticket::TYPE_REGULAR_TASK] = 'Если вы сообщаете о неисправности, нажмите '. Emoji::ICON_LIFEBUOY. "\nЕсли задача является срочной, нажмите ". Emoji::TASK_PRIORITY;
     
     $task_text[false][false] = "";
     $task_text[false][true] = "";
@@ -41,7 +38,7 @@ do {
     $task_text[true][true] = "";
     
     $header = $emoji[$ticket->type]. ' '. $title[$ticket->type];
-    $priority_footer = $priority_text[$ticket->is_task][$ticket->is_urgent];
+    $priority_footer = isset($priority_text[$ticket->type]) ? $priority_text[$ticket->type] : '';
     if ($priority_footer) {
         $priority_footer .= "\n(<a href=\"https://oberdesk.ru/for-users/what-to-choose/\">что выбрать?</a>)\n\n";
     }

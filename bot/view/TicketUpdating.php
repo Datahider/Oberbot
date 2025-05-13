@@ -19,6 +19,7 @@ use losthost\Oberbot\data\private_topic;
 use function \losthost\Oberbot\sendMessage;
 use function \losthost\Oberbot\__;
 use function \losthost\Oberbot\mentionByIdArray;
+use function \losthost\Oberbot\mentionById;
 
 class TicketUpdating extends DBTracker {
     
@@ -32,7 +33,6 @@ class TicketUpdating extends DBTracker {
         
         $this->destroyIncompleteTimer();
         $this->notifyTypeChange();
-        $this->notifyPriorityChange();
         $this->notifyStatusChanging();
         $this->notifyUrgentTicket();
         $this->notifyWaitTill();
@@ -62,8 +62,7 @@ class TicketUpdating extends DBTracker {
     }
     
     protected function notifyUrgentTicket() {
-        if (array_search('is_urgent', $this->event->fields) === false 
-                && array_search('is_task', $this->event->fields) === false 
+        if (array_search('type', $this->event->fields) === false 
                 && array_search('status', $this->event->fields) === false) {
             return;
         }
@@ -74,19 +73,20 @@ class TicketUpdating extends DBTracker {
             ticket::STATUS_IN_PROGRESS,
             ticket::STATUS_AWAITING_USER
         ];
+        
         if ( array_search($this->ticket->status,  $skip_statuses) !== false ) {
             return;
         }
-        if ($this->ticket->is_task && !$this->ticket->is_urgent) {
+        if ($this->ticket->type == ticket::TYPE_REGULAR_TASK) {
             return;
         }
         
         // TODO -- доставать так же language_code
-        if ($this->ticket->is_task) {
+        if ($this->ticket->type == ticket::TYPE_REGULAR_TASK) { // TODO -- возможно следует удалить эту ветку
             // О срочной задаче уведомляем свободных
             $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] AS r LEFT JOIN [timers] AS t ON t.subject = r.user_id WHERE r.role = "agent" AND r.chat_id = ? AND t.current_event IS NULL', [$this->ticket->chat_id]);
         } else {
-            // О неисправности уведомляем всех
+            // Уведомляем всех обо всём TODO -- нужно смотреть и уведомлять только назначенных агентов для тех тикетов где они уже назначены
             $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
         }
         
@@ -211,49 +211,18 @@ class TicketUpdating extends DBTracker {
         $this->editTopic();
     }
 
-    protected function notifyPriorityChange() {
-        
-        if (array_search('is_urgent', $this->event->fields) === false) {
-            return;
-        }
-        
-        if ($this->ticket->is_urgent) {
-            Service::message(
-                    'info', 
-                    sprintf(Service::__('%s поднял приоритет заявки.'), Service::mentionById(Bot::$user->id)), 
-                    null, 
-                    $this->ticket->topic_id);
-        } else {
-            Service::message(
-                    'info', 
-                    sprintf(Service::__('%s понизил приоритет заявки.'), Service::mentionById(Bot::$user->id)), 
-                    null, 
-                    $this->ticket->topic_id);
-        }
-        
-        $this->editTopic();
-    }
-    
     protected function notifyTypeChange() {
 
-        if (array_search('is_task', $this->event->fields) === false) {
+        if (array_search('type', $this->event->fields) === false) {
             return;
         }
         
-        if (!$this->ticket->is_task) {
-            Service::message(
-                    'info', 
-                    sprintf(Service::__('%s изменил тип заявки на Cообщение о неисправности.'), Service::mentionById(Bot::$user->id)), 
-                    null, 
-                    $this->ticket->topic_id);
-        } else {
-            Service::message(
-                    'info', 
-                    sprintf(Service::__('%s изменил тип заявки на Задача.'), Service::mentionById(Bot::$user->id)), 
-                    null, 
-                    $this->ticket->topic_id);
-        }
-        
+        Service::message(
+                'info', 
+                __('%mention% изменил тип заявки на %new_type%.', ['mention' => mentionById(Bot::$user->id), 'new_type' => __('type_'. $this->ticket->type)]), 
+                null, 
+                $this->ticket->topic_id);
+
         $this->editTopic();
     }
     

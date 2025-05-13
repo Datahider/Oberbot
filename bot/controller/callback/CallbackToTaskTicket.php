@@ -16,9 +16,9 @@ class CallbackToTaskTicket extends AbstractCallback {
                 $callback_query->getMessage()->getMessageThreadId());
         
         if ($this->matches[1] == 'to_task') {
-            $ticket->toTask();
+            $ticket->setType(ticket::TYPE_REGULAR_TASK);
         } elseif ($this->matches[1] == 'to_ticket') {
-            $ticket->toTicket();
+            $ticket->setType(ticket::TYPE_MALFUNCTION);
         }
         
         return true;

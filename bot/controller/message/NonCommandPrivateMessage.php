@@ -83,8 +83,7 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
         $proxy = new Proxy(Bot::$api, $this->getUserPrefix($message));
         $proxy->proxy($message, $chat_id, $this->ticket->topic_id);
 
-        $this->ticket->toTicket();
-        $this->ticket->setUrgent();
+        $this->ticket->setType(ticket::TYPE_PRIVATE_SUPPORT);
         
         return $this->ticket->id;
     }

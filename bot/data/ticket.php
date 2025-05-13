@@ -42,9 +42,8 @@ class ticket extends topic {
         $ticket->status = static::STATUS_CREATING;
         $ticket->last_activity = \time();
         $ticket->last_admin_activity = 0;
-        $ticket->is_urgent = false;
-        $ticket->is_task = true;
         $ticket->ticket_creator = $creator_id;
+        $ticket->type = static::TYPE_REGULAR_TASK;
         
         $ticket->write('', ['function' => 'create']);
         return $ticket;
@@ -100,32 +99,13 @@ class ticket extends topic {
         return $this;
     }
 
-    public function toTask() : ticket {
-        $this->is_task = true;
-        $this->write('', ['function' => 'toTask']);
-        return $this;
-    }
-    
     public function toTicket() : ticket {
         $this->is_task = false;
+        $this->type = null;
         $this->write('', ['function' => 'toTask']);
         return $this;
     }
 
-    public function setUrgent(bool $urgent = true) : ticket {
-        $this->is_urgent = $urgent;
-        if ($urgent) {
-            $this->write('', ['function' => 'setUrgent']);
-        } else {
-            $this->write('', ['function' => 'resetUrgent']);
-        }
-        return $this;
-    }
-    
-    public function resetUrgent() : ticket {
-        return $this->setUrgent(false);
-    }
-    
     public function close() : ticket {
         
         $this->timerStop();

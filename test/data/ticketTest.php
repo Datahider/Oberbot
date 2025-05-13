@@ -61,25 +61,6 @@ class ticketTest extends TestCase {
         $this->assertEquals($now, $ticket->last_admin_activity);
     }
 
-    public function testTicketType() {
-        
-        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->toTask();
-        $this->assertEquals(true, $ticket->is_task);
-
-        $ticket->toTicket();
-        $this->assertEquals(false, $ticket->is_task);
-        
-    }
-    
-    public function testTicketUrgent() {
-        
-        $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->setUrgent();
-        $this->assertTrue($ticket->is_urgent);
-        
-        $ticket->resetUrgent();
-        $this->assertFalse($ticket->is_urgent);
-    }
-    
     public function testTimerStartStop() {
         $ticket = ticket::getByGroupThread(static::TEST_GROUP, static::TEST_THREAD)->timerStart(static::TEST_USER_ID);
         $this->assertEquals(ticket::STATUS_IN_PROGRESS, $ticket->status);

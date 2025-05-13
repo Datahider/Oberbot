@@ -24,6 +24,8 @@ class topic extends DBObject {
     const TYPE_URGENT_CONSULT = 5;
     const TYPE_MALFUNCTION_MULTIUSER = 6;
     const TYPE_MALFUNCTION_FREE = 7;
+    const TYPE_BOT_SUPPORT = 8;
+    const TYPE_PRIVATE_SUPPORT = 9;
     
     const METADATA = [
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',

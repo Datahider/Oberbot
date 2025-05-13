@@ -25,7 +25,8 @@ class ForumTopicCreatedHandler extends AbstractHandlerMessage {
             'last_admin_activity' => 0,
             'status' => topic::STATUS_PENDING,
             'is_urgent' => false,
-            'is_task' => false,
+            'is_task' => true,
+            'type' => topic::TYPE_REGULAR_TASK,
             'wait_for' => null,
             'wait_till' => date_create('+5 min')->format(DB::DATE_FORMAT)
         ], true);

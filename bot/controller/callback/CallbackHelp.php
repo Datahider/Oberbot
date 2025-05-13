@@ -55,8 +55,7 @@ class CallbackHelp extends AbstractCallback {
         $new_ticket = ticket::create($developers_chat_id, $new_thread, $title, $user_id);
         $new_ticket->linkCustomer($user_id);
         $new_ticket->accept();
-        $new_ticket->toTicket();
-        $new_ticket->setUrgent();
+        $new_ticket->setType(ticket::TYPE_BOT_SUPPORT);
 
         sendMessage(__('Отправил приглашение нашим специалистам.'));
     }

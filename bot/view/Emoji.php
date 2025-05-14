@@ -32,6 +32,8 @@ class Emoji {
     const ICON_TODO = '🔲';
     const ICON_FUNNEL = '💎';
     const ICON_FIRE = '🔥';
+    const ICON_BOT = '🤖';
+    const ICON_PRIVATE = '🔞';
 
     const ICON_1 = '1️⃣';
     const ICON_2 = '2️⃣';
@@ -57,6 +59,8 @@ class Emoji {
     const ID_VOICE = 5370870893004203704;
     const ID_CROWN = 5357107601584693888;
     const ID_FIRE = 5312241539987020022;
+    const ID_BOT = 5309832892262654231;
+    const ID_PRIVATE = 5420331611830886484;
     
     const ID_NONE = null;
 
@@ -68,6 +72,8 @@ class Emoji {
         ticket::TYPE_URGENT_CONSULT         => self::ID_CROWN,
         ticket::TYPE_MALFUNCTION_MULTIUSER  => self::ID_DOUBLE_EXCLAMATION,
         ticket::TYPE_MALFUNCTION_FREE       => self::ID_FIRE,
+        ticket::TYPE_BOT_SUPPORT            => self::ID_BOT,
+        ticket::TYPE_PRIVATE_SUPPORT        => self::ID_PRIVATE,
     ];
     
     const TEXT_EMOJI_BY_TYPE = [
@@ -78,5 +84,7 @@ class Emoji {
         ticket::TYPE_URGENT_CONSULT         => self::ICON_URGENT_CONSULT,
         ticket::TYPE_MALFUNCTION_MULTIUSER  => self::ICON_EXCLAMATION_2,
         ticket::TYPE_MALFUNCTION_FREE       => self::ICON_FIRE,
+        ticket::TYPE_BOT_SUPPORT            => self::ICON_BOT,
+        ticket::TYPE_PRIVATE_SUPPORT        => self::ICON_PRIVATE,
     ];
 }

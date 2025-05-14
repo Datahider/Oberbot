@@ -14,5 +14,6 @@ foreach ($queue as $ticket) {
     
     $mention = ticketMentionNoId($ticket);
     $icon = Emoji::TEXT_EMOJI_BY_TYPE[$ticket->type];
-    echo "<b>$index.</b> $icon $mention (status: $ticket->status)\n";
+    $status = __('status_'. $ticket->status);
+    echo "<b>$index.</b> $icon $mention ($status)\n";
 }

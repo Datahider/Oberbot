@@ -23,4 +23,13 @@ class CommandTask extends AbstractAuthCommand {
     public function do(string $args, ticket $ticket) {
             $ticket->setType(ticket::TYPE_REGULAR_TASK);
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

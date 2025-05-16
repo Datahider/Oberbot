@@ -22,4 +22,13 @@ class CommandPause extends AbstractAuthCommand {
         Service::showNextTicket($this->user_id);
         return true;
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

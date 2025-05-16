@@ -15,6 +15,14 @@ class CommandArchive extends AbstractAuthCommand {
     
     const PERMIT = self::PERMIT_AGENT | self::PERMIT_USER;
     
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         try {

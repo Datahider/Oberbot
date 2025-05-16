@@ -93,4 +93,13 @@ class CommandSub extends AbstractAuthCommand {
         
         return $result;
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

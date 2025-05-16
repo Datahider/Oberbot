@@ -152,4 +152,13 @@ class CommandWait extends AbstractAuthCommand {
         throw new Exception("Ошибка аргументов команды");
     }
     
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

@@ -52,4 +52,13 @@ class CommandHelp extends AbstractAuthCommand {
             [[ 'text' => __('Написать в поддержку'), 'callback_data' => 'go_help']],
         ];
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

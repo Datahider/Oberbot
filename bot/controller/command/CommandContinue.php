@@ -16,6 +16,14 @@ class CommandContinue extends AbstractAuthCommand {
     ];
     const PERMIT = self::PERMIT_AGENT;
     
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         $ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);

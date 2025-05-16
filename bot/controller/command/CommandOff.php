@@ -91,4 +91,13 @@ class CommandOff extends AbstractAuthCommand {
         $new_ticket->accept();
         
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

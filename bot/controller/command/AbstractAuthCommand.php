@@ -32,6 +32,9 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
     protected ?int $thread_id;
     protected int $user_id;
 
+    abstract static protected function permit() : int; // Возвращает разрешения команды, например self::PERMIT_PRIVATE | self::PERMIT_AGENT
+    abstract static public function description() : array; // Возвращает массив описаний команды. Как минимум один элемент 'default'
+    
     public function handleUpdate(\TelegramBot\Api\BaseType &$data): bool {
         
         $this->user_id = $data->getFrom()->getId();
@@ -42,26 +45,26 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
         
         try {
             if ($this->user_id == $this->chat_id) {
-                if (static::PERMIT & static::PERMIT_PRIVATE) {
+                if (static::permit() & static::PERMIT_PRIVATE) {
                     $this->current_permit = static::PERMIT_PRIVATE;
                     return parent::handleUpdate($data);
                 }
             }
 
             if ( isAgent($this->user_id, $this->chat_id) ) {
-                if (static::PERMIT & static::PERMIT_AGENT) {
+                if (static::permit() & static::PERMIT_AGENT) {
                     $this->current_permit = static::PERMIT_AGENT;
                     return parent::handleUpdate($data);
                 }
             } else {
-                if (static::PERMIT & static::PERMIT_USER) {
+                if (static::permit() & static::PERMIT_USER) {
                     $this->current_permit = static::PERMIT_USER;
                     return parent::handleUpdate($data);
                 }
             }
 
             if (isChatAdministrator($this->user_id, $this->chat_id)) {
-                if (static::PERMIT & static::PERMIT_ADMIN) {
+                if (static::permit() & static::PERMIT_ADMIN) {
                     $this->current_permit = static::PERMIT_ADMIN;
                     return parent::handleUpdate($data);
                 }
@@ -106,7 +109,7 @@ abstract class AbstractAuthCommand extends AbstractHandlerCommand {
             default:
                 $command = new BotCommand();
                 $command->setCommand(static::COMMAND);
-                $command->setDescription(static::DESCRIPTION['default']);
+                $command->setDescription(static::description()['default']);
         }
         return $command;
     }

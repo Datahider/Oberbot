@@ -72,6 +72,14 @@ class CommandManager extends AbstractAuthCommand {
 
         sendMessage(__("Актуальный список менеджеров: %all_managers%\n\nДобавлены: <b>%added_managers%</b>", compact('all_managers', 'added_managers')));
         return true;
+    } 
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
     }
     
 }

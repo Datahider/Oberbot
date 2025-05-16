@@ -67,4 +67,13 @@ class CommandList extends AbstractAuthCommand {
         
         ActiveListDisplay::display(Bot::$user->id, Bot::$chat->id);
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

@@ -106,4 +106,13 @@ class CommandPay extends AbstractAuthCommand {
         ActionInvoice::do(ActionInvoice::PERIOD_1_MONTH, $user_ids);
         
     }
+    
+    static protected function permit(): int {
+        return self::PERMIT;
+    }
+
+    static public function description(): array {
+        return self::DESCRIPTION;
+    }
+    
 }

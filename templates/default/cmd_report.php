@@ -1,19 +1,46 @@
 <?php
 
 use function \losthost\Oberbot\barIndicator;
+use losthost\Oberbot\data\topic;
 
 $totals = [
     'total' => 0,
-    'task' => 0,
-    'malfunction' => 0,
-    'urgent' => 0,
+    topic::TYPE_REGULAR_TASK => 0,
+    topic::TYPE_PRIORITY_TASK => 0,
+    topic::TYPE_MALFUNCTION => 0,
+    topic::TYPE_SCHEDULED_CONSULT => 0,
+    topic::TYPE_URGENT_CONSULT => 0,
+    topic::TYPE_MALFUNCTION_MULTIUSER => 0,
+    topic::TYPE_MALFUNCTION_FREE => 0,
+    topic::TYPE_BOT_SUPPORT => 0,
+    topic::TYPE_PRIVATE_SUPPORT => 0,
+    'none' => 0
+];
+
+$count = [
+    'total' => 0,
+    topic::TYPE_REGULAR_TASK => 0,
+    topic::TYPE_PRIORITY_TASK => 0,
+    topic::TYPE_MALFUNCTION => 0,
+    topic::TYPE_SCHEDULED_CONSULT => 0,
+    topic::TYPE_URGENT_CONSULT => 0,
+    topic::TYPE_MALFUNCTION_MULTIUSER => 0,
+    topic::TYPE_MALFUNCTION_FREE => 0,
+    topic::TYPE_BOT_SUPPORT => 0,
+    topic::TYPE_PRIVATE_SUPPORT => 0,
     'none' => 0
 ];
 
 $types = [
-    'malfunction' => 'Неисправности',
-    'task' => 'Задачи',
-    'urgent' => 'Срочные'
+    topic::TYPE_REGULAR_TASK => 'Задачи',
+    topic::TYPE_PRIORITY_TASK => 'Срочные задачи',
+    topic::TYPE_MALFUNCTION => 'Неисправности',
+    topic::TYPE_SCHEDULED_CONSULT => 'Личные консультации',
+    topic::TYPE_URGENT_CONSULT => 'Срочные консультации',
+    topic::TYPE_MALFUNCTION_MULTIUSER => 'Неисправности, затрагивающие многих пользователей',
+    topic::TYPE_MALFUNCTION_FREE => 'Неисправности в предоставляемых услугах',
+    topic::TYPE_BOT_SUPPORT => 'Запросы поддержки бота',
+    topic::TYPE_PRIVATE_SUPPORT => 'Запросы поддержки бота в ЛС',
 ];
 
 $text_report = '';
@@ -21,7 +48,9 @@ $the_other = 0;
 
 foreach ($report as $line) {
     $totals['total'] += $line->total_seconds;
-    $totals[$line->type] += $line->total_seconds;
+    $totals[constant('losthost\\Oberbot\\data\\topic::'. $line->type)] += $line->total_seconds;
+    $count['total']++;
+    $count[constant('losthost\\Oberbot\\data\\topic::'. $line->type)]++;
     
     $bar = barIndicator($line->total_seconds, $report[0]->total_seconds);
     $h = floor($line->total_seconds/3600);
@@ -51,8 +80,9 @@ foreach ($types as $key=>$value) {
         $m = round(($totals[$key]-$h*3600) / 60);
         $time = sprintf("%02d:%02d", $h, $m);
         $float_time = sprintf("%5.3f", $totals[$key]/3600);
+        $c = $count[$key];
         
-        echo "$value: <b>$time</b> ($float_time ч.)\n";
+        echo "<u>$value:</u> <b>$c</b> шт, <b>$time</b> ($float_time ч.)\n";
         $newline = "\n";
     }
 }

@@ -14,10 +14,17 @@ class TimeReport extends AbstractBuilder {
                 project,
                 object,
                 topics.topic_title AS topic_title,
-                CASE
-                    WHEN topics.is_task = 0 THEN 'malfunction'
-                    WHEN topics.is_urgent = 0 THEN 'task'
-                    ELSE 'urgent'
+                CASE 
+                	WHEN topics.type = 1 THEN 'TYPE_REGULAR_TASK'
+                	WHEN topics.type = 2 THEN 'TYPE_PRIORITY_TASK'
+                	WHEN topics.type = 3 THEN 'TYPE_MALFUNCTION'
+                	WHEN topics.type = 4 THEN 'TYPE_SCHEDULED_CONSULT'
+                	WHEN topics.type = 5 THEN 'TYPE_URGENT_CONSULT'
+                	WHEN topics.type = 6 THEN 'TYPE_MALFUNCTION_MULTIUSER'
+                	WHEN topics.type = 7 THEN 'TYPE_MALFUNCTION_FREE'
+                	WHEN topics.type = 8 THEN 'TYPE_BOT_SUPPORT'
+                	WHEN topics.type = 9 THEN 'TYPE_PRIVATE_SUPPORT'
+                    ELSE 'TYPE_UNKNOWN'
                 END AS type,
                 IFNULL(
                     SUM(

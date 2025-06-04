@@ -5,6 +5,9 @@ namespace losthost\Oberbot\controller\command;
 use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\service\Service;
 
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
+
 class CommandCreate extends AbstractAuthCommand {
     
     const COMMAND = 'create';
@@ -19,8 +22,12 @@ class CommandCreate extends AbstractAuthCommand {
             ticket::getByGroupThread($this->chat_id, $this->thread_id);
             Service::message('warning', "Заявка связанная с этим топиком уже существует.", null, $this->thread_id);
         } catch (\Exception $ex) {
-            $ticket = ticket::create($this->chat_id, $this->thread_id, $this->args, $this->user_id);
-            $ticket->accept();
+            if ($this->args) {
+                $ticket = ticket::create($this->chat_id, $this->thread_id, $this->args, $this->user_id);
+                $ticket->accept();
+            } else {
+                sendMessage(__("Необходимо задать тему заявки"), null, null, $this->thread_id);
+            }
         }
         
         return true;

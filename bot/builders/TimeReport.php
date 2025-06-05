@@ -62,6 +62,7 @@ class TimeReport extends AbstractBuilder {
         while ($view->next()) {
             $result[] = (object)[
                 'project' => $view->project,
+                'object' => $view->object,
                 'topic_title' => $view->topic_title,
                 'total_seconds' => $view->total_seconds,
                 'type' => $view->type,

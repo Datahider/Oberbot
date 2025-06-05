@@ -4,6 +4,10 @@ use function \losthost\Oberbot\barIndicator;
 use losthost\Oberbot\data\topic;
 use losthost\telle\Bot;
 use losthost\Oberbot\view\Emoji;
+use losthost\Oberbot\data\ticket;
+
+use function \losthost\Oberbot\ticketMentionNoId;
+use function losthost\Oberbot\groupMentionById;
 
 $totals = [
     'total' => 0,
@@ -59,8 +63,14 @@ foreach ($report as $line) {
     $m = round(($line->total_seconds-$h*3600) / 60);
     $time = sprintf("%02d:%02d", $h, $m);
     if (mb_strlen($text_report) < 3072) {
-        $type = $params['project'] == Bot::$user->id ? '' : Emoji::TEXT_EMOJI_BY_TYPE[constant('losthost\\Oberbot\\data\\topic::'. $line->type)]. ' ';
-        $text_report .= "{$type}{$line->topic_title}\n<code>{$time} $bar</code>\n";
+        if ($params['project'] == Bot::$user->id) {
+            $type = '';
+            $mention = groupMentionById($line->object);
+        } else {
+            $type = Emoji::TEXT_EMOJI_BY_TYPE[constant('losthost\\Oberbot\\data\\topic::'. $line->type)]. ' ';
+            $mention = ticketMentionNoId(ticket::getById($line->object));
+        }
+        $text_report .= "{$type}{$mention}\n<code>{$time} $bar</code>\n";
     } else {
         $the_other += $line->total_seconds;
     }

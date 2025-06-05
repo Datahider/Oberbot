@@ -9,6 +9,7 @@ use losthost\BotView\BotView;
 use losthost\OberbotModel\Model;
 use losthost\DB\DBView;
 use losthost\Oberbot\data\ticket;
+use losthost\telle\model\DBChat;
 
 function mention(user $user) : string {
     return "<a href=tg://user?id=$user->tg_id>$user->name</a>";
@@ -81,6 +82,16 @@ function ticketMentionNoId(ticket $ticket) : string {
     return $link;
 }
 
+function groupMentionById(int $chat_id) : string {
+    
+    $view = new DBView('SELECT * FROM [telle_chats] WHERE id = ?', [$chat_id]);
+    if ($view->next()) {
+        $url = str_replace('-100', 'c/', "https://t.me/$view->id/1");
+        $link = "<a href=\"$url\">$view->title</a>";
+        return $link;
+    }
+    throw new \Exception("Can't find group by ID $chat_id");
+}
 
 function showNewTopicGreating(topic $ticket) {
     $view = new BotView(Bot::$api, $ticket->chat_id, Bot::$language_code);

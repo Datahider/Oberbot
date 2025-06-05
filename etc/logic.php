@@ -56,6 +56,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackReopen::class);
+Bot::addHandler(losthost\Oberbot\controller\callback\CallbackSelfAgent::class);
 Bot::addHandler(\losthost\Oberbot\controller\callback\CallbackTip::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);

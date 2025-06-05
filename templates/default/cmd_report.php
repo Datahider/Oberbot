@@ -2,6 +2,8 @@
 
 use function \losthost\Oberbot\barIndicator;
 use losthost\Oberbot\data\topic;
+use losthost\telle\Bot;
+use losthost\Oberbot\view\Emoji;
 
 $totals = [
     'total' => 0,
@@ -57,7 +59,8 @@ foreach ($report as $line) {
     $m = round(($line->total_seconds-$h*3600) / 60);
     $time = sprintf("%02d:%02d", $h, $m);
     if (mb_strlen($text_report) < 3072) {
-        $text_report .= "{$line->topic_title}\n<code>{$time} $bar</code>\n";
+        $type = $params['project'] == Bot::$user->id ? '' : Emoji::TEXT_EMOJI_BY_TYPE[constant('losthost\\Oberbot\\data\\topic::'. $line->type)]. ' ';
+        $text_report .= "{$type}{$line->topic_title}\n<code>{$time} $bar</code>\n";
     } else {
         $the_other += $line->total_seconds;
     }
@@ -74,18 +77,21 @@ echo "<b>Период:</b> \n<u>$begin - $end</u>\n\n";
 echo "Всего времени: <b>$time</b> ($float_time ч.)\n\n";
 
 $newline = '';
-foreach ($types as $key=>$value) {
-    if ($totals[$key]) {
-        $h = floor($totals[$key]/3600);
-        $m = round(($totals[$key]-$h*3600) / 60);
-        $time = sprintf("%02d:%02d", $h, $m);
-        $float_time = sprintf("%5.3f", $totals[$key]/3600);
-        $c = $count[$key];
-        
-        echo "<u>$value:</u> <b>$c</b> шт, <b>$time</b> ($float_time ч.)\n";
-        $newline = "\n";
+if ($params['project'] != Bot::$user->id) {
+    foreach ($types as $key=>$value) {
+        if ($totals[$key]) {
+            $h = floor($totals[$key]/3600);
+            $m = round(($totals[$key]-$h*3600) / 60);
+            $time = sprintf("%02d:%02d", $h, $m);
+            $float_time = sprintf("%5.3f", $totals[$key]/3600);
+            $c = $count[$key];
+
+            echo "<u>$value:</u> <b>$c</b> шт, <b>$time</b> ($float_time ч.)\n";
+            $newline = "\n";
+        }
     }
 }
+
 echo $newline;
 echo $text_report;
 

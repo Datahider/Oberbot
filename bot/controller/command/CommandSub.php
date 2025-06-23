@@ -30,6 +30,9 @@ class CommandSub extends AbstractAuthCommand {
         $old_ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
         $ticket = ActionCreateTicket::do($this->chat_id, $this->chat_id, $this->user_id, $title, $messages);
         
+        $ticket->setType($old_ticket->type);
+        $ticket->write();
+        
         $old_ticket->waitTask($ticket->id);
 
         return true;

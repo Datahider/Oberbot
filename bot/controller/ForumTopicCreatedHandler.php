@@ -28,6 +28,11 @@ class ForumTopicCreatedHandler extends AbstractHandlerMessage {
         
         $ticket = ticket::create($group_id, $thread_id, $title, $creator_id);
         
+        if ($message->getFrom()->isBot()) {
+            ticket->accept();
+            return true; // Другой бот создал топик и должен сам туда всё написать
+        }
+        
         Bot::runAt(
                 date_create(Bot::param("wait_for_first_message", "+10 min")),
                 CloseIncompleteTicket::class,

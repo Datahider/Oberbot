@@ -23,11 +23,13 @@ class CommandReport extends AbstractAuthCommand {
         } else {
             $report = new AgentReport();
         }
+
         $params = $this->reportParams();
         $result = $report->build($params);
-        
+
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
         $view->show('cmd_report', null, ['report' => $result, 'params' => $params]);
+
         return true;
     }
 
@@ -49,11 +51,25 @@ class CommandReport extends AbstractAuthCommand {
                 $m = [];
                 if (preg_match("/^(\S+)\s*(\S*)$/", $this->args, $m)) {
                     if ($m[2]) {
-                        $params['period_start'] = date_create_immutable($m[1])->format("Y-m-d");
-                        $params['period_end'] = date_create_immutable($m[2])->format("Y-m-d");
+                        $start = date_create_immutable($m[1]);
+                        $end = date_create_immutable($m[2]);
+                        
+                        if ($start === false) {
+                            throw new \Exception("Не верно задана дата начала периода");
+                        }
+                        if ($end === false) {
+                            throw new \Exception("Не верно задана дата начала периода");
+                        }
+                        
+                        $params['period_start'] = $start->format("Y-m-d");
+                        $params['period_end'] = $end->format("Y-m-d");
                     } else {
-                        $params['period_start'] = date_create_immutable($m[1])->format("Y-m-d");
-                        $params['period_end'] = date_create_immutable($m[1])->add(date_interval_create_from_date_string("+24 hours"))->format("Y-m-d");
+                        $start = date_create_immutable($m[1]);
+                        if ($start === false) {
+                            throw new \Exception("Не верно задана дата");
+                        }
+                        $params['period_start'] = $start->format("Y-m-d");
+                        $params['period_end'] = $start->add(date_interval_create_from_date_string("+24 hours"))->format("Y-m-d");
                     }
                 }
         }

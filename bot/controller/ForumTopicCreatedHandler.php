@@ -29,7 +29,7 @@ class ForumTopicCreatedHandler extends AbstractHandlerMessage {
         $ticket = ticket::create($group_id, $thread_id, $title, $creator_id);
         
         if ($message->getFrom()->isBot()) {
-            ticket->accept();
+            $ticket->accept();
             return true; // Другой бот создал топик и должен сам туда всё написать
         }
         

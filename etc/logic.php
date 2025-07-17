@@ -31,6 +31,7 @@ require_once 'bot/functions.php';
 require_once 'bot/show.php';
 
 // Предварительная обработка
+Bot::addHandler(losthost\Oberbot\controller\pre\StoreMessageInfo::class);
 Bot::addHandler(losthost\Oberbot\controller\pre\ForwardedMessageToGeneral::class);
 Bot::addHandler(losthost\Oberbot\controller\pre\AgentLeftTheGroup::class);
 Bot::addHandler(\losthost\Oberbot\controller\pre\ForumTopicEdited::class);
@@ -91,6 +92,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandReport::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandReserve::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandSettings::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandSub::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandTake::class);

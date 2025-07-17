@@ -17,6 +17,8 @@ use losthost\timetracker\Timer;
 use losthost\timetracker\TimerEvent;
 use losthost\timetracker\TagBinder;
 use losthost\Oberbot\data\chat_user;
+use losthost\Oberbot\data\message_info;
+use losthost\Oberbot\data\chat_settings;
 use losthost\Oberbot\data\wait;
 use losthost\DB\DBList;
 
@@ -34,6 +36,8 @@ topic_user::initDataStructure();
 chat::initDataStructure();
 user_chat_role::initDataStructure();
 chat_user::initDataStructure();
+chat_settings::initDataStructure();
+message_info::initDataStructure();
 wait::initDataStructure();
 accepting_message::initDataStructure();
 Timer::initDataStructure();

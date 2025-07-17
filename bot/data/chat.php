@@ -16,6 +16,7 @@ class chat extends DBObject {
         'language_code' => 'VARCHAR(8)',
         'delete_commands' => 'TINYINT(1)',
         'wizard_message_id' => 'BIGINT(20)',
+        'chat_settings_id' => 'BIGINT(20)',
         'PRIMARY KEY' => 'id'
     ];
     

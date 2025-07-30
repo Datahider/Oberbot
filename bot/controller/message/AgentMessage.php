@@ -6,6 +6,10 @@ use losthost\Oberbot\data\ticket;
 use losthost\Oberbot\data\topic_admin;
 use losthost\timetracker\TimerEvent;
 use losthost\timetracker\Timer;
+use losthost\Oberbot\data\chat_settings;
+use losthost\Oberbot\background\StopRunningTimer;
+use losthost\Oberbot\background\RemindRunningTimer;
+use losthost\telle\Bot;
 
 class AgentMessage extends AbstractMemberMessage {
     
@@ -23,6 +27,16 @@ class AgentMessage extends AbstractMemberMessage {
                 $timer_event = new TimerEvent($timer, $timer->current_event);
                 if ($timer_event->object != $ticket->id) { // Запускаем если сейчас он запущен в другом тикете
                     $ticket->timerStart($from_id);
+                } else {
+                    // Если работаем не по помидорам - нужно обновить таймауты
+                    $settings = chat_settings::getChatSettinsByChatId($message->getChat()->getId());
+                    if (!$settings->pomodoro_like_timer) {
+                        $param = "$ticket->id $from_id";
+                        RemindRunningTimer::disarm($param);
+                        StopRunningTimer::disarm($param);
+                        Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, $param);
+                        Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, $param);
+                    }
                 }
             }
             return true;

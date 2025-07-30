@@ -12,6 +12,7 @@ use losthost\timetracker\TimerEvent;
 use losthost\Oberbot\data\topic_admin;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\Oberbot\data\chat_settings;
 
 class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
     
@@ -22,21 +23,27 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
         $user = Service::getUserDataById($params[1]);
         $ticket = ticket::getById($ticket_id);
         
-        // Проверим последнюю активность пользователя в тикете
-        $ticket_admin = new topic_admin(['user_id' => $user->id, 'topic_number' => $ticket->id], true);
-        if ($ticket_admin->isNew()                       // это уже не агент в этой заявке
-                || $ticket_admin->last_activity == null  // или он не обновлял время никогда
-                || $ticket_admin->last_activity->getTimestamp() < date_create()->getTimestamp()-300) { // или больше чем 5 минут назад
+        $settings = chat_settings::getChatSettinsByChatId($message->getChat()->getId());
+        if ($settings->pomodoro_like_timer) {
+            // Обрабатываем как было задумано изначально
+            // Проверим последнюю активность пользователя в тикете
+            $ticket_admin = new topic_admin(['user_id' => $user->id, 'topic_number' => $ticket->id], true);
+            if ($ticket_admin->isNew()                       // это уже не агент в этой заявке
+                    || $ticket_admin->last_activity == null  // или он не обновлял время никогда
+                    || $ticket_admin->last_activity->getTimestamp() < date_create()->getTimestamp()-300) { // или больше чем 5 минут назад
 
-            $ticket->timerStop($user->id);
-            
+                $ticket->timerStop($user->id);
+
+            } else {
+                Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, "$ticket->id $user->id");
+                Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, "$ticket->id $user->id");
+
+                $view = new BotView(Bot::$api, $user->id, $user->language_code);
+                $view->show('backgroundStopRunningTimer', null, ['ticket' => $ticket]);
+            }
         } else {
-            Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, "$ticket->id $user->id");
-            Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, "$ticket->id $user->id");
-            
-            $view = new BotView(Bot::$api, $user->id, $user->language_code);
-            $view->show('backgroundStopRunningTimer', null, ['ticket' => $ticket]);
-   }
-        
+            // Просто останавливаем таймер, т.к. пришло время.
+            $ticket->timerStop($user->id);
+        }    
     }
 }

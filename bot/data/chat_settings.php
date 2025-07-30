@@ -28,7 +28,7 @@ class chat_settings extends DBObject {
     static public function getChatSettinsByChatId(int $chat_id) {
         
         $settings_id = new DBValue("SELECT chat_settings_id AS value FROM [chat] WHERE id = ?", $chat_id);
-        $settings = new static(['id' => $settings_id->value]);
+        $settings = new static(['id' => $settings_id->value], true);
         return $settings;
         
     }

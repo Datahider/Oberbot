@@ -92,6 +92,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandRemind::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandReopen::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandReport::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandReserve::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandRules::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandSettings::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandStart::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandSub::class);

@@ -21,7 +21,7 @@ class SettingsMainMenu {
             $keyboard = [];
 
             foreach ($settings as $i => $set) {
-                $keyboard[intdiv($i, 2)][] = ['text' => $set->name, 'callback_data' => 'settings_'. $set->name];
+                $keyboard[intdiv($i, 2)][] = ['text' => $set->name, 'callback_data' => 'settings_'. $set->id];
             }        
             $keyboard[] = [$button_create];
             sendMessage(__('Выберите настройку'), $keyboard);

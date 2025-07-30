@@ -46,6 +46,7 @@ class ticket extends topic {
         $ticket->is_urgent = 0;
         $ticket->is_task = 1;
         $ticket->type = static::TYPE_REGULAR_TASK;
+        $ticket->created = date_create();
         
         $ticket->write('', ['function' => 'create']);
         return $ticket;

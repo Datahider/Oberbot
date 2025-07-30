@@ -31,6 +31,7 @@ class topic extends DBObject {
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
         'chat_id' => 'BIGINT(20) NOT NULL',
         'topic_id' => 'BIGINT(20) NOT NULL',
+        'created' => 'DATETIME',
         'topic_title' => 'VARCHAR(128) NOT NULL',
         'ticket_creator' => 'BIGINT(20) NULL',
         'last_activity' => 'BIGINT(20) NOT NULL DEFAULT 0',

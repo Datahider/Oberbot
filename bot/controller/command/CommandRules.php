@@ -24,7 +24,7 @@ class CommandRules extends AbstractAuthCommand {
                 'text' => $settings->rules_text,
                 'entities' => $settings->rules_entities,
                 'message_thread_id' => $message->getMessageThreadId(),
-                'reply_markup' => $this->leaveChatKeyboard()
+                'reply_markup' => $settings->rules_leave_chat_btn ? $this->leaveChatKeyboard() : null,
             ]);
         }
         

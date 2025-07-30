@@ -37,6 +37,7 @@ function __(string $text, array $vars=[]) {
     
     foreach ($vars as $key => $value) {
         $translated = str_replace("%$key%", $value, $translated);
+        $translated = str_replace("{{$key}}", $value, $translated);
     }
     
     return $translated;

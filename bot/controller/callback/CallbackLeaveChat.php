@@ -3,6 +3,7 @@
 namespace losthost\Oberbot\controller\callback;
 
 use losthost\telle\Bot;
+use function \losthost\Oberbot\__;
 
 class CallbackLeaveChat extends AbstractCallback {
     
@@ -15,6 +16,8 @@ class CallbackLeaveChat extends AbstractCallback {
         if ($callback_query->getMessage()->getChat()->getType() == 'supergroup') {
             Bot::$api->unbanChatMember(Bot::$chat->id, Bot::$user->id);
         }
+        
+        return __('Вы были исключены из группы.');
         
     }
 }

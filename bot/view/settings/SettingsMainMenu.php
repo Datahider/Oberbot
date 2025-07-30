@@ -12,7 +12,7 @@ class SettingsMainMenu {
     
     public function show() {
         
-        $button_create = ['text' => __('Создать новый'), 'callback_data' => 'create_settings'];
+        $button_create = ['text' => __('Создать новый'), 'callback_data' => 'settings_create'];
         $settings = (new DBList(chat_settings::class, ['owner_id' => Bot::$user->id]))->asArray();
         
         if (count($settings) === 0) {

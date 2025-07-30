@@ -1,17 +1,21 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace losthost\Oberbot\controller\priority;
 
-/**
- * Description of PrioritySettingsName
- *
- * @author drweb
- */
-class PrioritySettingsName {
-    //put your code here
+use losthost\telle\abst\AbstractHandlerMessage;
+
+class PrioritySettingsName extends AbstractHandlerPriority {
+    
+    protected function check(\TelegramBot\Api\Types\Message &$message): bool {
+        return $message->getText();
+    }
+
+    protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        
+    }
+
+    public function getPrompt(): string {
+        return "<b>Создание набора настроек</b>\n\nВведите название набора настроек";
+    }
 }

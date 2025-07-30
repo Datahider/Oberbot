@@ -12,6 +12,7 @@ class chat_user extends DBObject {
         'user_id' => 'BIGINT(20)',
         'last_seen' => 'DATETIME NOT NULL',
         'PRIMARY KEY' => 'id',
+        'INDEX index_chat_user' => ['chat_id', 'user_id'],
         'INDEX index_last_seen' => 'last_seen'
     ];
     

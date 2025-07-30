@@ -23,7 +23,7 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
         $user = Service::getUserDataById($params[1]);
         $ticket = ticket::getById($ticket_id);
         
-        $settings = chat_settings::getChatSettinsByChatId($message->getChat()->getId());
+        $settings = chat_settings::getChatSettinsByChatId($ticket->chat_id);
         if ($settings->pomodoro_like_timer) {
             // Обрабатываем как было задумано изначально
             // Проверим последнюю активность пользователя в тикете

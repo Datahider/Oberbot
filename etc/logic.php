@@ -46,6 +46,7 @@ Bot::addHandler(losthost\Oberbot\controller\pre\UserJoinsTheGroup::class);
 
 // Обработка кнопок
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackAskUrgent::class);
+Bot::addHandler(\losthost\Oberbot\controller\callback\CallbackCancelPriority::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackCancelUrgent::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackContinue::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackDone::class);
@@ -59,6 +60,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackPause::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackRate::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackReopen::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackSelfAgent::class);
+Bot::addHandler(\losthost\Oberbot\controller\callback\settings\CallbackSettingsCreate::class);
 Bot::addHandler(\losthost\Oberbot\controller\callback\CallbackTip::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackToTaskTicket::class);
 Bot::addHandler(losthost\Oberbot\controller\callback\CallbackVerbose::class);

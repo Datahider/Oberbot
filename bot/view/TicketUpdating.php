@@ -82,18 +82,30 @@ class TicketUpdating extends DBTracker {
         }
         
         // TODO -- доставать так же language_code
-        if ($this->ticket->type == ticket::TYPE_REGULAR_TASK) { // TODO -- возможно следует удалить эту ветку
+        if ($this->ticket->type == ticket::TYPE_PRIORITY_TASK) {
             // О срочной задаче уведомляем свободных
             $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] AS r LEFT JOIN [timers] AS t ON t.subject = r.user_id WHERE r.role = "agent" AND r.chat_id = ? AND t.current_event IS NULL', [$this->ticket->chat_id]);
+            $agent_ids = $this->usersToArray($agent);
         } else {
-            // Уведомляем всех обо всём TODO -- нужно смотреть и уведомлять только назначенных агентов для тех тикетов где они уже назначены
-            $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
+            $agent_ids = $this->ticket->getAgents();
+            if (count($agent_ids) == 0) { 
+                $agent = new DBView('SELECT user_id AS id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$this->ticket->chat_id]);
+                $agent_ids = $this->usersToArray($agent);
+            }
         }
         
-        while ($agent->next()) {
-            $view = new BotView(Bot::$api, $agent->id);
+        foreach ($agent_ids as $id) {
+            $view = new BotView(Bot::$api, $id);
             $view->show('privateUrgentNotification', null, ['ticket' => $this->ticket]);
         }
+    }
+
+    protected function usersToArray(DBView $dbview) : array {
+        $result = [];
+        while($dbview->next()) {
+            $result[] = $dbview->user_id;
+        }
+        return $result;
     }
     
     protected function notifyWaitTill() {

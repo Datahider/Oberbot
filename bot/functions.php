@@ -37,7 +37,7 @@ function __(string $text, array $vars=[]) {
     
     foreach ($vars as $key => $value) {
         $translated = str_replace("%$key%", $value, $translated);
-        $translated = str_replace("{{$key}}", $value, $translated);
+        $translated = str_replace("{{{$key}}}", $value, $translated);
     }
     
     return $translated;
@@ -50,13 +50,17 @@ function ifnull(mixed $value, mixed $default) {
     return $value;
 }
 
-function sendMessage(string $text, ?array $keyboard=null, ?int $chat_id=null, ?int $thread_id=null, $language_code=null) {
+function sendMessage(string $text, null|array|InlineKeyboardMarkup $keyboard=null, ?int $chat_id=null, ?int $thread_id=null, $language_code=null) {
+    
+    if (!is_a($keyboard, InlineKeyboardMarkup::class)) {
+        $keyboard = new InlineKeyboardMarkup(ifnull($keyboard, []));
+    }
     
     $message = Bot::$api->sendMessage(
             ifnull($chat_id, Bot::$chat->id),
             $text, 'html',
             false, null,
-            new InlineKeyboardMarkup(ifnull($keyboard, [])),
+            $keyboard,
             false,
             $thread_id == 1 ? null : $thread_id
     );
@@ -187,6 +191,7 @@ function makePrivateCommands() {
     
     Bot::$api->setMyCommands([
             controller\command\CommandNext::getBotCommand(),
+            controller\command\CommandQueue::getBotCommand(),
             controller\command\CommandAgent::getBotCommand(),
             controller\command\CommandList::getBotCommand(),
             controller\command\CommandReport::getBotCommand(),
@@ -201,6 +206,7 @@ function makeGroupCommands() {
         controller\command\CommandSub::getBotCommand(),
         controller\command\CommandUp::getBotCommand(),
         controller\command\CommandUnlink::getBotCommand(),
+        controller\command\CommandNote::getBotCommand(),
         controller\command\CommandReport::getBotCommand(),
         controller\command\CommandDone::getBotCommand(),
         controller\command\CommandReopen::getBotCommand(),
@@ -241,6 +247,7 @@ function makeAgentCommands(int $chat_id, int $user_id) {
                 controller\command\CommandTake::getBotCommand(),
                 controller\command\CommandUnlink::getBotCommand(),
                 controller\command\CommandNotify::getBotCommand(),
+                controller\command\CommandNote::getBotCommand(),
                 controller\command\CommandReport::getBotCommand(),
                 controller\command\CommandDone::getBotCommand(),
                 controller\command\CommandReopen::getBotCommand(),
@@ -281,6 +288,7 @@ function makeAdminAgentCommands(int $chat_id, int $user_id) {
                 controller\command\CommandTake::getBotCommand(),
                 controller\command\CommandUnlink::getBotCommand(),
                 controller\command\CommandNotify::getBotCommand(),
+                controller\command\CommandNote::getBotCommand(),
                 controller\command\CommandReport::getBotCommand(),
                 controller\command\CommandDone::getBotCommand(),
                 controller\command\CommandReopen::getBotCommand(),

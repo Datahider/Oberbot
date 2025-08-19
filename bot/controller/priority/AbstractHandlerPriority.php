@@ -12,14 +12,11 @@ use function \losthost\Oberbot\sendMessage;
 abstract class AbstractHandlerPriority extends AbstractHandlerMessage {
  
     abstract public function getPrompt() : string;
-    
-    public function getInlineKeyboard() {
-        $keyboard = new InlineKeyboardMarkup([[['text' => __('Отмена создания набора настроек'), 'callback_data' => 'cancel_settings_create']]]);
-    }
+    abstract protected function getInlineKeyboard() : InlineKeyboardMarkup;
 
-    public function showPrompt(int $chat_id, int $message_thread_id=null) : int {
+    public function showPrompt(int $chat_id, int $message_thread_id=null, mixed $more_data=null) : int {
         $message_id = sendMessage(__($this->getPrompt()), $this->getInlineKeyboard(), $chat_id, $message_thread_id);
-        $this->setPriority(['prompt_message_id' => $message_id]);
+        $this->setPriority(['prompt_message_id' => $message_id, 'more_data' => $more_data]);
         return $message_id;
     }
 }

@@ -32,4 +32,5 @@ class chat_settings extends DBObject {
         return $settings;
         
     }
+    
 }

@@ -80,7 +80,7 @@ class CommandMyGroups extends AbstractAuthCommand {
         if (empty($list)) {
             sendMessage(__("У нас свами нет общих групп."));
         } else {
-            sendMessage(implode("\n", $list));
+            sendMessage(__("Ваши группы {{list}}", ['list' => implode("\n", $list)]));
         }
         return true;
     }

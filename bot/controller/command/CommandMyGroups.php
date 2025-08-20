@@ -90,7 +90,7 @@ class CommandMyGroups extends AbstractAuthCommand {
     }
 
     public static function description(): array {
-        [
+        return [
             'default' => 'Выводит список групп ролями в группе, обозначенными с помощью Emoji'
         ];
     }

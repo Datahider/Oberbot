@@ -195,6 +195,7 @@ function makePrivateCommands() {
             controller\command\CommandAgent::getBotCommand(),
             controller\command\CommandList::getBotCommand(),
             controller\command\CommandReport::getBotCommand(),
+            controller\command\CommandMyGroups::getBotCommand(),
             controller\command\CommandHelp::getBotCommand(),
             controller\command\CommandStart::getBotCommand()
     ]);

@@ -103,7 +103,7 @@ class TicketUpdating extends DBTracker {
     protected function usersToArray(DBView $dbview) : array {
         $result = [];
         while($dbview->next()) {
-            $result[] = $dbview->user_id;
+            $result[] = $dbview->id;
         }
         return $result;
     }

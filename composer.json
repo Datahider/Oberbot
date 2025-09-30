@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "losthost/telle": "^4.3",
+        "losthost/telle": "^4.4",
         "losthost/bot-view": "^2.4",
         "losthost/proxy-message": "dev-master",
         "losthost/time-tracker": "^v1",

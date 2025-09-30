@@ -34,8 +34,11 @@ class AgentMessage extends AbstractMemberMessage {
                         $param = "$ticket->id $from_id";
                         RemindRunningTimer::disarm($param);
                         StopRunningTimer::disarm($param);
-                        Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, $param);
-                        Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, $param);
+
+                        $remind_after = $settings->remind_running_timer_minutes;
+                        $stop_after = $settings->stop_running_timer_minutes;
+                        Bot::runAt(new \DateTime("+$remind_after minutes"), RemindRunningTimer::class, $param);
+                        Bot::runAt(new \DateTime("+$stop_after minutes"), StopRunningTimer::class, $param);
                     }
                 }
             }

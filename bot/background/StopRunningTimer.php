@@ -35,8 +35,10 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
                 $ticket->timerStop($user->id);
 
             } else {
-                Bot::runAt(new \DateTime("+25 minutes"), RemindRunningTimer::class, "$ticket->id $user->id");
-                Bot::runAt(new \DateTime("+30 minutes"), StopRunningTimer::class, "$ticket->id $user->id");
+                $remind_after = $settings->remind_running_timer_minutes;
+                $stop_after = $settings->stop_running_timer_minutes;
+                Bot::runAt(new \DateTime("+$remind_after minutes"), RemindRunningTimer::class, "$ticket->id $user->id");
+                Bot::runAt(new \DateTime("+$stop_after minutes"), StopRunningTimer::class, "$ticket->id $user->id");
 
                 $view = new BotView(Bot::$api, $user->id, $user->language_code);
                 $view->show('backgroundStopRunningTimer', null, ['ticket' => $ticket]);

@@ -16,6 +16,8 @@ use losthost\Oberbot\data\chat_settings;
 
 class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
     
+    const NO_ACTIVITY = 'No AcTiViTy';
+    
     public function run() {
 
         $params = explode(' ', $this->param);
@@ -32,7 +34,7 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
                     || $ticket_admin->last_activity == null  // или он не обновлял время никогда
                     || $ticket_admin->last_activity->getTimestamp() < date_create()->getTimestamp()-300) { // или больше чем 5 минут назад
 
-                $ticket->timerStop($user->id, "NO ACTIVITY");
+                $ticket->timerStop($user->id, self::NO_ACTIVITY);
 
             } else {
                 $remind_after = $settings->remind_running_timer_minutes;
@@ -45,7 +47,7 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
             }
         } else {
             // Просто останавливаем таймер, т.к. пришло время.
-            $ticket->timerStop($user->id, "NO ACTIVITY");
+            $ticket->timerStop($user->id, self::NO_ACTIVITY);
         }    
     }
 }

@@ -227,7 +227,7 @@ class ticket extends topic {
         return $this;
     }
     
-    public function timerStop(int|string $user_id='all') : ticket {
+    public function timerStop(int|string $user_id='all', ?string $comment=null, ?array $tags=null) : ticket {
         if ($user_id == 'all') {
             $timers = Timer::getStartedByObjectProject($this->id, $this->chat_id);
         } else {
@@ -235,7 +235,7 @@ class ticket extends topic {
         }
         
         foreach ($timers as $timer) {
-            $timer->stop($user_id);
+            $timer->stop($comment, $tags);
         }
         
         return $this;

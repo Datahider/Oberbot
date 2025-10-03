@@ -32,7 +32,7 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
                     || $ticket_admin->last_activity == null  // или он не обновлял время никогда
                     || $ticket_admin->last_activity->getTimestamp() < date_create()->getTimestamp()-300) { // или больше чем 5 минут назад
 
-                $ticket->timerStop($user->id);
+                $ticket->timerStop($user->id, "NO ACTIVITY");
 
             } else {
                 $remind_after = $settings->remind_running_timer_minutes;
@@ -45,7 +45,7 @@ class StopRunningTimer extends AbstractDisarmableBackgroundProcess {
             }
         } else {
             // Просто останавливаем таймер, т.к. пришло время.
-            $ticket->timerStop($user->id);
+            $ticket->timerStop($user->id, "NO ACTIVITY");
         }    
     }
 }

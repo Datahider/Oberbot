@@ -27,8 +27,8 @@ use losthost\Oberbot\data\wait;
 use losthost\Oberbot\data\private_topic;
 use losthost\DB\DBList;
 
-require_once 'bot/functions.php';
-require_once 'bot/show.php';
+//require_once 'bot/functions.php';
+//require_once 'bot/show.php';
 
 // Предварительная обработка
 Bot::addHandler(losthost\Oberbot\controller\pre\StoreMessageInfo::class);

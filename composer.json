@@ -18,7 +18,11 @@
     "autoload": {
         "psr-4": {
             "losthost\\Oberbot\\": "bot/"
-        }
+        },
+        "files": [
+            "bot/functions.php",
+            "bot/show.php"
+        ] 
     },
     "require-dev": {
         "phpunit/phpunit": "11.4.2"

@@ -9,6 +9,7 @@ use losthost\Oberbot\data\ticket;
 use losthost\telle\model\DBPendingJob;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\DB\DBView;
+use losthost\Oberbot\service\ChatRulesChecker;
 
 class CustomerMessage extends AbstractMemberMessage {
     
@@ -34,6 +35,7 @@ class CustomerMessage extends AbstractMemberMessage {
             $this->destroyIncompleteTimer($ticket);
         }
         
+        ChatRulesChecker::forMessage($message)->check();
         return true;
     }
     

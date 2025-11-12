@@ -17,6 +17,7 @@ class chat_settings extends DBObject {
         'rules_text' => 'TEXT',                         // Текст правил
         'rules_entities' => 'TEXT',                     // Сущности 
         'rules_leave_chat_btn' => 'TINYINT(1)',         // Показывать кнопку "Покинуть чат" после правил
+        'rules_checkers' => 'TEXT',                     // Список имен классов проверяющих соблюдение правил
         'reaction_processing_id' => 'BIGINT(20)',       // Идентификатор процессора реакций
         'pricelist_id' => 'BIGINT(20)',                 // Идентификатор прайс-листа
         'pomodoro_like_timer' => 'TINYINT(1)',          // Использование таймера в стиле Pomodoro 

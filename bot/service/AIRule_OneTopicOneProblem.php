@@ -4,14 +4,20 @@ namespace losthost\Oberbot\service;
 
 class AIRule_OneTopicOneProblem extends AIAbstractModerator {
     
-    protected function checkResult(string $result): bool|string {
-        if ($result == 'WARNING') {
-            return false;
+    const AGENT_NAME = 'onetopic_oneproblem';
+
+    protected function checkResult(string $result): bool|array {
+        if ($result == 'OK') {
+            return true;
+        } elseif ($result == 'WARNING') {
+            return ['text' => 'Ваше сообщение нарушает правило: Одна заявка — одна проблема'];
+        } else {
+            return ['text' => $result];
         }
         return true;
     }
 
-    protected function error(\stdClass $result): bool|string {
+    protected function error(\stdClass $result): bool|array {
         return true;
     }
 
@@ -41,4 +47,5 @@ class AIRule_OneTopicOneProblem extends AIAbstractModerator {
             Никаких дополнительных пояснений. Пояснения давать только если пользователь попросит это сделать после вынесения вердикта.
             FIN;
     }
+
 }

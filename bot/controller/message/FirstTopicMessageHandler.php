@@ -5,6 +5,7 @@ namespace losthost\Oberbot\controller\message;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\Oberbot\service\ChatRulesChecker;
 
 use function \losthost\Oberbot\mentionById;
 
@@ -26,6 +27,7 @@ class FirstTopicMessageHandler extends AbstractMemberMessage {
         $user_id = $message->getFrom()->getId();
         if ($ticket->ticket_creator == $user_id) {
             $ticket->accept();
+            ChatRulesChecker::forMessage($message)->check();
         } else {
             Bot::$api->deleteMessage($group_id, $message->getMessageId());
             $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
@@ -34,4 +36,5 @@ class FirstTopicMessageHandler extends AbstractMemberMessage {
         
         return true;
     }
+        
 }

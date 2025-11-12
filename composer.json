@@ -13,7 +13,8 @@
         "losthost/bot-view": "^2.4",
         "losthost/proxy-message": "dev-master",
         "losthost/time-tracker": "^v1",
-        "ramsey/uuid": "^4.7"
+        "ramsey/uuid": "^4.7",
+        "losthost/reflexa": "dev-master"
     },
     "autoload": {
         "psr-4": {

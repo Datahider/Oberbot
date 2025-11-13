@@ -27,7 +27,6 @@ class FirstTopicMessageHandler extends AbstractMemberMessage {
         $user_id = $message->getFrom()->getId();
         if ($ticket->ticket_creator == $user_id) {
             $ticket->accept();
-            ChatRulesChecker::forMessage($message)->check();
         } else {
             Bot::$api->deleteMessage($group_id, $message->getMessageId());
             $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);

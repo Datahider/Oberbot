@@ -35,7 +35,6 @@ class CustomerMessage extends AbstractMemberMessage {
             $this->destroyIncompleteTimer($ticket);
         }
         
-        ChatRulesChecker::forMessage($message)->check();
         return true;
     }
     

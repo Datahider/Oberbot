@@ -2,6 +2,8 @@
 
 namespace losthost\Oberbot\service;
 
+use losthost\ReflexA\Types\ErrorDescription;
+
 class AIRule_OneTopicOneProblem extends AIAbstractModerator {
     
     const AGENT_NAME = 'onetopic_oneproblem';
@@ -9,15 +11,17 @@ class AIRule_OneTopicOneProblem extends AIAbstractModerator {
     protected function checkResult(string $result): bool|array {
         if ($result == 'OK') {
             return true;
-        } elseif ($result == 'WARNING') {
-            return ['text' => 'Ваше сообщение нарушает правило: Одна заявка — одна проблема'];
         } else {
-            return ['text' => $result];
+            return [
+                'text' => $result, 
+                'buttons' => [
+                    [['text' => '🛑 Заблокировать пользователя на 1 час', 'callback_data' => 'ban_1h']]
+                ]
+            ];
         }
-        return true;
     }
 
-    protected function error(\stdClass $result): bool|array {
+    protected function error(ErrorDescription $err): bool|array {
         return true;
     }
 

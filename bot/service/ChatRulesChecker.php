@@ -52,13 +52,17 @@ class ChatRulesChecker {
         }
 
         foreach ($this->checkers as $checker_class) {
-            
-            $checker = new $checker_class($this->ticket->id, $this->subject);
-            
-            if (!$checker->isUseable()) {
+
+            if (!is_a($checker_class, AIAbstractModerator::class, true)) {
                 continue;
             }
             
+            $checker = new $checker_class($this->ticket->id, $this->subject);
+
+            if (!$checker->isUseable()) {
+                continue;
+            }
+
             $check_result = $checker->check($text);
 
             if ($check_result !== true) {

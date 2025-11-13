@@ -8,6 +8,7 @@ use losthost\Oberbot\data\chat;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
+use losthost\Oberbot\service\AIAbstractModerator;
 
 class ChatRulesChecker {
 
@@ -54,6 +55,7 @@ class ChatRulesChecker {
         foreach ($this->checkers as $checker_class) {
 
             if (!is_a($checker_class, AIAbstractModerator::class, true)) {
+                Bot::logComment("<$checker_class> is not an AIAbstractModerator", __FILE__, __LINE__);
                 continue;
             }
             

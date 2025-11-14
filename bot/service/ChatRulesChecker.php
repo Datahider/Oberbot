@@ -47,7 +47,7 @@ class ChatRulesChecker {
     
     function check() {
 
-        $text = $this->message->getText();
+        $text = $this->message->getText() ?? $this->message->getCaption();
         if (!$text) {
             return;
         }

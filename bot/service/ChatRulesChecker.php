@@ -18,7 +18,7 @@ class ChatRulesChecker {
     protected ?string $subject;
     protected int $chat_id;
     protected int $message_id;
-    protected int $thread_id;
+    protected ?int $thread_id;
 
 
     public function __construct(Message &$message) {

@@ -9,7 +9,6 @@ use losthost\Oberbot\data\ticket;
 use losthost\telle\model\DBPendingJob;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\DB\DBView;
-use losthost\Oberbot\service\ChatRulesChecker;
 
 class CustomerMessage extends AbstractMemberMessage {
     

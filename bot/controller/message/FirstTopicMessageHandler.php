@@ -5,7 +5,6 @@ namespace losthost\Oberbot\controller\message;
 use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
-use losthost\Oberbot\service\ChatRulesChecker;
 
 use function \losthost\Oberbot\mentionById;
 

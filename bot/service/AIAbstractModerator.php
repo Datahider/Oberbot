@@ -70,6 +70,8 @@ abstract class AIAbstractModerator {
         }
 
         $agent = new SimpleAgent($this->user_id, static::AGENT_NAME);
+        
+        
         $answer = $agent->query($query);
         
         if ($agent->hasError()) {

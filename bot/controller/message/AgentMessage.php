@@ -10,7 +10,6 @@ use losthost\Oberbot\data\chat_settings;
 use losthost\Oberbot\background\StopRunningTimer;
 use losthost\Oberbot\background\RemindRunningTimer;
 use losthost\telle\Bot;
-use losthost\Oberbot\service\ChatRulesChecker;
 
 class AgentMessage extends AbstractMemberMessage {
     
@@ -44,7 +43,6 @@ class AgentMessage extends AbstractMemberMessage {
                 }
             }
             
-            ChatRulesChecker::forMessage($message)->check();
             return true;
         }
         

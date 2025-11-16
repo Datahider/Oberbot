@@ -2,9 +2,7 @@
 
 namespace losthost\Oberbot\service;
 
-use losthost\ReflexA\Mind\SimpleAgent;
-use losthost\ReflexA\Data\UserAgentData;
-use losthost\ReflexA\Types\ErrorDescription;
+use losthost\SimpleAI\SimpleAIAgent;
 
 /**
  * Предназначен для проверки соответствия реплик полььзователей правилам 
@@ -23,25 +21,11 @@ abstract class AIAbstractModerator {
         if (!static::AGENT_NAME) {
             throw new \Exception("Please set AGENT_NAME");
         }
+
         $this->user_id = $topic_id;
         $this->subject = $subject;
         
-        if (!$subject) {
-            $user_data = UserAgentData::getByUserAgent($this->user_id, static::AGENT_NAME);
-            if ($user_data->isNew()) {
-                $this->is_useable = false;
-                return;
-            }
-        }
-
-        $this->is_useable = true;
     }
-    
-    /**
-     * Обрабатывает значение {'message': 'Сообщение об ошибке', 'description': 'Трассировка'}
-     * и возвращает значение, которое должна вернуть функция check при ошибке
-     */
-    abstract protected function error(ErrorDescription $result) : bool|array; 
     
     /**
      * Обрабатывает значение полученное от LLM и возвращает 
@@ -49,18 +33,9 @@ abstract class AIAbstractModerator {
      */
     abstract protected function checkResult(string $result) : bool|array; 
                                                             
-
-
-    public function isUseable() {
-        return $this->is_useable;
-    }
-    
     public function check(string $query) : bool|array {
         
-        if (!$this->is_useable) {
-            throw new \Exception("The instance in not useable.");
-        }
-
+        global $prompts, $deepseek_api_key;
         
         if ($this->subject) {
             $query = <<<FIN
@@ -69,14 +44,28 @@ abstract class AIAbstractModerator {
                     FIN;
         }
 
-        $agent = new SimpleAgent($this->user_id, static::AGENT_NAME);
+        $agent = SimpleAIAgent::build($deepseek_api_key)
+                ->setAgentName(static::AGENT_NAME)
+                ->setUserId($this->user_id)
+                ->setPrompt($prompts[static::AGENT_NAME]);
         
-        
-        $answer = $agent->query($query);
-        
-        if ($agent->hasError()) {
-            return $this->error($agent->getLastError());
+        $retry_count = 2;
+        return $this->checkResult($agent->ask($query, fn($e) => $this->retryOnTimeout($e, $agent, $retry_count)));
+    }
+    
+    protected function retryOnTimeout(\Throwable $e, SimpleAIAgent $agent, $retry_count) {
+        $error_text = $e->getMessage();
+        if (preg_match("/^cURL error 28\: Operation timed out/", $error_text)) {
+            if ($retry_count <=0) {
+                throw "OK"; // Возвращаем ок, если не удалось исправить ошибку
+            }
+            $retry_count--;
+
+            error_log("Retrying...");
+            $agent->setTimeout(10);
+            return $agent->ask(null, fn($e) => retryOnTimeout($e, $agent, $retry_count));
+        } else {
+            throw "OK"; // Возвращаем ок, если это не таймаут, а другая ошибка
         }
-        return $this->checkResult($answer);
     }
 }

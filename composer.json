@@ -14,7 +14,7 @@
         "losthost/proxy-message": "dev-master",
         "losthost/time-tracker": "^v1",
         "ramsey/uuid": "^4.7",
-        "losthost/reflexa": "dev-master"
+        "losthost/simple-ai-agent": "^1"
     },
     "autoload": {
         "psr-4": {

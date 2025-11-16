@@ -21,7 +21,7 @@ use losthost\Oberbot\data\message_info;
 use losthost\Oberbot\data\chat_settings;
 use losthost\Oberbot\data\wait;
 use losthost\DB\DBList;
-use losthost\ReflexA\ReflexA;
+use losthost\SimpleAI\data\Context;
 
 require_once 'vendor/autoload.php';
 
@@ -47,7 +47,7 @@ TagBinder::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 \losthost\Oberbot\data\funnel_chat::initDataStructure();
 
-ReflexA::initDB();
+Context::initDataStructure();
 
 $list = new DBList(topic::class, 'type IS NULL', []);
 

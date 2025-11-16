@@ -9,6 +9,8 @@ use losthost\Oberbot\data\ticket;
 use losthost\telle\Bot;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use losthost\Oberbot\service\AIAbstractModerator;
+use losthost\SimpleAI\data\Context;
+use losthost\DB\DBList;
 
 class ChatRulesChecker {
 
@@ -59,11 +61,11 @@ class ChatRulesChecker {
                 continue;
             }
             
-            $checker = new $checker_class($this->ticket->id, $this->subject);
-
-            if (!$checker->isUseable()) {
+            if (!$this->subject && !$this->contextExists()) {
                 continue;
             }
+            
+            $checker = new $checker_class($this->ticket->id, $this->subject);
 
             $check_result = $checker->check($text);
 
@@ -73,12 +75,17 @@ class ChatRulesChecker {
         }
     }
 
-    function brokenRulesMessage(string $text, ?array $buttons) {
+    protected function brokenRulesMessage(string $text, ?array $buttons) {
     
         
         $keyboard = $buttons ? new InlineKeyboardMarkup($buttons) : null;
         Bot::$api->sendMessage($this->chat_id, $text, null, false, $this->message_id, $keyboard, false, $this->thread_id);
         
+    }
+    
+    protected function contextExists() {
+        $system = new DBList(Context::class, ['user_id' => $this->ticket->id, 'role' => 'system']);
+        return $system->next();
     }
     
 }

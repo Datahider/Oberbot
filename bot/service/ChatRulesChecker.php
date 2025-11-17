@@ -30,15 +30,23 @@ class ChatRulesChecker {
         $this->message_id = $message->getMessageId();
         $this->thread_id = $message->getMessageThreadId();
         
-        $this->ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
+        try {
+            $this->ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
+            $this->subject = ($this->thread_id == $this->message_id-1) ? $this->ticket->title : null;
+        } catch (Exception $ex) {
+            Bot::logComment("Ticket not found for chat id: $this->chat_id; and thread id: $this->thread_id.");
+            $this->subject = null;
+        }
         
-        $this->subject = ($this->thread_id == $this->message_id-1) ? $this->ticket->title : null;
         
-        $chat_id = $message->getChat()->getId();
-        $chat = new chat(['id' => $chat_id]);
-        $settings = new chat_settings(['id' => $chat->chat_settings_id]);
-        
-        $this->checkers = explode(' ', $settings->rules_checkers);
+        $chat = new chat(['id' => $this->chat_id]);
+        $settings = new chat_settings(['id' => $chat->chat_settings_id], true);
+        if ($settings->isNew()) {
+            Bot::logComment("No chat settings for chat id: $this->chat_id.");
+            $this->checkers = [];
+        } else {
+            $this->checkers = explode(' ', $settings->rules_checkers);
+        }
     }
     
     public static function forMessage(Message &$message) : static {
@@ -49,7 +57,7 @@ class ChatRulesChecker {
     
     function check() {
 
-        $text = $this->message->getText() ?? $this->message->getCaption();
+        $text = $this->message->getText() ?? $this->message->getCaption() ?? "Пользователь отправил медиа-файл с описанием проблемы";
         if (!$text) {
             return;
         }

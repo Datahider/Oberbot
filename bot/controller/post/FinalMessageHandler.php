@@ -10,7 +10,7 @@ class FinalMessageHandler extends AbstractHandlerMessage {
     const IS_FINAL = true;
 
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
-        $text = $message->getText() ?? $message->getCaption();
+        $text = $message->getText() ?? $message->getCaption() ?? "Не текстовое сообщение";
         if ($text && !preg_match("/^\//", $text)) {
             return true;
         }

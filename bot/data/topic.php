@@ -68,6 +68,11 @@ class topic extends DBObject {
         if (!$this->user_priority) {
             $this->user_priority = 3;
         }
+        
+        if ($this->nice === null) {
+            $this->nice = 0;
+        }
+        
         parent::write($comment, $data);
     }
     

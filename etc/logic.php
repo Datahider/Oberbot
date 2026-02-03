@@ -88,6 +88,7 @@ Bot::addHandler(losthost\Oberbot\controller\command\CommandDelist::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandDone::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandManager::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandMyGroups::class);
+Bot::addHandler(\losthost\Oberbot\controller\command\CommandNice::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandNote::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandNotify::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandOff::class);
@@ -143,7 +144,7 @@ DB::addTracker(DBEvent::AFTER_UPDATE, TimerEvent::class, TimerEventUpdated::clas
 
 DB::addTracker(DBEvent::AFTER_INSERT, topic_user::class, TicketCustomerLink::class);
 
-DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, ChatCreateUpdate::class);
+//DB::addTracker([DBEvent::AFTER_INSERT, DBEvent::AFTER_UPDATE], chat::class, ChatCreateUpdate::class);
 
 DB::addTracker(DBEvent::INTRAN_DELETE, [topic_admin::class, topic_user::class], TicketUnlink::class);
 DB::addTracker(DBEvent::AFTER_INSERT, note::class, NoteCreation::class);

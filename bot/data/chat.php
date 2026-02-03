@@ -32,6 +32,13 @@ class chat extends DBObject {
         return $chat;
     }
     
+    public function write($comment = '', $data = null) {
+        if ($this->nice === null) {
+            $this->nice = 0;
+        }
+        parent::write($comment, $data);
+    }
+
     public function getCustomerIds() : array {
         
         $agent_ids_as_string = implode(', ', $this->getAgentIds());

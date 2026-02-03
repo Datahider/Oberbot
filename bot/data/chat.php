@@ -4,7 +4,6 @@ namespace losthost\Oberbot\data;
 
 use losthost\DB\DBObject;
 use losthost\DB\DBView;
-use losthost\Oberbot\data\chat_user;
 use losthost\Oberbot\data\user_chat_role;
 use losthost\telle\Bot;
 
@@ -17,6 +16,7 @@ class chat extends DBObject {
         'delete_commands' => 'TINYINT(1)',
         'wizard_message_id' => 'BIGINT(20)',
         'chat_settings_id' => 'BIGINT(20)',
+        'nice' => 'DECIMAL(5,2) NOT NULL DEFAULT 0',
         'PRIMARY KEY' => 'id'
     ];
     

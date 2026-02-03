@@ -64,6 +64,7 @@ class TicketQueue {
                 ticket.topic_title AS title,
                 ticket.is_task AS is_task,
                 ticket.user_priority AS user_priority,
+                ticket.nice + chat.nice AS nice,
                 pbychat.active_priority AS active_priority,
                 CASE
                         WHEN ticket.type = 5 THEN 0 /* TYPE_URGENT_CONSULT */
@@ -85,6 +86,8 @@ class TicketQueue {
                 COUNT(iagent.topic_number) AS amiagent
             FROM 
                 [topics] AS ticket
+                LEFT JOIN [chat] AS chat
+                    ON chat.id = ticket.chat_id
                 LEFT JOIN [topic_admins] AS agent
                     ON (agent.topic_number = ticket.id)
                 LEFT JOIN [topic_admins] AS iagent
@@ -108,7 +111,7 @@ class TicketQueue {
             DROP TABLE IF EXISTS vt_main_query;
             FIN;
 
-    const SQL_GET_TICKET_QUEUE = 'SELECT * FROM vt_main_query ORDER BY type_order + status_order, waiting_seconds/86400 DESC /* 24 hours */';
+    const SQL_GET_TICKET_QUEUE = 'SELECT * FROM vt_main_query ORDER BY type_order + status_order - nice, waiting_seconds/86400 DESC /* 24 hours */';
     
     const SQL_GET_QUEUE_LEN = 'SELECT COUNT(*) AS value FROM vt_main_query';
 

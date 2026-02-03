@@ -39,6 +39,7 @@ class topic extends DBObject {
         'status' => 'TINYINT(4) NOT NULL DEFAULT 0',
         'type' => 'INT(11)',
         'score' => 'TINYINT(4)',
+        'nice' => 'DECIMAL(5,2) NOT NULL DEFAULT 0',
         'is_urgent' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'is_task' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'user_priority' => 'TINYINT(4) NOT NULL DEFAULT 3',

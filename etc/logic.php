@@ -134,7 +134,7 @@ Bot::addHandler(losthost\Oberbot\controller\message\CustomerMessage::class);
 
 //Bot::addHandler(NonCommandPrivateMessage::class);
 //Bot::addHandler(NonCommandAgentMessage::class);
-Bot::addHandler(losthost\Oberbot\controller\post\FinalMessageHandler::class);
+//Bot::addHandler(losthost\Oberbot\controller\post\FinalMessageHandler::class);
 
 DB::addTracker(DBEvent::AFTER_INSERT, ticket::class, TicketCreating::class);
 DB::addTracker(DBEvent::AFTER_UPDATE, ticket::class, TicketUpdating::class);

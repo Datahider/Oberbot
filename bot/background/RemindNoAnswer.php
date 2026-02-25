@@ -33,11 +33,11 @@ class RemindNoAnswer extends AbstractDisarmableBackgroundProcess {
         ];
         
         Bot::$language_code = 'ru'; #TODO - Сделать получени кода языка из информации о чате.
-        sendMessage(__(<<<FIN
+        Bot::$api->sendMessage($ticket->chat_id, __(<<<FIN
                 %mentions%, напоминаю, что работы по заявке не ведутся, т.к. от вас не получен ответ.
                     
                 Если ответ не будет получен, %days% заявка будет закрыта.
-                FIN, $message_params), null, $ticket->chat_id, $ticket->topic_id);
+                FIN, $message_params), 'HTML', false, null, null, false, $ticket->topic_id);
     }
                 
     protected function daysText(int $days) {

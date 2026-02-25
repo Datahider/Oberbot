@@ -8,6 +8,10 @@ use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\DB\DBEvent;
 use losthost\Oberbot\view\TicketUpdating;
+use function \losthost\Oberbot\mentionByIdArray;
+use function \losthost\Oberbot\sendMessage;
+use function \losthost\Oberbot\__;
+
 
 class CloseNoAnswer extends AbstractDisarmableBackgroundProcess {
     

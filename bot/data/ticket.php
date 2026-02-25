@@ -15,6 +15,8 @@ use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\Oberbot\data\wait;
 use losthost\Oberbot\background\CloseIncompleteTicket;
+use losthost\Oberbot\background\RemindNoAnswer;
+use losthost\Oberbot\background\CloseNoAnswer;
 
 class ticket extends topic {
     
@@ -135,6 +137,13 @@ class ticket extends topic {
     public function awaitUser() : ticket {
         $this->status = static::STATUS_AWAITING_USER;
         $this->write('', ['function' => 'awaitUser']);
+        
+        Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 7");
+        Bot::runAt(date_create("+24 hours"), RemindNoAnswer::class, "$this->id 6");
+        Bot::runAt(date_create("+72 hours"), RemindNoAnswer::class, "$this->id 4");
+        Bot::runAt(date_create("+144 hours"), RemindNoAnswer::class, "$this->id 1");
+        Bot::runAt(date_create("+168 hours"), CloseNoAnswer::class, $this->id);
+        
         return $this;
     }
     
@@ -142,6 +151,13 @@ class ticket extends topic {
         if ($this->status == static::STATUS_AWAITING_USER) {
             $this->status = static::STATUS_USER_ANSWERED;
             $this->write('', ['function' => 'userAnswered']);
+           
+            RemindNoAnswer::disarm("$this->id 7");
+            RemindNoAnswer::disarm("$this->id 6");
+            RemindNoAnswer::disarm("$this->id 4");
+            RemindNoAnswer::disarm("$this->id 1");
+            CloseNoAnswer::disarm($this->id);
+            
         } else {
             throw new \Exception('Current status is not AWAITING_ANSWER');
         }

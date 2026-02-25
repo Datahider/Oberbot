@@ -19,6 +19,7 @@ class CloseNoAnswer extends AbstractDisarmableBackgroundProcess {
     
         $ticket = ticket::getById($this->param);
 
+        Bot::$language_code = 'ru'; #TODO - Сделать получени кода языка из информации о чате.
         Bot::$api->sendMessage(
                 $ticket->chat_id, 
                 __('Заявка закрывается, т.к. от вас не был получен ответ.'), 

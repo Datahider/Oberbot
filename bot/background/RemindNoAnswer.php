@@ -2,6 +2,7 @@
 
 namespace losthost\Oberbot\background;
 
+use losthost\telle\Bot;
 use losthost\telle\abst\AbstractBackgroundProcess;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DB;
@@ -31,6 +32,7 @@ class RemindNoAnswer extends AbstractDisarmableBackgroundProcess {
             'days' => $this->daysText($days)
         ];
         
+        Bot::$language_code = 'ru'; #TODO - Сделать получени кода языка из информации о чате.
         sendMessage(__(<<<FIN
                 %mentions%, напоминаю, что работы по заявке не ведутся, т.к. от вас не получен ответ.
                     

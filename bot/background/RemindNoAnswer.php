@@ -8,6 +8,7 @@ use losthost\DB\DB;
 use losthost\DB\DBEvent;
 use losthost\Oberbot\view\TicketUpdating;
 use function \losthost\Oberbot\mentionByIdArray;
+use function \losthost\Oberbot\sendMessage;
 
 class RemindNoAnswer extends AbstractDisarmableBackgroundProcess {
     

@@ -1,0 +1,6 @@
+User=pio-bots
+Host=huge001.tetabit.ru
+Port=22584
+RemoteDir=/home/pio-bots/bin/bots/Oberbot
+Service=oberbot
+Include=etc/logic.php

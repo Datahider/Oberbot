@@ -22,6 +22,7 @@ use losthost\Oberbot\data\chat_settings;
 use losthost\Oberbot\data\wait;
 use losthost\DB\DBList;
 use losthost\SimpleAI\data\Context;
+use losthost\Oberbot\data\reaction_settings;
 
 require_once 'vendor/autoload.php';
 
@@ -44,6 +45,7 @@ accepting_message::initDataStructure();
 Timer::initDataStructure();
 TimerEvent::initDataStructure();
 TagBinder::initDataStructure();
+reaction_settings::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 \losthost\Oberbot\data\funnel_chat::initDataStructure();
 

@@ -8,7 +8,7 @@ use losthost\Oberbot\data\message_info;
 class StoreMessageInfo extends AbstractHandlerMessage {
     
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
-        return (bool)$message->getMessageThreadId();
+        return true;
     }
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {

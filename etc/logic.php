@@ -132,6 +132,8 @@ Bot::addHandler(\losthost\Oberbot\controller\message\TicketCloseReopenMessage::c
 Bot::addHandler(\losthost\Oberbot\controller\message\AgentMessage::class);
 Bot::addHandler(losthost\Oberbot\controller\message\CustomerMessage::class);
 
+
+Bot::addHandler(losthost\Oberbot\controller\reaction\Reaction::class);
 //Bot::addHandler(NonCommandPrivateMessage::class);
 //Bot::addHandler(NonCommandAgentMessage::class);
 //Bot::addHandler(losthost\Oberbot\controller\post\FinalMessageHandler::class);

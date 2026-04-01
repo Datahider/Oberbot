@@ -138,11 +138,7 @@ class ticket extends topic {
         $this->status = static::STATUS_AWAITING_USER;
         $this->write('', ['function' => 'awaitUser']);
         
-        Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 7");
-        Bot::runAt(date_create("+24 hours"), RemindNoAnswer::class, "$this->id 6");
-        Bot::runAt(date_create("+72 hours"), RemindNoAnswer::class, "$this->id 4");
-        Bot::runAt(date_create("+144 hours"), RemindNoAnswer::class, "$this->id 1");
-        Bot::runAt(date_create("+168 hours"), CloseNoAnswer::class, $this->id);
+        $this->sсheduleRemindNClose();
         
         return $this;
     }
@@ -152,16 +148,80 @@ class ticket extends topic {
             $this->status = static::STATUS_USER_ANSWERED;
             $this->write('', ['function' => 'userAnswered']);
            
-            RemindNoAnswer::disarm("$this->id 7");
-            RemindNoAnswer::disarm("$this->id 6");
-            RemindNoAnswer::disarm("$this->id 4");
-            RemindNoAnswer::disarm("$this->id 1");
-            CloseNoAnswer::disarm($this->id);
+            $this->disarmRemindNClose();
             
         } else {
             throw new \Exception('Current status is not AWAITING_ANSWER');
         }
         return $this;
+    }
+    
+    protected function sсheduleRemindNClose() {
+        
+        $days_to_close = $this->getSettings()->close_unanswered;
+        switch ($days_to_close) {
+            case 7:
+                Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 7");
+                Bot::runAt(date_create("+24 hours"), RemindNoAnswer::class, "$this->id 6");
+                Bot::runAt(date_create("+72 hours"), RemindNoAnswer::class, "$this->id 4");
+                Bot::runAt(date_create("+144 hours"), RemindNoAnswer::class, "$this->id 1");
+                Bot::runAt(date_create("+168 hours"), CloseNoAnswer::class, $this->id);
+                break;
+            case 14:
+                Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 14");
+                Bot::runAt(date_create("+24 hours"), RemindNoAnswer::class, "$this->id 13");
+                Bot::runAt(date_create("+168 hours"), RemindNoAnswer::class, "$this->id 7");    // 7 дней
+                Bot::runAt(date_create("+240 hours"), RemindNoAnswer::class, "$this->id 4");    // 10 дней
+                Bot::runAt(date_create("+312 hours"), RemindNoAnswer::class, "$this->id 1");    // 13 дней
+                Bot::runAt(date_create("+336 hours"), CloseNoAnswer::class, $this->id);         // 14 дней
+                break;
+            case 30:
+                Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 30");
+                Bot::runAt(date_create("+168 hours"), RemindNoAnswer::class, "$this->id 23");   // 7 дней
+                Bot::runAt(date_create("+336 hours"), RemindNoAnswer::class, "$this->id 16");   // 14 дней
+                Bot::runAt(date_create("+552 hours"), RemindNoAnswer::class, "$this->id 7");    // 23 дня
+                Bot::runAt(date_create("+624 hours"), RemindNoAnswer::class, "$this->id 4");    // 26 дней
+                Bot::runAt(date_create("+696 hours"), RemindNoAnswer::class, "$this->id 1");    // 29 дней
+                Bot::runAt(date_create("+720 hours"), CloseNoAnswer::class, $this->id);         // 30 дней
+                break;
+
+            case 60:
+                Bot::runAt(date_create("+3 hours"), RemindNoAnswer::class, "$this->id 60");
+                Bot::runAt(date_create("+360 hours"), RemindNoAnswer::class, "$this->id 45");   // 15 дней
+                Bot::runAt(date_create("+720 hours"), RemindNoAnswer::class, "$this->id 30");   // 30 дней
+                Bot::runAt(date_create("+888 hours"), RemindNoAnswer::class, "$this->id 23");   // 37 дней
+                Bot::runAt(date_create("+1056 hours"), RemindNoAnswer::class, "$this->id 16");  // 44 дня
+                Bot::runAt(date_create("+1272 hours"), RemindNoAnswer::class, "$this->id 7");   // 53 дня
+                Bot::runAt(date_create("+1344 hours"), RemindNoAnswer::class, "$this->id 4");   // 56 дней
+                Bot::runAt(date_create("+1416 hours"), RemindNoAnswer::class, "$this->id 1");   // 59 дней
+                Bot::runAt(date_create("+1440 hours"), CloseNoAnswer::class, $this->id);        // 60 дней
+                break;
+        }
+        
+    }
+
+    protected function disarmRemindNClose() {
+        RemindNoAnswer::disarm("$this->id 60");
+        RemindNoAnswer::disarm("$this->id 45");
+        RemindNoAnswer::disarm("$this->id 30");
+        RemindNoAnswer::disarm("$this->id 23");
+        RemindNoAnswer::disarm("$this->id 16");
+        RemindNoAnswer::disarm("$this->id 14");
+        RemindNoAnswer::disarm("$this->id 13");
+        RemindNoAnswer::disarm("$this->id 7");
+        RemindNoAnswer::disarm("$this->id 6");
+        RemindNoAnswer::disarm("$this->id 4");
+        RemindNoAnswer::disarm("$this->id 1");
+        CloseNoAnswer::disarm($this->id);
+    }
+    
+    protected function getSettings() : ?chat_settings {
+        $chat = new chat(['id' => $this->chat_id], true);
+        $chat_settings = new chat_settings(['id' => $chat->chat_settings_id], true);
+        if ($chat_settings->isNew()) {
+            return null;
+        }
+        return $chat_settings;
     }
     
     public function setUserPriority(int $priority) {
@@ -239,7 +299,9 @@ class ticket extends topic {
             $timer->stop();
         }
         $timer->start($this->id, $this->chat_id);
-        
+
+        $this->disarmRemindNClose();
+
         return $this;
     }
     

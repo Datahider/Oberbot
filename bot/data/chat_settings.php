@@ -27,6 +27,7 @@ class chat_settings extends DBObject {
         'stop_running_timer_minutes' => 'TINYINT(4)',   // Останавливать работающий таймер через (минут)
         'remind_malfunction_minutes' => 'TINYINT(4)',   // Присылать напоминание о новых, переоткрытых и отвеченных 
                                                         //  неисправностях каждые столько минут (0 или NULL -- не присылать)
+        'close_unanswered' => 'TINYINT NOT NULL DEFAULT (0)', // через сколько закрывать неотвеченные: 0 (отключено), 7, 14, 30, 60 дней 
         'PRIMARY KEY' => 'id',
         'INDEX OWNER' => 'owner_id',
     ];

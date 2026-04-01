@@ -2,13 +2,13 @@
 
 namespace losthost\Oberbot\background;
 
-use losthost\telle\abst\AbstractBackgroundProcess;
 use losthost\Oberbot\data\ticket;
 use losthost\DB\DB;
 use losthost\DB\DBEvent;
 use losthost\Oberbot\view\TicketUpdating;
+use losthost\Oberbot\background\AbstractDisarmableBackgroundProcess;
 
-class CloseIncompleteTicket extends AbstractBackgroundProcess {
+class CloseIncompleteTicket extends AbstractDisarmableBackgroundProcess {
     
     public function run() {
     

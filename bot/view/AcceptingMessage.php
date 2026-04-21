@@ -23,7 +23,7 @@ class AcceptingMessage {
     
     public function show() {
         $chat = new chat(['id' => $this->ticket->chat_id], true);
-        $view = new BotView(Bot::$api, $chat->id, $chat->language_code);
+        $view = new BotView(Bot::$api, $chat->id, $chat->language_code, true);
         
         $message_id = $view->show('viewAcceptingMessage', 'kbdAcceptingMessage', ['ticket' => $this->ticket], $this->ticket->getAcceptedMessageId(), $this->ticket->topic_id);
         $this->ticket->setAcceptedMessageId($message_id);

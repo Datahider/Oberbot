@@ -175,9 +175,13 @@ class Service {
             if ($ticket->is_task && !$ticket_from_all->is_task) {
                 $ticket = $ticket_from_all;
             }
-
-            $view = new BotView(Bot::$api, $user_id, $user->language_code);
-            $view->show('controllerCommandNext', null, ['ticket' => $ticket, 'working_group' => $session->working_group]);
+            
+            try {
+                $view = new BotView(Bot::$api, $user_id, $user->language_code);
+                $view->show('controllerCommandNext', null, ['ticket' => $ticket, 'working_group' => $session->working_group]);
+            } catch(\Throwable $e) {
+                Bot::logThrowable($e);
+            }
         }
     }
     

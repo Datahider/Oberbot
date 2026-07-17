@@ -69,7 +69,6 @@ do {
 <u><?= Service::ticketMentionNoId($ticket); ?></u>
 
 Идентификатор: <b>#<?= $ticket->id; ?></b>
-Очередность выполнения: <?= $user_priority[$ticket->user_priority]; ?> 
 
 Назначенные агенты: <b><?= Service::mentionByIdArray($ticket->getAgents(), '-'); ?></b>
 Затраченное время: <b><?= $ticket->getTimeElapsed()->format('%H:%I:%S'); ?></b>

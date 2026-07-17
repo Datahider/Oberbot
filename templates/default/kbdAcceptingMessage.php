@@ -20,5 +20,5 @@ $user_priority = [
 ];
 
 echo serialize(new InlineKeyboardMarkup([
-    $user_priority, $line
+    $line
 ]));

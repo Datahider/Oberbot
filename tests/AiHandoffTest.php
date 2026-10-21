@@ -35,9 +35,11 @@ final class AiFakeSubmitter implements AiTransportSubmitterInterface
 {
     public bool $fail = false;
     public array $jobs = [];
+    public array $logs = [];
     public function submit(array $job): int
     {
         $this->jobs[] = $job;
+        $this->logs[] = file_get_contents($job['log_path']);
         if ($this->fail) throw new RuntimeException('failed');
         return 771;
     }
@@ -54,9 +56,10 @@ $service = new AiHandoffService($store, new AiFakePublisher(), $submitter, '/hom
 $result = $service->execute(42, '-10037366278346', 55, 'Не работает 1С');
 aiAssertSame('ok', $result, 'successful command');
 aiAssertSame(true, $store->completed, 'completed marker');
-$log = file_get_contents($submitter->jobs[0]['log_path']);
+$log = $submitter->logs[0];
 aiAssertSame(true, str_contains((string) $log, '[2026-10-21 10:00:00] Клиент'), 'client line');
 aiAssertSame(true, str_contains((string) $log, 'https://files.ioannidis.ru/screen1'), 'attachment URL');
+aiAssertSame(false, file_exists($submitter->jobs[0]['log_path']), 'successful handoff log removed');
 aiAssertSame('repeated', $service->execute(42, '-10037366278346', 55, 'Не работает 1С'), 'repeat command');
 
 $failed_store = new AiMemoryLogStore();
@@ -71,6 +74,5 @@ try {
     aiAssertSame(false, $failed_store->completed, 'failed handoff remains retryable');
 }
 
-@unlink($submitter->jobs[0]['log_path']);
 @unlink($failed_submitter->jobs[0]['log_path']);
 echo "Oberbot AI handoff tests: OK\n";

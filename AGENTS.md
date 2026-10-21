@@ -21,5 +21,6 @@
 ## Production deployment
 
 - Сначала изменения публикуются как GitHub Release в `Datahider/Oberbot`.
-- Затем в production-директории Oberbot запускается штатный `update.sh`.
+- Затем в production-директории Oberbot запускается штатный `update-bot.sh <release-tag>`.
+- `update-bot.sh` скачивает release archive с GitHub и копирует его содержимое поверх production-директории; `composer` и restart сервиса он не выполняет.
 - Локального deploy-скрипта в репозитории нет и добавлять его не нужно.

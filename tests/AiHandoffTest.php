@@ -20,6 +20,7 @@ final class AiMemoryLogStore implements AiTicketLogStoreInterface
     public bool $completed = false;
     public bool $cleaned = false;
     public array $entries = [];
+    public function append(int $ticket_id, string $source_chat_id, int $message_id, AiTicketLogEntry $entry): void { $this->entries[] = $entry; }
     public function entries(int $ticket_id): array { return $this->entries; }
     public function isCompleted(int $ticket_id): bool { return $this->completed; }
     public function markCompleted(int $ticket_id, int $hidden_thread_id): void { $this->completed = true; }
@@ -72,7 +73,7 @@ try {
     throw new RuntimeException('failure expected');
 } catch (RuntimeException $error) {
     aiAssertSame(false, $failed_store->completed, 'failed handoff remains retryable');
+    aiAssertSame(false, file_exists($failed_submitter->jobs[0]['log_path']), 'failed handoff log removed');
 }
 
-@unlink($failed_submitter->jobs[0]['log_path']);
 echo "Oberbot AI handoff tests: OK\n";

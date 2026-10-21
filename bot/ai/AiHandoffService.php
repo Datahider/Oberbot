@@ -45,6 +45,7 @@ final class AiHandoffService
             @unlink($log_path);
             throw $error;
         }
+        @unlink($log_path);
         return 'ok';
     }
 }

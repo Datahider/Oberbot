@@ -17,6 +17,7 @@ use losthost\Oberbot\data\wait;
 use losthost\Oberbot\background\CloseIncompleteTicket;
 use losthost\Oberbot\background\RemindNoAnswer;
 use losthost\Oberbot\background\CloseNoAnswer;
+use losthost\Oberbot\ai\AiRuntimeFactory;
 
 class ticket extends topic {
     
@@ -264,6 +265,7 @@ class ticket extends topic {
             $this->write('', ['function' => 'archive']);
             $sth = DB::prepare('DELETE FROM [private_topic] WHERE ticket_id = ?');
             $sth->execute([$this->id]);
+            AiRuntimeFactory::createLogStore()->cleanup((int) $this->id);
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();

@@ -73,6 +73,7 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
 
 // Команды
 Bot::addHandler(losthost\Oberbot\controller\command\CommandAgent::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandAi::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandArchive::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandBan::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandCall::class);
@@ -131,6 +132,7 @@ Bot::addHandler(losthost\Oberbot\controller\message\FirstTopicMessageHandler::cl
 Bot::addHandler(\losthost\Oberbot\controller\message\TicketCloseReopenMessage::class);
 Bot::addHandler(\losthost\Oberbot\controller\message\AgentMessage::class);
 Bot::addHandler(losthost\Oberbot\controller\message\CustomerMessage::class);
+Bot::addHandler(losthost\Oberbot\controller\post\AiTicketLogCollector::class);
 
 
 Bot::addHandler(losthost\Oberbot\controller\reaction\Reaction::class);

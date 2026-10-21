@@ -53,7 +53,9 @@ aiAssertSame('large', $photo_entry?->attachments[0]['file_id'] ?? null, 'largest
 aiAssertSame(null, $extractor->extract(aiMessage([]), 'Клиент'), 'service message ignored');
 
 $runner = new AiFakeProcessRunner();
-$submitter = new LocalAiTransportSubmitter('/srv/ai/bin/submit-oberbot-ticket.php', '/srv/ai/etc/config.php', 'shared-secret', '/home/web/tmp', $runner);
+$submit_script = tempnam('/home/web/tmp', 'oberbot-ai-submit-');
+$transport_config = tempnam('/home/web/tmp', 'oberbot-ai-config-');
+$submitter = new LocalAiTransportSubmitter($submit_script, $transport_config, 'shared-secret', '/home/web/tmp', $runner);
 $hidden_thread_id = $submitter->submit([
     'ticket_id' => 42,
     'source_chat_id' => '-10037366278346',
@@ -63,8 +65,10 @@ $hidden_thread_id = $submitter->submit([
 ]);
 aiAssertSame(771, $hidden_thread_id, 'hidden thread returned');
 aiAssertSame('php', $runner->command[0] ?? null, 'php command');
-aiAssertSame('/srv/ai/bin/submit-oberbot-ticket.php', $runner->command[1] ?? null, 'submit script argument');
+aiAssertSame($submit_script, $runner->command[1] ?? null, 'submit script argument');
 aiAssertSame('shared-secret', $runner->job['secret'] ?? null, 'shared secret in job');
 aiAssertSame(false, file_exists($runner->command[3]), 'job file removed');
+@unlink($submit_script);
+@unlink($transport_config);
 
 echo "Oberbot AI runtime tests: OK\n";

@@ -23,6 +23,8 @@ use losthost\Oberbot\data\wait;
 use losthost\DB\DBList;
 use losthost\SimpleAI\data\Context;
 use losthost\Oberbot\data\reaction_settings;
+use losthost\Oberbot\data\AiTicketLog;
+use losthost\Oberbot\data\OberbotAiHandoff;
 
 require_once 'vendor/autoload.php';
 
@@ -46,6 +48,8 @@ Timer::initDataStructure();
 TimerEvent::initDataStructure();
 TagBinder::initDataStructure();
 reaction_settings::initDataStructure();
+AiTicketLog::initDataStructure();
+OberbotAiHandoff::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 \losthost\Oberbot\data\funnel_chat::initDataStructure();
 

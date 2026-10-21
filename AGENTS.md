@@ -17,3 +17,9 @@
 
 - Контракт интеграции задан в `AI_HANDOFF_CONTRACT.md`.
 - Изменения Oberbot для AI handoff должны быть минимальными.
+
+## Production deployment
+
+- Сначала изменения публикуются как GitHub Release в `Datahider/Oberbot`.
+- Затем в production-директории Oberbot запускается штатный `update.sh`.
+- Локального deploy-скрипта в репозитории нет и добавлять его не нужно.

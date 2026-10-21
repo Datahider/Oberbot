@@ -14,6 +14,8 @@ Oberbot собирает журнал заявки и по команде `/ai` 
 - Запись содержит timestamp, роль `Клиент` или `Агент`, text/caption и метаданные attachments.
 - После успешного `/ai` новые записи не добавляются.
 - Журнал и его attachment metadata удаляются после архивации заявки.
+- Идентификатор Telegram message уникален внутри source chat; повторная доставка update не создаёт дубль записи.
+- Сборщик является final message handler, поэтому видит первое содержательное сообщение заявки после её создания, даже если основной handler уже обработал update.
 
 ## Attachment preparation
 
@@ -21,6 +23,8 @@ Oberbot собирает журнал заявки и по команде `/ai` 
 - Каждый attachment загружается в `files.ioannidis.ru`.
 - В текстовый журнал записывается URL, вернутый file exchange.
 - Ошибка скачивания или upload прерывает `/ai` без частично успешной отметки.
+- Поддерживаются `photo` (наибольший размер), `document`, `audio`, `video`, `voice`, `animation`, `video_note` и `sticker`.
+- В журнале хранятся только Telegram `file_id`, исходное имя, MIME type и размер; бинарные данные до `/ai` локально не сохраняются.
 
 ## `/ai`
 
@@ -43,6 +47,26 @@ Oberbot передаёт AI transport JSON job и локальный log file. J
 - `log_path`
 
 AI transport возвращает success только после создания/восстановления скрытой темы, публикации log document и приёма initial ingress в Router.
+
+Локальный вызов выполняется синхронно без shell-интерпретации аргументов:
+
+```text
+php <ai_transport_submit_script> <ai_transport_config_path> <job-path>
+```
+
+Job дополнительно содержит `secret` из `ai_transport_submit_secret`. Временные job и log files удаляются после завершения вызова как при успехе, так и при ошибке.
+
+## Runtime parameters
+
+Обязательные DB bot parameters:
+
+- `ai_file_exchange_base_url`
+- `ai_file_exchange_token`
+- `ai_transport_submit_script`
+- `ai_transport_config_path`
+- `ai_transport_submit_secret`
+
+Параметр `ai_temp_dir` необязателен; значение по умолчанию `/home/web/tmp` применяется только в development/tests. Production обязан задать собственный writable path.
 
 ## Handoff identity
 

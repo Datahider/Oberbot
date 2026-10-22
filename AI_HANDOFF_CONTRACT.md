@@ -67,8 +67,15 @@ Job дополнительно содержит `secret` из `ai_transport_subm
 - `ai_transport_submit_script`
 - `ai_transport_config_path`
 - `ai_transport_submit_secret`
+- `ai_timer_subject`
 
 Параметр `ai_temp_dir` необязателен; значение по умолчанию `/home/web/tmp` применяется только в development/tests. Production обязан задать собственный writable path.
+
+## Ticket card
+
+- Основная карточка заявки показывает накопленное время AI отдельной строкой `ИИ: HH:MM:SS`.
+- AI time — сумма закрытых timer events заявки, принадлежащих timer subject из `ai_timer_subject`.
+- Создание AI timer event само по себе не обновляет карточку. Новое значение появляется при следующем штатном обновлении карточки заявки.
 
 ## Handoff identity
 

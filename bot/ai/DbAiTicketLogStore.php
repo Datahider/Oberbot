@@ -17,7 +17,7 @@ final class DbAiTicketLogStore implements AiTicketLogStoreInterface
         $row->ticket_id = $ticket_id;
         $row->source_chat_id = $source_chat_id;
         $row->telegram_message_id = $message_id;
-        $row->created_at = $entry->created_at->format('Y-m-d H:i:s');
+        $row->created_at = $entry->created_at;
         $row->role = $entry->role;
         $row->text = $entry->text;
         $row->attachments = json_encode($entry->attachments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);

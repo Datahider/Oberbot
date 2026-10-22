@@ -12,6 +12,7 @@ Oberbot собирает журнал заявки и по команде `/ai` 
 - Telegram commands, bot messages и service messages не попадают в журнал.
 - Правки и удаления Telegram messages игнорируются.
 - Запись содержит timestamp, роль `Клиент` или `Агент`, text/caption и метаданные attachments.
+- Timestamp передаётся в `losthost/db` как `DateTimeImmutable`; предварительное преобразование в строку запрещено.
 - После успешного `/ai` новые записи не добавляются.
 - Журнал и его attachment metadata удаляются после архивации заявки.
 - Идентификатор Telegram message уникален внутри source chat; повторная доставка update не создаёт дубль записи.

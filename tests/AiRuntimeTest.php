@@ -37,6 +37,7 @@ aiAssertSame('Клиент', $text_entry?->role, 'client role extracted');
 aiAssertSame('Не работает 1С', $text_entry?->text, 'text extracted');
 $store_source = (string) file_get_contents(__DIR__ . '/../bot/ai/DbAiTicketLogStore.php');
 aiAssertSame(false, str_contains($store_source, 'created_at->format'), 'database store preserves DateTimeImmutable');
+aiAssertSame(false, str_contains($store_source, '(string) $row->created_at'), 'database store reuses hydrated DateTimeImmutable');
 aiAssertSame(null, $extractor->extract(aiMessage(['text' => '/done']), 'Клиент'), 'commands ignored');
 aiAssertSame(null, $extractor->extract(aiMessage([
     'text' => 'bot text',

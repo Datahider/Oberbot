@@ -11,7 +11,7 @@ use TelegramBot\Api\Types\Message;
 
 use function losthost\Oberbot\sendMessage;
 
-final class CommandAi extends AbstractAuthCommand
+class CommandAi extends AbstractAuthCommand
 {
     public const COMMAND = 'ai';
 
@@ -25,6 +25,11 @@ final class CommandAi extends AbstractAuthCommand
         return ['default' => 'Передать заявку AI-агенту', 'all_group_chats' => 'Передать заявку AI-агенту'];
     }
 
+    protected static function provider(): ?string
+    {
+        return null;
+    }
+
     protected function handle(Message &$message): bool
     {
         try {
@@ -33,9 +38,10 @@ final class CommandAi extends AbstractAuthCommand
                 (int) $ticket->id,
                 (string) $ticket->chat_id,
                 (int) $ticket->topic_id,
-                (string) $ticket->topic_title
+                (string) $ticket->topic_title,
+                static::provider()
             );
-            sendMessage($result === 'repeated' ? 'Повторная команда /ai запрещена' : 'Ок', null, null, $this->thread_id);
+            sendMessage($result === 'repeated' ? 'Повторная команда /' . static::COMMAND . ' запрещена' : 'Ок', null, null, $this->thread_id);
         } catch (\Throwable $error) {
             Bot::logThrowable($error, 'AI handoff command failed');
             sendMessage('Ошибка выполнения команды', null, null, $this->thread_id);

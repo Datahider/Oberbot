@@ -15,8 +15,13 @@ final class AiHandoffService
         private string $temp_dir
     ) {}
 
-    public function execute(int $ticket_id, string $source_chat_id, int $source_thread_id, string $ticket_title): string
+    public const PROVIDERS = ['codex', 'claude'];
+
+    public function execute(int $ticket_id, string $source_chat_id, int $source_thread_id, string $ticket_title, ?string $provider = null): string
     {
+        if ($provider !== null && !in_array($provider, self::PROVIDERS, true)) {
+            throw new \InvalidArgumentException('Unknown AI provider: ' . $provider);
+        }
         if ($this->logs->isCompleted($ticket_id)) return 'repeated';
         $published = [];
         foreach ($this->logs->entries($ticket_id) as $entry) {
@@ -33,13 +38,15 @@ final class AiHandoffService
         if (file_put_contents($log_path, $contents, LOCK_EX) === false) throw new RuntimeException('Cannot create AI ticket log file');
 
         try {
-            $hidden_thread_id = $this->transport->submit([
+            $job = [
                 'ticket_id' => $ticket_id,
                 'source_chat_id' => $source_chat_id,
                 'source_thread_id' => $source_thread_id,
                 'ticket_title' => $ticket_title,
                 'log_path' => $log_path,
-            ]);
+            ];
+            if ($provider !== null) $job['provider'] = $provider;
+            $hidden_thread_id = $this->transport->submit($job);
             $this->logs->markCompleted($ticket_id, $hidden_thread_id);
         } catch (\Throwable $error) {
             @unlink($log_path);

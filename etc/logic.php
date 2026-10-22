@@ -74,6 +74,8 @@ Bot::addHandler(losthost\Oberbot\controller\callback\CallbackUndefined::class);
 // Команды
 Bot::addHandler(losthost\Oberbot\controller\command\CommandAgent::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandAi::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandCodex::class);
+Bot::addHandler(losthost\Oberbot\controller\command\CommandClaude::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandArchive::class);
 Bot::addHandler(losthost\Oberbot\controller\command\CommandBan::class);
 Bot::addHandler(\losthost\Oberbot\controller\command\CommandCall::class);

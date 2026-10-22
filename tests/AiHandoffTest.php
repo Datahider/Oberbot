@@ -61,7 +61,41 @@ $log = $submitter->logs[0];
 aiAssertSame(true, str_contains((string) $log, '[2026-10-21 10:00:00] Клиент'), 'client line');
 aiAssertSame(true, str_contains((string) $log, 'https://files.ioannidis.ru/screen1'), 'attachment URL');
 aiAssertSame(false, file_exists($submitter->jobs[0]['log_path']), 'successful handoff log removed');
+aiAssertSame(false, array_key_exists('provider', $submitter->jobs[0]), '/ai job has no provider');
 aiAssertSame('repeated', $service->execute(42, '-10037366278346', 55, 'Не работает 1С'), 'repeat command');
+aiAssertSame('repeated', $service->execute(42, '-10037366278346', 55, 'Не работает 1С', 'claude'), 'repeat with provider');
+aiAssertSame(1, count($submitter->jobs), 'repeat does not call transport');
+
+foreach (['codex', 'claude'] as $provider) {
+    $provider_store = new AiMemoryLogStore();
+    $provider_store->entries = $store->entries;
+    $provider_submitter = new AiFakeSubmitter();
+    $provider_service = new AiHandoffService($provider_store, new AiFakePublisher(), $provider_submitter, '/home/web/tmp');
+    aiAssertSame('ok', $provider_service->execute(44, '-100', 57, 'Провайдер', $provider), $provider . ' handoff');
+    aiAssertSame($provider, $provider_submitter->jobs[0]['provider'] ?? null, $provider . ' job provider');
+}
+
+try {
+    (new AiHandoffService(new AiMemoryLogStore(), new AiFakePublisher(), new AiFakeSubmitter(), '/home/web/tmp'))->execute(45, '-100', 58, 'Ошибка', 'gemini');
+    throw new LogicException('unknown provider must be rejected');
+} catch (InvalidArgumentException $error) {
+    aiAssertSame('Unknown AI provider: gemini', $error->getMessage(), 'unknown provider rejected');
+}
+
+$commands = [
+    'ai' => losthost\Oberbot\controller\command\CommandAi::class,
+    'codex' => losthost\Oberbot\controller\command\CommandCodex::class,
+    'claude' => losthost\Oberbot\controller\command\CommandClaude::class,
+];
+foreach ($commands as $name => $class) {
+    aiAssertSame($name, $class::COMMAND, $name . ' command name');
+}
+$logic = (string) file_get_contents(__DIR__ . '/../etc/logic.php');
+$functions = (string) file_get_contents(__DIR__ . '/../bot/functions.php');
+foreach (['CommandCodex', 'CommandClaude'] as $class) {
+    aiAssertSame(true, str_contains($logic, 'command\\' . $class . '::class'), $class . ' handler registered');
+    aiAssertSame(substr_count($functions, 'CommandAi::getBotCommand()'), substr_count($functions, $class . '::getBotCommand()'), $class . ' listed with /ai');
+}
 
 $failed_store = new AiMemoryLogStore();
 $failed_store->entries = $store->entries;

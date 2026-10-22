@@ -72,7 +72,7 @@ do {
 
 Назначенные агенты: <b><?= Service::mentionByIdArray($ticket->getAgents(), '-'); ?></b>
 Затраченное время: <b><?= $ticket->getTimeElapsed()->format('%H:%I:%S'); ?></b>
-ИИ: <b><?= $ticket->getAiTimeElapsed()->format('%H:%I:%S'); ?></b>
+в т.ч. ИИ: <b><?= $ticket->getAiTimeElapsed()->format('%H:%I:%S'); ?></b>
 Пользователи: <b><?= Service::mentionByIdArray($ticket->getCustomers(), '-'); ?></b>
 
 Другие пользователи могут присоединиться к заявке нажав ➕

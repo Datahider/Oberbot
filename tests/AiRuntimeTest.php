@@ -38,6 +38,11 @@ aiAssertSame('Не работает 1С', $text_entry?->text, 'text extracted');
 $store_source = (string) file_get_contents(__DIR__ . '/../bot/ai/DbAiTicketLogStore.php');
 aiAssertSame(false, str_contains($store_source, 'created_at->format'), 'database store preserves DateTimeImmutable');
 aiAssertSame(false, str_contains($store_source, '(string) $row->created_at'), 'database store reuses hydrated DateTimeImmutable');
+$ticket_source = (string) file_get_contents(__DIR__ . '/../bot/data/ticket.php');
+aiAssertSame(true, str_contains($ticket_source, 'function getAiTimeElapsed()'), 'ticket exposes AI elapsed time');
+$card_template = (string) file_get_contents(__DIR__ . '/../templates/default/viewAcceptingMessage.php');
+aiAssertSame(true, str_contains($card_template, 'ИИ:'), 'ticket card labels AI time');
+aiAssertSame(true, str_contains($card_template, "getAiTimeElapsed()->format('%H:%I:%S')"), 'ticket card formats AI time');
 aiAssertSame(null, $extractor->extract(aiMessage(['text' => '/done']), 'Клиент'), 'commands ignored');
 aiAssertSame(null, $extractor->extract(aiMessage([
     'text' => 'bot text',

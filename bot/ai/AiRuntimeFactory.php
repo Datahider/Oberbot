@@ -36,6 +36,11 @@ final class AiRuntimeFactory
         );
     }
 
+    public static function timerSubject(): string
+    {
+        return self::requiredParam('ai_timer_subject');
+    }
+
     private static function requiredParam(string $name): string
     {
         $value = trim((string) Bot::param($name, ''));

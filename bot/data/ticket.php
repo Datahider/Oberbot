@@ -349,6 +349,24 @@ class ticket extends topic {
         
         return Service::seconds2dateinterval($seconds_elapsed->value);
     }
+
+    public function getAiTimeElapsed() {
+        $seconds_elapsed = new DBValue(<<<FIN
+            SELECT
+                SUM(TIMESTAMPDIFF(SECOND, e.start_time, e.end_time)) AS value
+            FROM
+                [timer_events] AS e
+                LEFT JOIN [timers] AS t ON t.id = e.timer
+            WHERE
+                e.object = ?
+                AND e.project = ?
+                AND e.started = 0
+                AND t.subject = ?
+            FIN, [$this->id, $this->chat_id, AiRuntimeFactory::timerSubject()]
+        );
+
+        return Service::seconds2dateinterval($seconds_elapsed->value);
+    }
     
     public function linkCustomer(int $user_id) {
         if ($this->hasAgent($user_id)) {

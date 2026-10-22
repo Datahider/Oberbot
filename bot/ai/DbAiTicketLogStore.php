@@ -31,7 +31,7 @@ final class DbAiTicketLogStore implements AiTicketLogStoreInterface
         while (($row = $list->next()) instanceof AiTicketLog) {
             $attachments = json_decode((string) $row->attachments, true, 512, JSON_THROW_ON_ERROR);
             $result[] = new AiTicketLogEntry(
-                new \DateTimeImmutable((string) $row->created_at),
+                $row->created_at,
                 (string) $row->role,
                 (string) $row->text,
                 $attachments

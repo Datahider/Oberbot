@@ -6,3 +6,4 @@ declare(strict_types=1);
 require_once __DIR__ . '/AiHandoffTest.php';
 require_once __DIR__ . '/AiRuntimeTest.php';
 require_once __DIR__ . '/CatchTypesTest.php';
+require_once __DIR__ . '/TransactionRollbackTest.php';

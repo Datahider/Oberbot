@@ -18,6 +18,7 @@
 - Тип в `catch` внутри namespace должен разрешаться в существующий класс: либо полностью квалифицированное имя (`\Exception`), либо импорт через `use`.
 - Неквалифицированный `catch (Exception ...)` без `use Exception;` запрещён: PHP разрешает его в `<текущий namespace>\Exception`, такой catch ничего не ловит, и открытая перед ним транзакция остаётся неоткатанной в соединении воркера.
 - Проверяется тестом `tests/CatchTypesTest.php`.
+- Каждый `DB::beginTransaction()` в `bot/` закрывается блоком `try`, чей `catch` ловит `\Throwable` и вызывает `DB::rollBack()`. Ошибка пишется в лог через `Bot::logThrowable()` (либо пробрасывается дальше). Проверяется тестом `tests/TransactionRollbackTest.php`.
 
 ## AI handoff
 

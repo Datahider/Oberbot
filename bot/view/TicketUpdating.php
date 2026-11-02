@@ -206,7 +206,7 @@ class TicketUpdating extends DBTracker {
 
         try {
             Bot::$api->reopenForumTopic($this->ticket->chat_id, $this->ticket->topic_id);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             //Bot::logException($ex);
         }
 

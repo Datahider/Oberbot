@@ -20,7 +20,7 @@ class CallbackCancelUrgent extends AbstractCallback {
         
         try {
             Bot::$api->editMessageReplyMarkup($group_id, $message_id);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Bot::logException($ex);
         }
         

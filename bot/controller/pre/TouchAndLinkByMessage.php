@@ -64,7 +64,7 @@ class TouchAndLinkByMessage extends AbstractHandlerMessage {
             } else {
                 return false; // Это сообщение в общий чат форума
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             // Не найден тикет, возможно нет в базе
             $this->reason = self::BLOCK_NO_TICKET;
             return true; 

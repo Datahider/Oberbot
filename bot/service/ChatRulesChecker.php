@@ -33,7 +33,7 @@ class ChatRulesChecker {
         try {
             $this->ticket = ticket::getByGroupThread($this->chat_id, $this->thread_id);
             $this->subject = ($this->thread_id == $this->message_id-1) ? $this->ticket->title : null;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Bot::logComment("Ticket not found for chat id: $this->chat_id; and thread id: $this->thread_id.");
             $this->subject = null;
         }

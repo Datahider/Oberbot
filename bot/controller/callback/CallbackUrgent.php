@@ -21,7 +21,7 @@ class CallbackUrgent extends AbstractCallback {
         
         try {
             Bot::$api->editMessageReplyMarkup(Bot::$chat->id, $callback_query->getMessage()->getMessageId());
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Bot::logException($ex);
         }
         

@@ -69,7 +69,7 @@ class CommandMyGroups extends AbstractAuthCommand {
                         $group_line = static::ICONS[static::ROLE_BANNED]. $group_line;
                         break;
                 }
-            } catch (Exception $exc) {
+            } catch (\Exception $exc) {
                 // Do nothing;
                 #todo Если чувак не в чате, но мы тут, значит его надо исключить из chat_user
             }

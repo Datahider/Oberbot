@@ -44,7 +44,7 @@ class note extends DBObject {
                 $note_mention->write();
             }
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             DB::rollBack();
             throw $ex;
         }

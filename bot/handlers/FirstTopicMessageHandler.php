@@ -36,8 +36,8 @@ class FirstTopicMessageHandler extends AbstractHandlerMessage {
             $this->process();
             $this->processMentions($message);
             DB::commit();
-        } catch (\Exception $e) {
-            Bot::logException($e);
+        } catch (\Throwable $e) {
+            Bot::logThrowable($e);
             DB::rollBack();
         }    
         return true;

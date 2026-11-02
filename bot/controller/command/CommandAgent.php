@@ -67,9 +67,9 @@ class CommandAgent extends AbstractAuthCommand {
                 }
             }
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Bot::logException($e);
+            Bot::logThrowable($e);
             throw $e;
         }
         

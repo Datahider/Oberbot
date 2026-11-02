@@ -30,9 +30,9 @@ class CallbackSelfAgent extends AbstractCallback {
                 $role->write();
             }
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Bot::logException($e);
+            Bot::logThrowable($e);
             throw $e;
         }
         

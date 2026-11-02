@@ -37,9 +37,9 @@ class CommandCustomer extends AbstractAuthCommand {
                 }
             }
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Bot::logException($e);
+            Bot::logThrowable($e);
         }
         
         $agent_ids = new DBView('SELECT user_id FROM [user_chat_role] WHERE role = "agent" AND chat_id = ?', [$message->getChat()->getId()]);

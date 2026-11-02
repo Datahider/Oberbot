@@ -93,10 +93,15 @@ class topic extends DBObject {
         $new = new topic(['chat_id' => $chat_id, 'topic_id' => $topic_id, 'topic_title' => $title], true);
         if ($new->isNew()) {
             DB::beginTransaction();
-            $new->write();
-            $new->topic_title = "$title - #$new->id";
-            $new->write();
-            DB::commit();
+            try {
+                $new->write();
+                $new->topic_title = "$title - #$new->id";
+                $new->write();
+                DB::commit();
+            } catch (\Throwable $ex) {
+                DB::rollBack();
+                throw $ex;
+            }
         } else {
             throw new \Exception('This topic already exists.');
         }

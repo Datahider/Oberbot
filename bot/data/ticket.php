@@ -98,9 +98,9 @@ class ticket extends topic {
                                                             // возможно надо сделать touchCustomer
             $this->write('', ['function' => 'touchAdmin']);
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             DB::rollBack();
-            Bot::logException($ex);
+            Bot::logThrowable($ex);
         }
         return $this;
     }
@@ -267,9 +267,9 @@ class ticket extends topic {
             $sth->execute([$this->id]);
             AiRuntimeFactory::createLogStore()->cleanup((int) $this->id);
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             DB::rollBack();
-            Bot::logException($ex);
+            Bot::logThrowable($ex);
         }
         
         return $this;

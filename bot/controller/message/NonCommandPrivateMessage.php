@@ -57,8 +57,8 @@ class NonCommandPrivateMessage extends AbstractHandlerMessage {
                 $this->private_topic->ticket_id = $this->newTopic($message);
                 $this->private_topic->write();
                 DB::commit();
-            } catch (\Exception $exc) {
-                Bot::logException($exc);
+            } catch (\Throwable $exc) {
+                Bot::logThrowable($exc);
                 DB::rollBack();
                 message('error', __('Не удалось создать обращение.'));
             }

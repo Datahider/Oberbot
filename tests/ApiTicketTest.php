@@ -85,4 +85,23 @@ foreach (['apikey', 'chat_apikey', 'api_ticket_request'] as $class) {
     apiAssertSame(true, str_contains($index, "\\losthost\\Oberbot\\data\\$class::initDataStructure();"), "$class table is initialized");
 }
 
+final class ApiFakeTelegramApi extends \losthost\telle\ExtendedApi
+{
+    public array $sent = [];
+    public function __construct() {}
+    public function sendMessage($chatId, $text, $parseMode = null, $disablePreview = false, $replyToMessageId = null, $replyMarkup = null, $disableNotification = false, $messageThreadId = null, $protectContent = null, $allowSendingWithoutReply = null, $replyParameters = null, $linkPreviewOptions = null)
+    {
+        $this->sent[] = [$chatId, $text, $messageThreadId];
+        $message = new \TelegramBot\Api\Types\Message();
+        $message->setMessageId(501);
+        return $message;
+    }
+}
+
+$fake_api = new ApiFakeTelegramApi();
+\losthost\telle\Bot::$api = $fake_api;
+apiAssertSame(false, (new ReflectionProperty(\losthost\telle\Bot::class, 'chat'))->isInitialized(), 'Bot::$chat is not initialized in background');
+apiAssertSame(501, \losthost\Oberbot\sendMessage('Текст', null, -1001631150452, 77), 'sendMessage with explicit chat works without Bot::$chat');
+apiAssertSame([[-1001631150452, 'Текст', 77]], $fake_api->sent, 'sendMessage uses explicit chat');
+
 echo "ApiTicketTest OK\n";

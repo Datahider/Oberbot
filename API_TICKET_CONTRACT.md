@@ -34,6 +34,7 @@ API только принимает запрос и ставит его в оч�
 | `user_id` | BIGINT | `apikey.user_id` на момент запроса. |
 | `title` | VARCHAR(128) | Заголовок заявки. |
 | `text` | TEXT | Первое сообщение заявки. |
+| `type` | INT | Тип заявки, константа `topic::TYPE_*`. |
 | `created` | DATETIME | Время приёма запроса. |
 | `ticket_id` | BIGINT NULL | Созданная заявка. |
 | `error` | VARCHAR(500) NULL | Текст ошибки создания. |
@@ -50,7 +51,9 @@ API после записи `api_ticket_request` создаёт `DBPendingJob` (
 
 - Загружает `api_ticket_request` по `job_args`.
 - Если у запроса уже заполнен `ticket_id`, бросает исключение: повторное создание запрещено.
-- Создаёт заявку `ActionCreateTicket::do(null, chat_id, user_id, title, [text])`.
+- Создаёт заявку `ActionCreateTicket::do(null, chat_id, user_id, title, [text], type)`.
+- Тип задаётся при создании: `ticket::create(..., type)` записывает его в первой же вставке. Последующий `setType()` не используется: его трекер требует `Bot::$user`.
+- `ActionCreateTicket::do` и `ticket::create` без `type` создают `TYPE_REGULAR_TASK`, как раньше.
 - Фоновый процесс не имеет `Bot::$chat` и `Bot::$user`: код создания заявки не должен к ним обращаться, если группа передана явно (в частности, `sendMessage()` с явным `chat_id`).
 - Записывает `ticket_id` созданной заявки.
 - Любая ошибка записывается в `error` (до 500 символов) и пробрасывается дальше. Повтора нет.

@@ -7,3 +7,4 @@ require_once __DIR__ . '/AiHandoffTest.php';
 require_once __DIR__ . '/AiRuntimeTest.php';
 require_once __DIR__ . '/CatchTypesTest.php';
 require_once __DIR__ . '/TransactionRollbackTest.php';
+require_once __DIR__ . '/ApiTicketTest.php';

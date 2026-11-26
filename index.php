@@ -52,6 +52,9 @@ AiTicketLog::initDataStructure();
 OberbotAiHandoff::initDataStructure();
 losthost\ProxyMessage\message_map::initDataStructure();
 \losthost\Oberbot\data\funnel_chat::initDataStructure();
+\losthost\Oberbot\data\apikey::initDataStructure();
+\losthost\Oberbot\data\chat_apikey::initDataStructure();
+\losthost\Oberbot\data\api_ticket_request::initDataStructure();
 
 Context::initDataStructure();
 

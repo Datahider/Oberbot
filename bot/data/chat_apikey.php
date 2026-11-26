@@ -10,7 +10,8 @@ class chat_apikey extends DBObject {
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
         'chat_id' => 'BIGINT(20) NOT NULL',
         'apikey_id' => 'BIGINT(20) NOT NULL',
-        'permissions' => 'SET("report")',
-        'PRIMARY_KEY' => 'id',
+        'permissions' => 'SET("report","create_ticket")',
+        'PRIMARY KEY' => 'id',
+        'UNIQUE INDEX apikey_chat' => ['apikey_id', 'chat_id'],
     ];
 }

@@ -57,7 +57,7 @@ function sendMessage(string $text, null|array|InlineKeyboardMarkup $keyboard=nul
     }
     
     $message = Bot::$api->sendMessage(
-            ifnull($chat_id, Bot::$chat->id),
+            $chat_id ?? Bot::$chat->id,
             $text, 'html',
             false, null,
             $keyboard,

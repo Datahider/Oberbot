@@ -20,7 +20,7 @@ final class ApiTicketRequestProcessor
         }
 
         try {
-            $ticket_id = $this->creator->create($request['chat_id'], $request['user_id'], $request['title'], $request['text']);
+            $ticket_id = $this->creator->create($request['chat_id'], $request['user_id'], $request['title'], $request['text'], $request['type']);
         } catch (\Throwable $e) {
             $this->store->markFailed($request_id, mb_substr($e->getMessage(), 0, 500));
             throw $e;

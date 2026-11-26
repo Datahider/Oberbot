@@ -16,6 +16,7 @@ final class DbApiTicketRequestStore implements ApiTicketRequestStoreInterface
             'user_id' => (int) $request->user_id,
             'title' => (string) $request->title,
             'text' => (string) $request->text,
+            'type' => (int) $request->type,
             'ticket_id' => $request->ticket_id === null ? null : (int) $request->ticket_id,
             'error' => $request->error,
         ];

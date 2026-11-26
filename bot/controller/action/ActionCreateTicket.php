@@ -4,6 +4,7 @@ namespace losthost\Oberbot\controller\action;
 
 use losthost\telle\Bot;
 use losthost\Oberbot\data\ticket;
+use losthost\Oberbot\data\topic;
 use losthost\Oberbot\service\Service;
 
 use function \losthost\Oberbot\__;
@@ -13,7 +14,7 @@ use function \losthost\Oberbot\ifnull;
 
 class ActionCreateTicket {
     
-    static public function do(?int $from_chat_id, int $chat_id, int $user_id, string $title, int|string|array $messages) : ticket {
+    static public function do(?int $from_chat_id, int $chat_id, int $user_id, string $title, int|string|array $messages, int $type = topic::TYPE_REGULAR_TASK) : ticket {
 
         $from_chat_id = ifnull($from_chat_id, $chat_id);
         
@@ -33,7 +34,7 @@ class ActionCreateTicket {
             }
         }
         
-        $new_ticket = ticket::create($chat_id, $new_thread, $normalized_title, $user_id);
+        $new_ticket = ticket::create($chat_id, $new_thread, $normalized_title, $user_id, $type);
         $new_ticket->linkCustomer($user_id);
         $new_ticket->accept();
         

@@ -36,7 +36,7 @@ class ticket extends topic {
     protected ?bool $was_archived = null;
 
 
-    static public function create(int $group_id, int $thread_id, string $title, int $creator_id) {
+    static public function create(int $group_id, int $thread_id, string $title, int $creator_id, int $type = topic::TYPE_REGULAR_TASK) {
         
         $ticket = new ticket(['topic_title' => $title, 'chat_id' => $group_id, 'topic_id' => $thread_id], true);
         if (!$ticket->isNew()) {
@@ -48,7 +48,7 @@ class ticket extends topic {
         $ticket->ticket_creator = $creator_id;
         $ticket->is_urgent = 0;
         $ticket->is_task = 1;
-        $ticket->type = static::TYPE_REGULAR_TASK;
+        $ticket->type = $type;
         $ticket->created = date_create();
         
         $ticket->write('', ['function' => 'create']);

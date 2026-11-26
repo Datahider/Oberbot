@@ -13,6 +13,7 @@ class api_ticket_request extends DBObject {
         'user_id' => 'BIGINT(20) NOT NULL',
         'title' => 'VARCHAR(128) NOT NULL',
         'text' => 'TEXT NOT NULL',
+        'type' => 'INT(11) NOT NULL',
         'created' => 'DATETIME NOT NULL',
         'ticket_id' => 'BIGINT(20)',
         'error' => 'VARCHAR(500)',

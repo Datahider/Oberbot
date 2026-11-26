@@ -8,8 +8,8 @@ use losthost\Oberbot\controller\action\ActionCreateTicket;
 
 final class ActionApiTicketCreator implements ApiTicketCreatorInterface
 {
-    public function create(int $chat_id, int $user_id, string $title, string $text): int
+    public function create(int $chat_id, int $user_id, string $title, string $text, int $type): int
     {
-        return (int) ActionCreateTicket::do(null, $chat_id, $user_id, $title, [$text])->id;
+        return (int) ActionCreateTicket::do(null, $chat_id, $user_id, $title, [$text], $type)->id;
     }
 }
